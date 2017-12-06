@@ -42,7 +42,7 @@ func run_captcha_calc(input string, part int) {
         var input_chars = strings.Split(input, "");
         var input_len   = len(input_chars);
 
-        // store the function to calculate the next relevant index
+        // stores the function to calculate the next relevant index
         // based on which part of the assignment is being run
         var calc_idx func(int, int) int
         // if an invalid part is given
