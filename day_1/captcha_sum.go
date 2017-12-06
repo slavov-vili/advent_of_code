@@ -11,18 +11,31 @@ import (
 func main() {
     // stores which part of the assignment is being run
     var part int
+    // stores the function to calculate the next relevant index
+    // based on which part of the assignment is being run
+    var calc_idx func(int, int) int
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // convert the very first input to an int and store it
-    if (scanner.Scan()) {
+    for (scanner.Scan()) {
         part,_ = strconv.Atoi(scanner.Text())
+        // if an invalid part is given
+        if ((part < 1) || (part > 2)) {
+            println("Invalid part of the assignment !")
+            println("Try again: ")
+            continue;
+        }   //end if
+        // store the correct function for the particular part of the assignment
+        if (part == 1) { calc_idx = calc_next_idx }
+        if (part == 2) { calc_idx = calc_mid_idx  }
+        break;
     }   //end if
 
     // while input is being received
     for (scanner.Scan()) {
         // store the input
         var input = scanner.Text();
-        run_captcha_calc(input, part)
+        run_captcha_calc(input, calc_idx)
     }   //end for
 }   //end main
 
@@ -32,27 +45,15 @@ func main() {
 //
 // Arguments:
 // input - the input to the calculator
-// part  - which part of the assignment is being tested
+// calc_idx - the function, which calculates the index of the next number to be consideted
 //
 // Returns:
 // the sum of equal numbers based on the criterion
-func run_captcha_calc(input string, part int) {
+func run_captcha_calc(input string, calc_idx func(int, int)int) {
         var sum = 0;
         // split the input into characters, because strings are weird in Go
         var input_chars = strings.Split(input, "");
         var input_len   = len(input_chars);
-
-        // stores the function to calculate the next relevant index
-        // based on which part of the assignment is being run
-        var calc_idx func(int, int) int
-        // if an invalid part is given
-        if ((part < 1) || (part > 2)) {
-            println("Invalid part of the assignment !")
-            os.Exit(0);
-        }   //end if
-        // store the correct function for the particular part of the assignment
-        if (part == 1) { calc_idx = calc_next_idx }
-        if (part == 2) { calc_idx = calc_mid_idx  }
 
         // for each character in the input
         for i:=0; i<input_len; i++ {
