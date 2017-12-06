@@ -5,4 +5,4 @@ part I:
 
 part II:
     input:  same as Part I
-    output: 
+    output: 1166
