@@ -9,8 +9,6 @@ import (
 
 
 func main() {
-    // stores which part of the assignment is being run
-    var part int
     // stores the function to calculate the next relevant index
     // based on which part of the assignment is being run
     var calc_idx func(int, int) int
@@ -18,7 +16,7 @@ func main() {
     var scanner = bufio.NewScanner(os.Stdin);
     // convert the very first input to an int and store it
     for (scanner.Scan()) {
-        part,_ = strconv.Atoi(scanner.Text())
+        part,_ := strconv.Atoi(scanner.Text())
         // if an invalid part is given
         if ((part < 1) || (part > 2)) {
             println("Invalid part of the assignment !")
