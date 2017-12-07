@@ -15,22 +15,22 @@ func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // convert the very first input to an int and store it
-    for (scanner.Scan()) {
+    for scanner.Scan() {
         part,_ := strconv.Atoi(scanner.Text())
         // if an invalid part is given
-        if ((part < 1) || (part > 2)) {
+        if (part < 1) || (part > 2) {
             println("Invalid part of the assignment !")
             println("Try again: ")
             continue;
         }   //end if
         // store the correct function for the particular part of the assignment
-        if (part == 1) { calc_idx = calc_next_idx }
-        if (part == 2) { calc_idx = calc_mid_idx  }
+        if part == 1 { calc_idx = calc_next_idx }
+        if part == 2 { calc_idx = calc_mid_idx  }
         break;
     }   //end if
 
     // while input is being received
-    for (scanner.Scan()) {
+    for scanner.Scan() {
         // store the input
         var input = scanner.Text();
         run_captcha_calc(input, calc_idx)
@@ -59,9 +59,9 @@ func run_captcha_calc(input string, calc_idx func(int, int)int) {
             var y = calc_idx(i, input_len);
             // if this number and the next one are equal, add it to the sum
 
-            if (strings.Compare(input_chars[i], input_chars[y]) == 0) {
+            if strings.Compare(input_chars[i], input_chars[y]) == 0 {
                 i_int, err := strconv.Atoi(input_chars[i]);
-                if (err != nil) {
+                if err != nil {
                     println(err);
                 }   //end if
                 sum += i_int;

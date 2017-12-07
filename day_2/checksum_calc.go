@@ -21,24 +21,24 @@ func main() {
     for (scanner.Scan()) {
         part,_ := strconv.Atoi(scanner.Text())
         // if an invalid part is given
-        if ((part < 1) || (part > 2)) {
+        if (part < 1) || (part > 2) {
             println("Invalid part of the assignment !")
             println("Try again: ")
             continue;
         }   //end if
         // store the correct function for the particular part of the assignment
-        if (part == 1) { run_checksum_calc = run_checksum_calc_min_max }
-        if (part == 2) { run_checksum_calc = run_checksum_calc_even_div }
+        if part == 1 { run_checksum_calc = run_checksum_calc_min_max }
+        if part == 2 { run_checksum_calc = run_checksum_calc_even_div }
         break;
     }   //end if
 
     // while input is being received
-    for (scanner.Scan()) {
+    for scanner.Scan() {
         // store the current input
         var input = scanner.Text();
 
         // if the input is NOT "END"
-        if (strings.Compare(input, "END") != 0) {
+        if strings.Compare(input, "END") != 0 {
             // add the current input to the array
             input_rows = append(input_rows, input)
             continue;
@@ -71,8 +71,8 @@ func run_checksum_calc_min_max(input []string) {
             // store the current number
             cur_num, _ := strconv.Atoi(num);
             // adjust min and max
-            if (cur_num < min) {min = cur_num}
-            if (cur_num > max) {max = cur_num}
+            if cur_num < min { min = cur_num }
+            if cur_num > max { max = cur_num }
         }   //end for
 
         // add the difference between this row's max and min
@@ -93,4 +93,31 @@ func run_checksum_calc_min_max(input []string) {
 // Arguments:
 // input - the input to the calculator (each element in the array is a row in the matrix)
 func run_checksum_calc_even_div(input []string) {
+    // store the sum of the matrix
+    var sum = 0;
+
+    // for each row of the input
+    for _,row := range input {
+        // split the row into its numbers
+        var numbers = strings.Fields(row);
+
+        // for each number in the row
+        for i,cur_num := range numbers {
+            // check if the current number is divisible (or divides) any numbers, coming after it
+            for _,next_num := range numbers[(i+1):] {
+                // if the current number DIVIDES the next number
+                if (next_num % cur_num) == 0
+            }   //end for
+        }   //end for
+
+        // add the division of the two divisible numbers from THIS row
+        // to the overall sum
+        sum += (max - min)
+    }   //end for
+
+    // print the overall sum
+    print("Sum: ")
+    print(sum)
+    println()
+
 }   //end func
