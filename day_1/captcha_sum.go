@@ -15,7 +15,8 @@ func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // convert the very first input to an int and store it
-    for scanner.Scan() {
+    println("Testing Part: ")
+    for (scanner.Scan()) {
         part,_ := strconv.Atoi(scanner.Text())
         // if an invalid part is given
         if (part < 1) || (part > 2) {
@@ -30,10 +31,16 @@ func main() {
     }   //end if
 
     // while input is being received
+    println("Input:")
     for scanner.Scan() {
         // store the input
         var input = scanner.Text();
-        run_captcha_calc(input, calc_idx)
+
+        // run the calculator and print the sum
+        var sum = run_captcha_calc(input, calc_idx)
+        print("Sum: ");
+        print(sum);
+        println()
     }   //end for
 }   //end main
 
@@ -47,30 +54,28 @@ func main() {
 //
 // Returns:
 // the sum of equal numbers based on the criterion
-func run_captcha_calc(input string, calc_idx func(int, int)int) {
-        var sum = 0;
-        // split the input into characters, because strings are weird in Go
-        var input_chars = strings.Split(input, "");
-        var input_len   = len(input_chars);
+func run_captcha_calc(input string, calc_idx func(int, int)int) int {
+    var sum = 0;
+    // split the input into characters, because strings are weird in Go
+    var input_chars = strings.Split(input, "");
+    var input_len   = len(input_chars);
 
-        // for each character in the input
-        for i:=0; i<input_len; i++ {
-            // calculate the index of the next number to be considered
-            var y = calc_idx(i, input_len);
-            // if this number and the next one are equal, add it to the sum
+    // for each character in the input
+    for i:=0; i<input_len; i++ {
+        // calculate the index of the next number to be considered
+        var y = calc_idx(i, input_len);
+        // if this number and the next one are equal, add it to the sum
 
-            if strings.Compare(input_chars[i], input_chars[y]) == 0 {
-                i_int, err := strconv.Atoi(input_chars[i]);
-                if err != nil {
-                    println(err);
-                }   //end if
-                sum += i_int;
+        if strings.Compare(input_chars[i], input_chars[y]) == 0 {
+            i_int, err := strconv.Atoi(input_chars[i]);
+            if err != nil {
+                println(err);
             }   //end if
-        }   //end for
+            sum += i_int;
+        }   //end if
+    }   //end for
 
-        print("Sum: ");
-        print(sum);
-        println()
+    return sum
 }   //end func
 
 

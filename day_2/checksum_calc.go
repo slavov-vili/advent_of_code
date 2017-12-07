@@ -11,13 +11,14 @@ import (
 func main() {
     // stores the function to run the checksum calculator
     // based on which part of the assignment is being run
-    var run_checksum_calc func([][]int);
+    var run_checksum_calc func([][]int)int;
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // stores each row of the matrix
     var input_matrix [][]int;
 
     // convert the very first input to an int and store it
+    println("Testing Part: ")
     for (scanner.Scan()) {
         part,_ := strconv.Atoi(scanner.Text())
         // if an invalid part is given
@@ -33,6 +34,7 @@ func main() {
     }   //end if
 
     // while input is being received
+    println("Input:")
     for scanner.Scan() {
         // store the current input
         var input = scanner.Text();
@@ -54,7 +56,11 @@ func main() {
             continue;
         }   //end if
 
-        run_checksum_calc(input_matrix)
+        // run the calculator and print the sum
+        var sum = run_checksum_calc(input_matrix);
+        print("Sum: ")
+        print(sum)
+        println()
     }   //end for
 }   //end main
 
@@ -64,7 +70,10 @@ func main() {
 //
 // Arguments:
 // input - the input to the calculator (each element in the array is a row in the matrix)
-func run_checksum_calc_min_max(input_matrix [][]int) {
+//
+// Returns:
+// the sum of the differences between the max and the min in each row
+func run_checksum_calc_min_max(input_matrix [][]int) int {
     // store the sum of the matrix
     var sum = 0;
 
@@ -86,10 +95,7 @@ func run_checksum_calc_min_max(input_matrix [][]int) {
         sum += (max - min)
     }   //end for
 
-    // print the overall sum
-    print("Sum: ")
-    print(sum)
-    println()
+    return sum;
 }   //end func
 
 
@@ -98,7 +104,10 @@ func run_checksum_calc_min_max(input_matrix [][]int) {
 //
 // Arguments:
 // input - the input to the calculator (each element in the array is a row in the matrix)
-func run_checksum_calc_even_div(input_matrix [][]int) {
+//
+// Returns:
+// the sum of the divisions between the two equally divisible numbers in each row
+func run_checksum_calc_even_div(input_matrix [][]int) int {
     // store the sum of the matrix
     var sum = 0;
     // the result of the division of the two numbers
@@ -127,9 +136,5 @@ func run_checksum_calc_even_div(input_matrix [][]int) {
         sum += div_res;
     }   //end for
 
-    // print the overall sum
-    print("Sum: ")
-    print(sum)
-    println()
-
+    return sum;
 }   //end func
