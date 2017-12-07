@@ -44,6 +44,8 @@ func main() {
             continue;
         }   //end if
 
+        // TODO: convert the input to ints
+
         run_checksum_calc(input_rows)
     }   //end for
 }   //end main
@@ -95,24 +97,41 @@ func run_checksum_calc_min_max(input []string) {
 func run_checksum_calc_even_div(input []string) {
     // store the sum of the matrix
     var sum = 0;
+    // the result of the division of the two numbers
+    var div_res = 0;
 
     // for each row of the input
     for _,row := range input {
         // split the row into its numbers
-        var numbers = strings.Fields(row);
+        var nums_str = strings.Fields(row);
+        var nums_int []int
+        // for each number in the list
+        for _, num_str := range nums_str {
+            // convert the number from string to int
+            num_int,_ := strconv.Atoi(num_str);
+            // add the number to the list of ints
+            nums_int = append(nums_int, num_int);
+        }   //end for
 
         // for each number in the row
-        for i,cur_num := range numbers {
+        for i,cur_num := range nums_int {
+
             // check if the current number is divisible (or divides) any numbers, coming after it
-            for _,next_num := range numbers[(i+1):] {
-                // if the current number DIVIDES the next number
-                if (next_num % cur_num) == 0
+            for _,next_num := range nums_int[(i+1):] {
+
+                // if the current number DIVIDES the next one
+                if (next_num % cur_num) == 0 {
+                    div_res = next_num / cur_num;
+                // if the current number IS DIVISIBLE BY the next one
+                } else if (cur_num % next_num) == 0 {
+                    div_res = cur_num / next_num;
+                }   //end if
             }   //end for
         }   //end for
 
         // add the division of the two divisible numbers from THIS row
         // to the overall sum
-        sum += (max - min)
+        sum += div_res;
     }   //end for
 
     // print the overall sum

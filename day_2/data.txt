@@ -19,5 +19,5 @@ Part I:
 
 
 Part II:
-    input: same as Part I
-    output:
+    input:  same as Part I
+    output: 312
