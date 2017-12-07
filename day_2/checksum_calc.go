@@ -11,11 +11,11 @@ import (
 func main() {
     // stores the function to run the checksum calculator
     // based on which part of the assignment is being run
-    var run_checksum_calc func([]string)
+    var run_checksum_calc func([][]int);
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // stores each row of the matrix
-    var input_rows []string
+    var input_matrix [][]int;
 
     // convert the very first input to an int and store it
     for (scanner.Scan()) {
@@ -39,14 +39,22 @@ func main() {
 
         // if the input is NOT "END"
         if strings.Compare(input, "END") != 0 {
-            // add the current input to the array
-            input_rows = append(input_rows, input)
+            // stores each line of input after it has been converted to an int
+            var row_ints []int;
+            // for each number in the input strings
+            for _,num_str := range strings.Fields(input) {
+                // convert the number to an int
+                num_int,_ := strconv.Atoi(num_str);
+                // add it to the list
+                row_ints = append(row_ints, num_int);
+            }   //end for
+
+            // add the new row to the matrix
+            input_matrix = append(input_matrix, row_ints)
             continue;
         }   //end if
 
-        // TODO: convert the input to ints
-
-        run_checksum_calc(input_rows)
+        run_checksum_calc(input_matrix)
     }   //end for
 }   //end main
 
@@ -56,22 +64,18 @@ func main() {
 //
 // Arguments:
 // input - the input to the calculator (each element in the array is a row in the matrix)
-func run_checksum_calc_min_max(input []string) {
+func run_checksum_calc_min_max(input_matrix [][]int) {
     // store the sum of the matrix
     var sum = 0;
 
     // for each row of the input
-    for _,row := range input {
-        // split the row into its numbers
-        var numbers = strings.Fields(row);
+    for _,row := range input_matrix {
         // set the initial min and max
-        min,_ := strconv.Atoi(numbers[0]);
-        max,_ := strconv.Atoi(numbers[0]);
+        var min = row[0];
+        var max = row[0];
 
-        // for each number in the list
-        for _, num := range numbers {
-            // store the current number
-            cur_num, _ := strconv.Atoi(num);
+        // for each number in the row
+        for _, cur_num := range row {
             // adjust min and max
             if cur_num < min { min = cur_num }
             if cur_num > max { max = cur_num }
@@ -94,30 +98,19 @@ func run_checksum_calc_min_max(input []string) {
 //
 // Arguments:
 // input - the input to the calculator (each element in the array is a row in the matrix)
-func run_checksum_calc_even_div(input []string) {
+func run_checksum_calc_even_div(input_matrix [][]int) {
     // store the sum of the matrix
     var sum = 0;
     // the result of the division of the two numbers
     var div_res = 0;
 
     // for each row of the input
-    for _,row := range input {
-        // split the row into its numbers
-        var nums_str = strings.Fields(row);
-        var nums_int []int
-        // for each number in the list
-        for _, num_str := range nums_str {
-            // convert the number from string to int
-            num_int,_ := strconv.Atoi(num_str);
-            // add the number to the list of ints
-            nums_int = append(nums_int, num_int);
-        }   //end for
-
+    for _,row := range input_matrix {
         // for each number in the row
-        for i,cur_num := range nums_int {
+        for i,cur_num := range row {
 
             // check if the current number is divisible (or divides) any numbers, coming after it
-            for _,next_num := range nums_int[(i+1):] {
+            for _,next_num := range row[(i+1):] {
 
                 // if the current number DIVIDES the next one
                 if (next_num % cur_num) == 0 {
