@@ -3,8 +3,8 @@ package main
 import (
     "bufio"
     "os"
-    "strings"
     "strconv"
+    "strings"
 )   //end imports
 
 
