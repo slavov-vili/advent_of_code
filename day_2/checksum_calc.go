@@ -52,7 +52,7 @@ func main() {
             }   //end for
 
             // add the new row to the matrix
-            input_matrix = append(input_matrix, row_ints)
+            input_matrix = append(input_matrix, row_ints);
             continue;
         }   //end if
 

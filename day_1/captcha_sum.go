@@ -37,9 +37,9 @@ func main() {
         var input = scanner.Text();
 
         // run the calculator and print the sum
-        var sum = run_captcha_calc(input, calc_idx)
-        print("Sum: ");
-        print(sum);
+        var sum = run_captcha_calc(input, calc_idx);
+        print("Sum: ")
+        print(sum)
         println()
     }   //end for
 }   //end main
