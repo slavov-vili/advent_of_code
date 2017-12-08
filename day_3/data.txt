@@ -1,0 +1,8 @@
+Part I:
+    input:  361527
+    output: 326
+
+
+Part II:
+    input:  
+    output: 
