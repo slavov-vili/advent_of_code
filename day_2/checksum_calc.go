@@ -2,6 +2,7 @@ package main
 
 import (
     "bufio"
+    "math"
     "os"
     "strconv"
     "strings"
@@ -19,7 +20,7 @@ func main() {
 
     // convert the very first input to an int and store it
     println("Testing Part: ")
-    for (scanner.Scan()) {
+    for scanner.Scan() {
         part,_ := strconv.Atoi(scanner.Text())
         // if an invalid part is given
         if (part < 1) || (part > 2) {
