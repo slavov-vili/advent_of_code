@@ -4,5 +4,5 @@ Part I:
 
 
 Part II:
-    input:  
-    output: 
+    input:  same as Part I
+    output: 361527
