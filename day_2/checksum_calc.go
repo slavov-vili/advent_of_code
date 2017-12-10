@@ -64,6 +64,8 @@ func main() {
         print("Sum: ")
         print(sum)
         println()
+        // clean the input matrix
+        input_matrix = [][]int{};
     }   //end for
 }   //end main
 
