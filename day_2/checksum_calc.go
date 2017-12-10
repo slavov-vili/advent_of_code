@@ -2,7 +2,6 @@ package main
 
 import (
     "bufio"
-    "math"
     "os"
     "strconv"
     "strings"
@@ -29,8 +28,11 @@ func main() {
             continue;
         }   //end if
         // store the correct function for the particular part of the assignment
-        if part == 1 { run_checksum_calc = run_checksum_calc_min_max }
-        if part == 2 { run_checksum_calc = run_checksum_calc_even_div }
+        switch part {
+        case 1: run_checksum_calc = run_checksum_calc_min_max;
+        case 2: run_checksum_calc = run_checksum_calc_even_div;
+        }   //end switch
+
         break;
     }   //end for
 
@@ -41,7 +43,7 @@ func main() {
         var input = scanner.Text();
 
         // if the input is NOT "END"
-        if strings.Compare(input, "END") != 0 {
+        if input != "END" {
             // stores each line of input after it has been converted to an int
             var row_ints []int;
             // for each number in the input strings

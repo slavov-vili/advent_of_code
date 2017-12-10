@@ -25,8 +25,10 @@ func main() {
             continue;
         }   //end if
         // store the correct function for the particular part of the assignment
-        if part == 1 { calc_idx = calc_next_idx }
-        if part == 2 { calc_idx = calc_mid_idx  }
+        switch part {
+        case 1: calc_idx = calc_next_idx;
+        case 2: calc_idx = calc_mid_idx;
+        }   //end switch
         break;
     }   //end for
 
