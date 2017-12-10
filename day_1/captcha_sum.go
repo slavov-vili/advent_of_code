@@ -28,7 +28,7 @@ func main() {
         if part == 1 { calc_idx = calc_next_idx }
         if part == 2 { calc_idx = calc_mid_idx  }
         break;
-    }   //end if
+    }   //end for
 
     // while input is being received
     println("Input:")

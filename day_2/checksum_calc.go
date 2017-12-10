@@ -32,7 +32,7 @@ func main() {
         if part == 1 { run_checksum_calc = run_checksum_calc_min_max }
         if part == 2 { run_checksum_calc = run_checksum_calc_even_div }
         break;
-    }   //end if
+    }   //end for
 
     // while input is being received
     println("Input:")
