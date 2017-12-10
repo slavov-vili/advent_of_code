@@ -3,6 +3,7 @@ package main;
 import (
     "bufio"
     "os"
+    "sort"
     "strconv"
     "strings"
 )   //end imports
@@ -30,7 +31,7 @@ func main() {
         // store the correct function for the particular part of the assignment
         switch part {
         case 1: run_passphrase_check = run_passphrase_check_same;
-        //case 2: run_passphrase_check = run_passphrase_check_same;
+        case 2: run_passphrase_check = run_passphrase_check_similar;
         }   //end switch
         break;
     }   //end for
@@ -61,7 +62,7 @@ func main() {
 
 
 
-// Checks how many passphrases from the input are valid
+// Checks how many passphrases from the input contain SAME words
 //
 // Arguments:
 // input - a list of passphrases
@@ -88,6 +89,43 @@ func run_passphrase_check_same(input []string) (count int) {
         }   //end for
         count++;
     }   //end for
+    return;
+}   //end func
 
+
+
+// Checks how many passphrases from the input contain SIMILAR words
+//
+// Arguments:
+// input - a list of passphrases
+//
+// Returns:
+// the number of valid passphrases (ones without anagrams)
+func run_passphrase_check_similar(input []string) (count int) {
+    OUTER:
+    // for each line of the input
+    for _, line := range input {
+        // get all the words from the line
+        var words = strings.Fields(line);
+        // stores the words which were already seen in this line
+        var seen = make(map[string]bool, len(words));
+        // for each word in the line
+        for _,word := range words {
+            // split the word into characters (an array of strings)
+            var word_chars = strings.Split(word, "");
+            // sort them
+            sort.Strings(word_chars)
+            // join the array to form a string again
+            var word_sorted = strings.Join(word_chars, "");
+            // if the word DOESN'T exist in the line already
+            if seen[word_sorted] != true {
+                // add it to the seen map
+                seen[word_sorted] = true;
+            } else {
+                continue OUTER;
+            }   //end if
+        }   //end for
+        count++;
+    }   //end for
     return;
 }   //end func
