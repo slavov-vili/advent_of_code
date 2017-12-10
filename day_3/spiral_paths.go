@@ -11,25 +11,6 @@ import (
 func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
-    // stores the function to run the path counter
-    // based on which part of the assignment is being run
-    var run_path_counter func(int)int;
-
-    // convert the very first input to an int and store it
-    println("Testing Part: ")
-    for scanner.Scan() {
-        part,_ := strconv.Atoi(scanner.Text())
-        // if an invalid part is given
-        if (part < 1) || (part > 2) {
-            println("Invalid part of the assignment !")
-            println("Try again: ")
-            continue;
-        }   //end if
-        // store the correct function for the particular part of the assignment
-        if part == 1 { run_path_counter = run_path_counter_manh }
-        //if part == 2 { run_checksum_calc = run_checksum_calc_even_div }
-        break;
-    }   //end if
 
     // while input is being received
     println("Input:")
@@ -38,7 +19,7 @@ func main() {
         input,_ := strconv.Atoi(scanner.Text())
 
         // run the path counter and print the required number of paths
-        var path_count = run_path_counter(input);
+        var path_count = run_path_counter_manh(input);
         print("Number of Paths: ")
         print(path_count)
         println()
