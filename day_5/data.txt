@@ -1100,4 +1100,4 @@ Part I:
 
 Part II:
     input:  same as Part I
-    output: 
+    output: 28040648

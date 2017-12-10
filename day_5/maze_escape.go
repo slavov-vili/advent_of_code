@@ -29,7 +29,7 @@ func main() {
         // store the correct function for the particular part of the assignment
         switch part {
         case 1: run_out_of_maze = run_out_of_maze_inc;
-        //case 2: run_out_of_maze = run_out_of_maze_inc;
+        case 2: run_out_of_maze = run_out_of_maze_lt_three;
         }   //end switch
         break;
     }   //end for
@@ -61,6 +61,12 @@ func main() {
 
 
 // Calculates the number of moves required to escape from the int maze
+//
+// Arguments:
+// maze - the list of integers which build up the maze
+//
+// Returns:
+// the number of steps required to escape from the maze
 func run_out_of_maze_inc(maze []int) (count int) {
     // stores the index of the current position in the maze
     var cur_idx = 0;
@@ -76,6 +82,39 @@ func run_out_of_maze_inc(maze []int) (count int) {
         // if it is INSIDE the maze
         } else {
             maze[cur_idx]++;
+            cur_idx = next_idx;
+        }   //end if
+    }   //end for
+    return;
+}   //end func
+
+
+// Calculates the number of moves required to escape from the int maze
+//
+// Arguments:
+// maze - the list of integers which build up the maze
+//
+// Returns:
+// the number of steps required to escape from the maze
+func run_out_of_maze_lt_three(maze []int) (count int) {
+    // stores the index of the current position in the maze
+    var cur_idx = 0;
+    // while the next position is in the maze
+    for {
+        // calculate the next index depending on the value in the maze
+        var next_idx = cur_idx + maze[cur_idx];
+        // increment the step counter
+        count++;
+        // if the next index is OUTSIDE the maze
+        if (next_idx < 0) || (next_idx >= len(maze)) {
+            break;
+        // if it is INSIDE the maze
+        } else {
+            if (maze[cur_idx] >= 3) {
+                maze[cur_idx]--;
+            } else {
+                maze[cur_idx]++;
+            }   //end if
             cur_idx = next_idx;
         }   //end if
     }   //end for
