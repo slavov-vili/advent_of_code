@@ -2,7 +2,6 @@ package main
 
 import (
     "bufio"
-    "fmt"
     "os"
     "strconv"
     "strings"
@@ -12,36 +11,23 @@ import (
 func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
-    // stores each row of the input
-    var input_lines []*Program;
-    // stores which part of the assignment is being tested
-    var part int
-
-    // convert the very first input to an int and store it
-    println("Testing Part: ")
-    for scanner.Scan() {
-        part,_ = strconv.Atoi(scanner.Text())
-        // if an invalid part is given
-        if (part < 1) || (part > 2) {
-            println("Invalid part of the assignment !")
-            println("Try again: ")
-            continue;
-        }   //end if
-        break;
-    }   //end for
+    // maps the name of each program from the input to a pointer to the actual program
+    var input = make(map[string]*Program);
 
     // while input is being received
     println("Input:")
     for scanner.Scan() {
-        // store the current input
-        var input = scanner.Text();
+        // store the current input line
+        var input_line = scanner.Text();
 
-        // if the input is NOT "END"
-        if input != "END" {
-            // stores the list of programs being held by the current one
+        // if the input line is NOT "END"
+        if (input_line != "END") {
+            // stores the names of programs being held by the current one
             var holding []string;
+
             // separate the name and weight from the list of programs being held
-            var parts = strings.Split(input, "->");
+            var parts = strings.Split(input_line, "->");
+
             // separate the name from the weight
             var name_weight = strings.Fields(parts[0]);
             var name        = strings.TrimSpace(name_weight[0]);
@@ -63,26 +49,20 @@ func main() {
                 holding[len(holding)-1] = strings.TrimSpace(holding[len(holding)-1]);
             }   //end if
 
-            // add the new input to the list
-            input_lines = append(input_lines, NewProgram(name, weight_int, holding));
+            // add the new input line to the map
+            input[name] = NewProgram(name, weight_int, holding);
             continue;
         }   //end if
 
-        // run the program depending on which part is being tested
-        switch part {
-        case 1: {
-            // run the tower builder and print the name of the bottom program
-            var bottom_name = run_tower_builder_find_bottom(input_lines);
-            print("Bottom: ")
-            print(bottom_name)
-            println()
-        }   //end case
-        //case 2: {
-        
-        //}   //end case
-        }   //end switch
+        // run the tower builder
+        var bottom = run_tower_builder_find_bottom(input);
+        // print the name of the bottom program
+        print("Bottom: ")
+        print(bottom.name)
+        println()
+
         // clean the input lines
-        input_lines = []*Program{};
+        input = make(map[string]*Program);
     }   //end for
 }   //end main
 
@@ -91,12 +71,12 @@ func main() {
 // Runs the tower builder and finds the name of the bottom of the tower
 //
 // Arguments:
-// input - the lines of the input (the information about each program)
+// input - a map between program name and the program information
 //
 // Returns:
 // the name of the bottom of the tower
-func run_tower_builder_find_bottom(input []*Program) string {
-    var bottom_name string;
+func run_tower_builder_find_bottom(input map[string]*Program) *Program {
+    var bottom *Program;
     // maps the name of a Program to:
     //  1 - if it IS NOT being held by any other program
     //  0 - if it hasn't been seen yet
@@ -104,14 +84,14 @@ func run_tower_builder_find_bottom(input []*Program) string {
     var potential_bottoms = make(map[string]int);
 
     // for each program in the input
-    for _,prog := range input {
+    for prog_name,prog := range input {
         // if a program isn't holding anything then it cannot be at the bottom
         if len(prog.holding) == 0 { continue; }
 
         // if the program hasn't been seen before
-        if potential_bottoms[prog.name] == 0 {
+        if potential_bottoms[prog_name] == 0 {
             // add the current program as a possible bottom
-            potential_bottoms[prog.name] = 1;
+            potential_bottoms[prog_name] = 1;
         }   //end if
 
         // for each program being held by this one
@@ -124,10 +104,10 @@ func run_tower_builder_find_bottom(input []*Program) string {
     // find the program name in the map, whose value remained 1 (potential bottom)
     for key,val := range potential_bottoms {
         if val == 1 {
-            bottom_name = key;
+            bottom = input[key];
         }   //end if
     }   //end for
-    return bottom_name;
+    return bottom;
 }   //end func
 
 
