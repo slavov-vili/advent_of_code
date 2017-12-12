@@ -5,4 +5,4 @@ Part I:
 
 Part II:
     input:  same as Part I
-    output: 
+    output: 268

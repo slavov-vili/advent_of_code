@@ -2,6 +2,7 @@ package main
 
 import (
     "bufio"
+    "fmt"
     "os"
     "strconv"
     "strings"
@@ -75,7 +76,7 @@ func main() {
         // print the correct weight for the wrong node
         print("The correct weight for tower '")
         print(wrong_name)
-        print("' is:")
+        print("' is: ")
         print(correct_weight)
         println()
 
@@ -114,47 +115,50 @@ func run_tower_stabilizer(total_weights map[string]int, input map[string]*Progra
     // for each program being held by the current one
     for _, held_name := range cur_prog.holding {
         // recursively run the stabilizer
-        _, correct_weight := run_tower_stabilizer(total_weights, input, input[held_name]);
+        // get the name of the tower with the possibly wrong weight
+        // and the correct weight
+        possibly_wrong_name, correct_weight := run_tower_stabilizer(total_weights, input, input[held_name]);
 
         // if the held tower is NOT stable
-        if total_weights[held_name] != correct_weight {
+        if total_weights[possibly_wrong_name] != correct_weight {
             // return the name of the program which is unstable
-            return held_name, correct_weight;
+            return possibly_wrong_name, correct_weight;
         // if it IS stable
         } else {
             // map the program's weight to its name
-            var held_weight = total_weights[held_name];
-            held_weights[held_weight] = append(held_weights[held_weight], held_name);
+            var held_weight = total_weights[possibly_wrong_name];
+            held_weights[held_weight] = append(held_weights[held_weight], possibly_wrong_name);
         }   //end else
     }   //end for
 
+    fmt.Println(held_weights)
+
+    var cur_prog_total_weight = cur_prog.weight;
     // for each weight and its list of program names
     for held_weight, held_programs := range held_weights {
-        switch len(held_programs) {
-        // if a weight has been encountered three times
+        cur_prog_total_weight += held_weight * len(held_programs);
+        // if a weight has been encountered ALL the time
         // then the current tower is stable
-        case 3: {
-            var cur_prog_total_weight = (3 * held_weight) + cur_prog.weight;
-            // add the current program's total weight to the map
-            total_weights[cur_prog.name] = cur_prog_total_weight;
+        if len(held_programs) == len(cur_prog.holding) {
             // set the name to be the name of the current program
             name = cur_prog.name;
             // set the program as stable
             correct_weight = cur_prog_total_weight;
-        }   //end case
-        // if a weight has been encountered twice
-        // then the current tower is NOT stable and the correct weight of all towers being held should be
-        case 2: {
-            correct_weight = held_weight;
-        }   //end case
-        // if a weight has been encountered once
-        // then the current tower is NOT stable and this weight is wrong
-        case 1: {
-            // set the name to be the name of the program, whose weight is wrong
-            name = held_weights[held_weight][0];
-        }   //end case
-        }   //end switch
+        } else {
+            // if a weight has been encountered once
+            // then the current tower is NOT stable and this weight is wrong
+            if len(held_programs) == 1 {
+                // set the name to be the name of the program, whose weight is wrong
+                name = held_programs[0];
+            // if a weight has been encountered ALMOST always
+            // then the current tower is NOT stable and the correct weight of all towers being held should be
+            } else {
+                correct_weight = held_weight;
+            }   //end if
+        }   //end if
     }   //end for
+
+    total_weights[cur_prog.name] = cur_prog_total_weight;
 
     return;
 }   //end func
