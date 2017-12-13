@@ -2,6 +2,7 @@ package main
 
 import (
     "bufio"
+    "fmt"
     "os"
     "strings"
 )   //end imports
@@ -32,9 +33,9 @@ func run_group_counter(group_contents []string, cur_group_base_score int) (total
     total_score = cur_group_base_score;
 
     // if the group only contains trash (or contains nothing)
-    if (len(group_contents) == 0) || (is_trash(group_contents) == true) {
-        return;
-    } else {
+    //if (len(group_contents) == 0) || (is_trash(group_contents) == true) {
+        //return;
+    //} else {
         var (
             // stores the indices of characters, which begin groups
             group_starts = make([]int, 0);
@@ -43,43 +44,46 @@ func run_group_counter(group_contents []string, cur_group_base_score int) (total
 
         // for each character in the contents
         for i, char := range group_contents {
-        switch {
-        // if the character is the beginning of trash
-        // and it is outside of trash
-        case (char == "<") && (trash_started == false): {
-            // tell the program, that trash content has started
-            trash_started = true;
-        }   //end case
-        // if the character is the un-escaped end of trash
-        case (char == ">") &&
-             (is_escaped(group_contents, i) == false): {
-            // tell the program, that trash content has ended
-            trash_started = false;
-        }   //end case
-        // if the character is the beginning of a group
-        // and it is outside trash
-        case (char == "{") && (trash_started == false): {
-            // save the starting index of the group
-            group_starts = append(group_starts, i);
-        }   //end case
-        // if the character is the end of a group
-        // and it is outside trash
-        case (char == "}") && (trash_started == false): {
-            // if only one group has been started
-            if len(group_starts) == 1 {
-                var last_group_start_idx = group_starts[len(group_starts) - 1];
-                // recurse down the group's contents
-                // get the group's total score and add it to the total
-                total_score += run_group_counter(group_contents[(last_group_start_idx + 1) : i],
-                                                 (cur_group_base_score + 1));
-            }  //end if
+            switch {
+            // if the character is the beginning of trash
+            // and it is outside of trash
+            case (char == "<") && (trash_started == false): {
+                // tell the program, that trash content has started
+                trash_started = true;
+            }   //end case
+            // if the character is the un-escaped end of trash
+            case (char == ">") &&
+                 (is_escaped(group_contents, i) == false): {
+                // tell the program, that trash content has ended
+                trash_started = false;
+            }   //end case
+            // if the character is the beginning of a group
+            // and it is outside trash
+            case (char == "{") && (trash_started == false): {
+                fmt.Println("Opening group at '", i, "'")
+                // save the starting index of the group
+                group_starts = append(group_starts, i);
+            }   //end case
+            // if the character is the end of a group
+            // and it is outside trash
+            case (char == "}") && (trash_started == false): {
+                fmt.Println("Closing group at '", i, "'")
+                // if only one group has been started
+                //if len(group_starts) == 1 {
+                    //var last_group_start_idx = group_starts[len(group_starts) - 1];
+                    //// recurse down the group's contents
+                    //// get the group's total score and add it to the total
+                    //total_score += run_group_counter(group_contents[(last_group_start_idx + 1) : i],
+                                                     //(cur_group_base_score + 1));
+                //}  //end if
 
-            // close the last opened group
-            group_starts = group_starts[:(len(group_starts)-1)];
-        }   //end case
-        }   //end switch
+                total_score += (len(group_starts) + 1);
+                // close the last opened group
+                group_starts = group_starts[:(len(group_starts)-1)];
+            }   //end case
+            }   //end switch
         }   //end for
-    }   //end if
+    //}   //end if
     return;
 }   //end func
 
