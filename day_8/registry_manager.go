@@ -2,7 +2,6 @@ package main
 
 import (
     "bufio"
-    "fmt"
     "os"
     "strconv"
     "strings"
@@ -41,7 +40,7 @@ func main() {
 
             // if the condition is true
             if check_condition(registries, operand1, log_op, operand2) == true {
-                // update the registry value
+                // calculate the new value of the registry
                 var new_reg_value = calc_new_reg_value(registries[reg_name], action, argument);
                 registries[reg_name] = new_reg_value;
                 if new_reg_value > max_value_ever {
@@ -58,8 +57,6 @@ func main() {
                 max_value_end = reg_value;
             }   //end if
         }   //end for
-
-        fmt.Println(registries)
 
         // print the maximum value in the registries
         print("Max value at the end: ")
@@ -96,8 +93,8 @@ func check_condition(registries map[string]int, reg_name string, log_op string, 
     case "!=": result = (reg_value != value);
     case ">=": result = (reg_value >= value);
     case "<=": result = (reg_value <= value);
-    case ">":  result = (reg_value > value);
-    case "<":  result = (reg_value < value);
+    case ">":  result = (reg_value >  value);
+    case "<":  result = (reg_value <  value);
     }   //end switch
     return;
 }   //end func

@@ -1,8 +1,8 @@
 Part I:
     input:  see file "input_1.txt"
-    output: 
+    output: 6343
 
 
 Part II:
     input:  same as Part I
-    output: 
+    output: 7184
