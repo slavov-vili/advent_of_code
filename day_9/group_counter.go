@@ -27,8 +27,6 @@ func main() {
 
 func run_group_counter(input string) (score int) {
         // counts how many groups have been opened
-        var total_groups_started, total_groups_closed int;
-        var total_trashes_started, total_trashes_closed int;
         var groups_started int;
         var trash_has_started bool;
 
@@ -40,25 +38,21 @@ func run_group_counter(input string) (score int) {
             case (char == '<') && (trash_has_started == false): {
                 // tell the program, that trash content has started
                 trash_has_started = true;
-                total_trashes_started++;
             }   //end case
             // if the character is the un-escaped end of trash
             case (char == '>') && (is_escaped(input, i) == false): {
                 // tell the program, that trash content has ended
                 trash_has_started = false;
-                total_trashes_closed++;
             }   //end case
             // if the character is the beginning of a group
             // and it is outside trash
             case (char == '{') && (trash_has_started == false): {
-                total_groups_started++;
                 // save the starting index of the group
                 groups_started++;
             }   //end case
             // if the character is the end of a group
             // and it is outside trash
             case (char == '}') && (trash_has_started == false): {
-                total_groups_closed++;
                 score += groups_started;
                 // close the last opened group
                 groups_started--;
