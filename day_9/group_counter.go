@@ -9,7 +9,8 @@ import (
 func main() {
     var args = os.Args;
 
-    // store the input
+    // read the input from the file given as an argument
+    // !!! HAD TO USE FILE, BECAUSE INPUT IS > DEFAULT STDIN BUFFER SIZE (4096) !!!
     var input,read_err = ioutil.ReadFile(args[1]);
     if read_err != nil {
         println("ERROR: ", read_err.Error())
