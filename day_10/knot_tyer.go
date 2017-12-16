@@ -33,7 +33,8 @@ func main() {
     println("Input:")
     for scanner.Scan() {
         // store the input
-        var input = strings.Split(scanner.Text(), ",");
+        var input = scanner.Text();
+        ;
 
         // make the rope, where the knots will be made
         var rope_size = 256;
@@ -48,10 +49,11 @@ func main() {
             case 1: {
                 var cur_pos = 0;
                 var skip_size = 0;
+                var input_split = strings.Split(input, ",");
 
                 // convert the input to integers
-                var input_int = make([]int, len(input));
-                for i, str := range input {
+                var input_int = make([]int, len(input_split));
+                for i, str := range input_split {
                     input_int[i],_ = strconv.Atoi(str);
                 }   //end for
                 
@@ -62,13 +64,54 @@ func main() {
                 println("current position: ", cur_pos)
                 println("skip size: ",        skip_size)
             }   //end case
+            // if part 2 is being run
             case 2: {
-                //var cur_pos = 0;
-                //var skip_size = 0;
+                // the size of the blocks used when making the hash denser
+                var block_size = 16;
+                var cur_pos = 0;
+                var skip_size = 0;
+                var length_suffix = []int{17, 31, 73, 47, 23};
+                // stores the final result of the hashing algorithm
+                var knot_hash = "";
             
+                // convert the input to integers based on ASCII codes
+                var input_int = make([]int, len(input));
+                // for each character in the input
+                for i, char := range input {
+                    // convert the character to its ASCII code
+                    input_int[i] = int(char);
+                }   //end for
+
+                // after the input is done, add the standard length suffix
+                input_int = append(input_int, length_suffix...);
+
+                // run 64 rounds of the hashing
+                for i:= 0; i<64; i++ {
+                    rope, cur_pos, skip_size = run_knot_tyer(rope, input_int, cur_pos, skip_size);
+                }   //end for
+
+                // make the hash denser
+                rope = densen_hash_xor(rope, block_size);
+
+                // for all numbers in the array
+                for _, num_int := range rope {
+                    // get the hexadecimal representation of the number as a STRING
+                    var num_hex = fmt.Sprintf("%x", num_int);
+                    // if the result is a single value
+                    if len(num_hex) < 2 {
+                        // prepend a 0 to the hexadecimal code
+                        num_hex = "0" + num_hex;
+                    }   //end if
+
+                    knot_hash += num_hex;
+                }   //end for
+
+                fmt.Println("Knot hash: ", knot_hash)
             }   //end case
         }   //end switch
+
     }   //end for
+
 }   //end main
 
 
@@ -134,5 +177,38 @@ func reverse_next_n(arr []int, cur_pos int, n int) {
     for i, idx := range reverse_indices {
         arr[idx] = reverse_values[i];
     }   //end for
+    return;
+}   //end func
+
+
+
+// makes a sparse hash denser using bitwise XOR on 'block_size'-long blocks
+func densen_hash_xor(sparse_hash []int, block_size int) (dense_hash []int) {
+    // stores the starting position of the current block
+    var block_start = 0;
+
+    // for each block in the sparse hash
+    for block_start < len(sparse_hash) {
+        var block_end = block_start + block_size;
+        var cur_block []int;
+        // stores the value of the XOR'd block
+        var block_xor   = 0;
+
+        // if the block ends inside the slice
+        if block_end < len(sparse_hash) {
+            cur_block = sparse_hash[block_start : block_end];
+        } else {
+            cur_block = sparse_hash[block_start:];
+        }   //end if
+
+        // for each value in the current block
+        for _, val := range cur_block {
+            block_xor ^= val;
+        }   //end for
+
+        dense_hash = append(dense_hash, block_xor)
+        block_start += block_size;
+    }   //end for
+
     return;
 }   //end func
