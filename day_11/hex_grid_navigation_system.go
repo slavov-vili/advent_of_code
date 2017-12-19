@@ -19,32 +19,45 @@ func main() {
     }   //end if
 
     // store the initial path through the grid (remove the 'newline' symbol)
-    var path    = strings.Split(string(input[:(len(input) - 1)]), ",");
-    //var path    = strings.Split("n,ne,s", ",");
+    var og_path = strings.Split(string(input[:(len(input) - 1)]), ",");
+    //og_path = strings.Split("se,sw,se,sw,sw", ",");
+    // store the temporary path (changes during path optimization)
+    //var path    = strings.Split(string(input[:(len(input) - 1)]), ",");
+
+
+    // PART I
+    //path = optimize_path(path);
+    //println("Total moves needed:", len(path))
+
+
+    // PART II
+    var furthest_away = calc_max_dist(og_path);
+    println("At some point, the kid was '", furthest_away, "' steps away from the starting point")
+}   //end main
+
+
+
+// optimizes the given path
+// returns the fully optimized path
+func optimize_path(path []string) []string {
     var prev_path_len = 0;
     var cur_path_len  = len(path);
-
     // while differences are being made to the paths
     for prev_path_len != cur_path_len {
         // optimize the path
-        path = optimize_path(path);
+        path = run_path_optimization(path);
         //fmt.Println("Path: ", path)
         // reset the lengths of the path
         prev_path_len = cur_path_len;
         cur_path_len = len(path);
     }   //end for
     //fmt.Println("Final Path: ", path)
+    return path;
+}   //end func
 
-    print("Total moves needed: ")
-    print(len(path))
-    println()
-}   //end main
-
-
-
-// tries to optimize the given path
+// runs a single round of path optimization
 // returns the optimized path
-func optimize_path(path []string) (path_optimized []string) {
+func run_path_optimization(path []string) (path_optimized []string) {
     // iterate over the path
     for i := 0; i < len(path); i++ {
         var cur_step = path[i]
@@ -110,8 +123,6 @@ func optimize_path(path []string) (path_optimized []string) {
     return;
 }   //end func
 
-
-
 // attempts to reduce the 2 steps into 1
 func reduce_steps(step1, step2 string) (new_steps []string) {
     switch {
@@ -146,8 +157,6 @@ func reduce_steps(step1, step2 string) (new_steps []string) {
     return;
 }   //end func
 
-
-
 // gets the length of the path, excluding reduced steps
 func get_real_length(path []string) int {
     var real_length = 0;
@@ -157,4 +166,124 @@ func get_real_length(path []string) int {
         }   //end if
     }   //end for
     return real_length;
+}   //end func
+
+
+
+// follows the path and calculates what the farthest distance from the starting point was
+func calc_max_dist(path []string) int {
+    // positive latitude = above starting point
+    // negative latitude = below starting point
+    var latitude  = 0.0;
+    // positive longitude = to the right of starting point
+    // negative longitude = to the left  of starting point
+    var longitude = 0.0;
+    var cur_dist  = 0;
+    var max_dist  = 0;
+
+    // for each step of the path
+    for _, step := range path {
+        var position = calc_position(latitude, longitude);
+        var progress = calc_step_progress(position, step);
+
+        cur_dist += progress;
+        //println("Position:", position)
+        //println("Step:",     step)
+        //println("Progress:", progress)
+        //println("Distance:", cur_dist)
+        //println()
+        if cur_dist > max_dist { max_dist = cur_dist }
+
+        latitude  = recalc_latitude(latitude,   step);
+        longitude = recalc_longitude(longitude, step);
+    }   //end for
+    return max_dist;
+}   //end func
+
+// calculates the progress made by doing this step
+// by taking into account which direction the step is in
+// and the current position of the child relative to the starting point
+func calc_step_progress(position, step string) (progress int) {
+    switch {
+        case (position == "zero"):                                   progress =   1;
+
+        case (step == "n")  && strings.HasPrefix(position, "north"): progress =   1;
+        case (step == "n")  && strings.HasPrefix(position, "south"): progress = (-1);
+
+        case (step == "s")  && strings.HasPrefix(position, "north"): progress = (-1);
+        case (step == "s")  && strings.HasPrefix(position, "south"): progress =   1;
+
+        case (step == "ne") && (position == "north"):                progress =   1;
+        case (step == "ne") && (position == "northeast"):            progress =   1;
+        case (step == "ne") && (position == "east"):                 progress =   1;
+        case (step == "ne") && (position == "southwest"):            progress = (-1);
+        case (step == "ne") && (position == "west"):                 progress = (-1);
+
+        case (step == "se") && (position == "south"):                progress =   1;
+        case (step == "se") && (position == "southeast"):            progress =   1;
+        case (step == "se") && (position == "east"):                 progress =   1;
+        case (step == "se") && (position == "west"):                 progress = (-1);
+        case (step == "se") && (position == "northwest"):            progress = (-1);
+
+        case (step == "sw") && (position == "south"):                progress =   1;
+        case (step == "sw") && (position == "southwest"):            progress =   1;
+        case (step == "sw") && (position == "west"):                 progress =   1;
+        case (step == "sw") && (position == "northeast"):            progress = (-1);
+        case (step == "sw") && (position == "east"):                 progress = (-1);
+
+        case (step == "nw") && (position == "north"):                progress =   1;
+        case (step == "nw") && (position == "northwest"):            progress =   1;
+        case (step == "nw") && (position == "west"):                 progress =   1;
+        case (step == "nw") && (position == "east"):                 progress = (-1);
+        case (step == "nw") && (position == "southeast"):            progress = (-1);
+
+        default: progress = 0;
+    }   //end switch
+    return;
+}   //end func
+
+// gets the position based on latitude and longitude
+// the position is a string, representing the relation
+// to the starting point
+func calc_position(latitude, longitude float64) (position string) {
+    switch {
+        case (latitude == 0) && (longitude == 0): position = "zero";
+
+        case (latitude > 0)  && (longitude == 0): position = "north";
+        case (latitude < 0)  && (longitude == 0): position = "south";
+        case (latitude == 0) && (longitude > 0):  position = "east";
+        case (latitude == 0) && (longitude < 0):  position = "west";
+
+        case (latitude > 0) && (longitude > 0):   position = "northeast";
+        case (latitude > 0) && (longitude < 0):   position = "northwest";
+        case (latitude < 0) && (longitude > 0):   position = "southeast";
+        case (latitude < 0) && (longitude < 0):   position = "southwest";
+    }   //end switch
+    return;
+}   //end func
+
+// recalculates the latitude given the step which is being taken
+func recalc_latitude(old_latitude float64, step string) (new_latitude float64) {
+    switch step {
+        case "nw": new_latitude = old_latitude + 0.5;
+        case "n":  new_latitude = old_latitude + 1;
+        case "ne": new_latitude = old_latitude + 0.5;
+        case "se": new_latitude = old_latitude - 0.5;
+        case "s":  new_latitude = old_latitude - 1;
+        case "sw": new_latitude = old_latitude - 0.5;
+    }   //end switch
+    return;
+}   //end func
+
+// recalculates the longitude given the step which is being taken
+func recalc_longitude(old_longitude float64, step string) (new_longitude float64) {
+    switch step {
+        case "ne": new_longitude = old_longitude + 1;
+        case "se": new_longitude = old_longitude + 1;
+        case "nw": new_longitude = old_longitude - 1;
+        case "sw": new_longitude = old_longitude - 1;
+
+        default: new_longitude = old_longitude;
+    }   //end switch
+    return
 }   //end func
