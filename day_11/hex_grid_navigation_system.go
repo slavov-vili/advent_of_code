@@ -4,6 +4,7 @@ import (
     //"fmt"
     "io/ioutil"
     "log"
+    "math"
     "os"
     "strings"
 )   //end imports
@@ -20,14 +21,13 @@ func main() {
 
     // store the initial path through the grid (remove the 'newline' symbol)
     var og_path = strings.Split(string(input[:(len(input) - 1)]), ",");
-    //og_path = strings.Split("se,sw,se,sw,sw", ",");
     // store the temporary path (changes during path optimization)
-    //var path    = strings.Split(string(input[:(len(input) - 1)]), ",");
+    var path    = strings.Split(string(input[:(len(input) - 1)]), ",");
 
 
     // PART I
-    //path = optimize_path(path);
-    //println("Total moves needed:", len(path))
+    path = optimize_path(path);
+    println("Total moves needed:", len(path))
 
 
     // PART II
@@ -183,83 +183,35 @@ func calc_max_dist(path []string) int {
 
     // for each step of the path
     for _, step := range path {
-        var position = calc_position(latitude, longitude);
-        var progress = calc_step_progress(position, step);
-
-        cur_dist += progress;
-        //println("Position:", position)
-        //println("Step:",     step)
-        //println("Progress:", progress)
-        //println("Distance:", cur_dist)
-        //println()
-        if cur_dist > max_dist { max_dist = cur_dist }
-
+        // calculate the latitude and longitude after the step
         latitude  = recalc_latitude(latitude,   step);
         longitude = recalc_longitude(longitude, step);
+
+        cur_dist  = calc_dist(latitude, longitude);
+
+        //println("Step",        step)
+        //println("Latitude:",   latitude)
+        //println("Longitude: ", longitude)
+        //println("Distance:",   cur_dist)
+        //println()
+
+        if cur_dist > max_dist { max_dist = cur_dist }
     }   //end for
     return max_dist;
 }   //end func
 
-// calculates the progress made by doing this step
-// by taking into account which direction the step is in
-// and the current position of the child relative to the starting point
-func calc_step_progress(position, step string) (progress int) {
+// calculates the distance from the center given the latitude and longitude of the current position
+func calc_dist(latitude float64, longitude float64) int {
+    var result = 0.0;
     switch {
-        case (position == "zero"):                                   progress =   1;
+        // if the current position is straight to the left of the starting one
+        case latitude  == 0.0: result = 2 * longitude;
+        // if the current position is straight on top of the starting one
+        case longitude == 0.0: result = latitude;
 
-        case (step == "n")  && strings.HasPrefix(position, "north"): progress =   1;
-        case (step == "n")  && strings.HasPrefix(position, "south"): progress = (-1);
-
-        case (step == "s")  && strings.HasPrefix(position, "north"): progress = (-1);
-        case (step == "s")  && strings.HasPrefix(position, "south"): progress =   1;
-
-        case (step == "ne") && (position == "north"):                progress =   1;
-        case (step == "ne") && (position == "northeast"):            progress =   1;
-        case (step == "ne") && (position == "east"):                 progress =   1;
-        case (step == "ne") && (position == "southwest"):            progress = (-1);
-        case (step == "ne") && (position == "west"):                 progress = (-1);
-
-        case (step == "se") && (position == "south"):                progress =   1;
-        case (step == "se") && (position == "southeast"):            progress =   1;
-        case (step == "se") && (position == "east"):                 progress =   1;
-        case (step == "se") && (position == "west"):                 progress = (-1);
-        case (step == "se") && (position == "northwest"):            progress = (-1);
-
-        case (step == "sw") && (position == "south"):                progress =   1;
-        case (step == "sw") && (position == "southwest"):            progress =   1;
-        case (step == "sw") && (position == "west"):                 progress =   1;
-        case (step == "sw") && (position == "northeast"):            progress = (-1);
-        case (step == "sw") && (position == "east"):                 progress = (-1);
-
-        case (step == "nw") && (position == "north"):                progress =   1;
-        case (step == "nw") && (position == "northwest"):            progress =   1;
-        case (step == "nw") && (position == "west"):                 progress =   1;
-        case (step == "nw") && (position == "east"):                 progress = (-1);
-        case (step == "nw") && (position == "southeast"):            progress = (-1);
-
-        default: progress = 0;
+    default: result = math.Abs(latitude) + math.Abs((longitude));
     }   //end switch
-    return;
-}   //end func
-
-// gets the position based on latitude and longitude
-// the position is a string, representing the relation
-// to the starting point
-func calc_position(latitude, longitude float64) (position string) {
-    switch {
-        case (latitude == 0) && (longitude == 0): position = "zero";
-
-        case (latitude > 0)  && (longitude == 0): position = "north";
-        case (latitude < 0)  && (longitude == 0): position = "south";
-        case (latitude == 0) && (longitude > 0):  position = "east";
-        case (latitude == 0) && (longitude < 0):  position = "west";
-
-        case (latitude > 0) && (longitude > 0):   position = "northeast";
-        case (latitude > 0) && (longitude < 0):   position = "northwest";
-        case (latitude < 0) && (longitude > 0):   position = "southeast";
-        case (latitude < 0) && (longitude < 0):   position = "southwest";
-    }   //end switch
-    return;
+    return int(result);
 }   //end func
 
 // recalculates the latitude given the step which is being taken
@@ -278,10 +230,10 @@ func recalc_latitude(old_latitude float64, step string) (new_latitude float64) {
 // recalculates the longitude given the step which is being taken
 func recalc_longitude(old_longitude float64, step string) (new_longitude float64) {
     switch step {
-        case "ne": new_longitude = old_longitude + 1;
-        case "se": new_longitude = old_longitude + 1;
-        case "nw": new_longitude = old_longitude - 1;
-        case "sw": new_longitude = old_longitude - 1;
+        case "ne": new_longitude = old_longitude + 0.5;
+        case "se": new_longitude = old_longitude + 0.5;
+        case "nw": new_longitude = old_longitude - 0.5;
+        case "sw": new_longitude = old_longitude - 0.5;
 
         default: new_longitude = old_longitude;
     }   //end switch
