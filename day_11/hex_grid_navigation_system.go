@@ -204,10 +204,10 @@ func calc_max_dist(path []string) int {
 func calc_dist(latitude float64, longitude float64) int {
     var result = 0.0;
     switch {
-        // if the current position is straight to the left of the starting one
-        case latitude  == 0.0: result = 2 * longitude;
-        // if the current position is straight on top of the starting one
-        case longitude == 0.0: result = latitude;
+        // if the current position is straight horizontal to the starting one
+        case latitude  == 0.0: result = math.Abs(2 * longitude);
+        // if the current position is straight vertical to the starting one
+        case longitude == 0.0: result = math.Abs(latitude);
 
     default: result = math.Abs(latitude) + math.Abs((longitude));
     }   //end switch
