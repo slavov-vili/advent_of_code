@@ -14,7 +14,7 @@ func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // maps a program ID to the IDs of all programs it communicates with
-    var pipes = make(map[int][]int, 0);
+    var pipes  = make(map[int][]int, 0);
 
     // while input is being received
     println("Input:")
@@ -39,16 +39,49 @@ func main() {
             continue;
         }   //end if
 
+
+        // PART I
         // get the IDs of all programs, reacheable from the one with ID '0'
-        var reacheable = make([]int, 0);
-        reacheable = get_pipe_span_of(pipes, 0, reacheable);
+        var reacheable_from_0 = make([]int, 0);
+        reacheable_from_0 = get_pipe_span_of(pipes, 0, reacheable_from_0);
         print("Reacheable: [")
-        for _, id := range reacheable {
+        for _, id := range reacheable_from_0 {
             print(id)
         }   //end for
         println("]")
         print("Count: ")
-        println(len(reacheable))
+        println(len(reacheable_from_0))
+
+
+        // PART II
+        // stores all groups of programs found in the pipeline
+        var groups = append([][]int{}, reacheable_from_0);
+
+        // for each program id in the pipes
+        for id, _ := range pipes {
+            var is_in_a_group = false;
+            // for each group
+            for _, group := range groups {
+                // search for the program id in the group
+                var idx = sort.SearchInts(group, id);
+
+                // if the id IS in the group
+                if (idx < len(group)) && (id == group[idx]) {
+                    is_in_a_group = true;
+                    break;
+                }   //end if
+            }   //end for
+
+            // if the program CANNOT be found in any of the groups
+            if is_in_a_group == false {
+                    // generate the group of the program
+                    groups = append(groups, get_pipe_span_of(pipes, id, []int{}));
+            }   //end if
+        }   //end for
+
+        print("There are '", len(groups), "' groups")
+
+
         // clean the pipes map
         pipes = make(map[int][]int, 0);
     }   //end for
