@@ -1,0 +1,8 @@
+Part I:
+    input:  see file "input_1.txt"
+    output: 2384
+
+
+Part II:
+    input:  same as Part I
+    output: 
