@@ -53,6 +53,11 @@ func main() {
         var escape_score = try_to_escape(layers);
         println("Escape score:", escape_score)
 
+        // PART II
+        // calculate the delay needed to go through the security
+        var delay = delay_infiltration(layers);
+        println("Delay needed for freedom:", delay)
+
         // clear the layers list
         layers = make([]*Layer, 0);
     }   //end for
@@ -63,13 +68,13 @@ func main() {
 // moves through the layers updating their scanners and calculating the escape score
 // (how many times it was detected)
 func try_to_escape(layers []*Layer) (score int) {
-    // !! THE PACKAGE ALWAYS MOVES ALONG THE BOTTOM OF THE LAYER !!!
-    const bottom = 0;
+    // !! THE PACKAGE ALWAYS MOVES ALONG THE TOP OF THE LAYER !!!
+    const top = 0;
 
     // move the package along the layers
     for _, layer := range layers {
-        // if the scanner was at the bottom before the package was moved
-        if layer.scanner_at == bottom {
+        // if the scanner was at the top before the package was moved
+        if layer.scanner_at == top {
             println("Detected at", layer.id)
             // !!! WE WERE DETECTED !!!
             // update the score
@@ -80,6 +85,38 @@ func try_to_escape(layers []*Layer) (score int) {
         for _, layer2 := range layers {
             layer2.move_scanner();
         }   //end for
+    }   //end for
+
+    return;
+}   //end func
+
+
+// delays the start of the package until it is safe to move
+func delay_infiltration(layers []*Layer) (delay int) {
+    // !! THE PACKAGE ALWAYS MOVES ALONG THE TOP OF THE LAYER !!!
+    const top = 0;
+
+    OUTER:
+    for {
+        // the index of the current picosecond
+        var cur_pic_idx = delay;
+
+        // for each layer of security
+        for _, layer := range layers {
+            // check if we would get caught if we tried to enter the layer at the current picosecond
+            var would_get_caught = calc_will_be_at_top(layer.size, cur_pic_idx);
+
+            // if we would get caught, it means we need to delay more
+            if would_get_caught {
+                delay++;
+                continue OUTER;
+            // if we wouldn't get caught, go forward 1 picosecond
+            } else {
+                cur_pic_idx++;
+            }   //end if
+        }   //end for
+
+        break;
     }   //end for
 
     return;
@@ -134,5 +171,18 @@ func (layer *Layer) move_scanner() (new_position int) {
         default: new_position = (-1);
     }   //end switch
     layer.scanner_at = new_position;
+    return;
+}   //end func
+
+
+
+// calculates whether the scanner will be at the top of a layer with a given size
+// at the specified picosecond
+func calc_will_be_at_top(layer_size, picosecond_idx int) (at_top bool) {
+    if layer_size == 0 {
+        at_top = false;
+    } else {
+        at_top = (picosecond_idx % (2 * (layer_size - 1))) == 0;
+    }   //end if
     return;
 }   //end func
