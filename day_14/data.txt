@@ -1,6 +1,6 @@
 Part I:
-    input:  see file "input_1.txt"
-    output: 
+    input:  wenycdww
+    output: 8226
 
 
 Part II:
