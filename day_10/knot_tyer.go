@@ -33,7 +33,6 @@ func main() {
     for scanner.Scan() {
         // store the input
         var input = scanner.Text();
-        ;
 
         // make the rope, where the knots will be made
         var rope_size = 256;
@@ -65,45 +64,7 @@ func main() {
             }   //end case
             // if part 2 is being run
             case 2: {
-                // the size of the blocks used when making the hash denser
-                var block_size = 16;
-                var cur_pos = 0;
-                var skip_size = 0;
-                var length_suffix = []int{17, 31, 73, 47, 23};
-                // stores the final result of the hashing algorithm
-                var knot_hash = "";
-            
-                // convert the input to integers based on ASCII codes
-                var input_int = make([]int, len(input));
-                // for each character in the input
-                for i, char := range input {
-                    // convert the character to its ASCII code
-                    input_int[i] = int(char);
-                }   //end for
-
-                // after the input is done, add the standard length suffix
-                input_int = append(input_int, length_suffix...);
-
-                // run 64 rounds of the hashing
-                for i:= 0; i<64; i++ {
-                    rope, cur_pos, skip_size = run_knot_tyer(rope, input_int, cur_pos, skip_size);
-                }   //end for
-
-                // make the hash denser
-                rope = densen_hash_xor(rope, block_size);
-
-                // for all numbers in the array
-                for _, num_int := range rope {
-                    // get the hexadecimal representation of the number as a STRING
-                    var num_hex = fmt.Sprintf("%x", num_int);
-                    // if the result is a single value
-                    if len(num_hex) < 2 {
-                        // prepend a 0 to the hexadecimal code
-                        num_hex = "0" + num_hex;
-                    }   //end if
-
-                    knot_hash += num_hex;
-                }   //end for
+                var knot_hash = get_knot_hash(input, rope);
 
                 fmt.Println("Knot hash: ", knot_hash)
             }   //end case
@@ -112,6 +73,51 @@ func main() {
     }   //end for
 
 }   //end main
+
+
+
+// runs the knot hash algorithm on the input and returns the result
+func get_knot_hash(input string, rope []int) (knot_hash string) {
+    // the size of the blocks used when making the hash denser
+    var block_size = 16;
+    var cur_pos = 0;
+    var skip_size = 0;
+    var length_suffix = []int{17, 31, 73, 47, 23};
+
+    // convert the input to integers based on ASCII codes
+    var input_int = make([]int, len(input));
+    // for each character in the input
+    for i, char := range input {
+        // convert the character to its ASCII code
+        input_int[i] = int(char);
+    }   //end for
+
+    // after the input is done, add the standard length suffix
+    input_int = append(input_int, length_suffix...);
+
+    // run 64 rounds of the hashing
+    for i:= 0; i<64; i++ {
+        rope, cur_pos, skip_size = run_knot_tyer(rope, input_int, cur_pos, skip_size);
+    }   //end for
+
+    // make the hash denser
+    rope = densen_hash_xor(rope, block_size);
+
+    // for all numbers in the array
+    for _, num_int := range rope {
+        // get the hexadecimal representation of the number as a STRING
+        var num_hex = fmt.Sprintf("%x", num_int);
+        // if the result is a single value
+        if len(num_hex) < 2 {
+            // prepend a 0 to the hexadecimal code
+            num_hex = "0" + num_hex;
+        }   //end if
+
+        knot_hash += num_hex;
+    }   //end for
+
+    return;
+}   //end func
 
 
 
