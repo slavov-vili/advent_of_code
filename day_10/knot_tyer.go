@@ -1,4 +1,5 @@
-package main
+//package main
+package day_10
 
 import (
     "bufio"
@@ -36,15 +37,16 @@ func main() {
 
         // make the rope, where the knots will be made
         var rope_size = 256;
-        var rope = make([]int, rope_size);
-        // fill in the list of numbers
-        for i := 0; i < rope_size; i++ {
-            rope[i] = i;
-        }   //end for
 
         switch part {
             // if part 1 is being run
             case 1: {
+                var rope = make([]int, rope_size);
+                // fill in the list of numbers
+                for i := 0; i < rope_size; i++ {
+                    rope[i] = i;
+                }   //end for
+
                 var cur_pos = 0;
                 var skip_size = 0;
                 var input_split = strings.Split(input, ",");
@@ -64,20 +66,24 @@ func main() {
             }   //end case
             // if part 2 is being run
             case 2: {
-                var knot_hash = get_knot_hash(input, rope);
+                var knot_hash = Get_knot_hash(input, rope_size);
 
                 fmt.Println("Knot hash: ", knot_hash)
             }   //end case
         }   //end switch
-
     }   //end for
-
 }   //end main
 
 
 
 // runs the knot hash algorithm on the input and returns the result
-func get_knot_hash(input string, rope []int) (knot_hash string) {
+func Get_knot_hash(input string, rope_size int) (knot_hash string) {
+    var rope = make([]int, rope_size);
+    // fill in the list of numbers
+    for i := 0; i < rope_size; i++ {
+        rope[i] = i;
+    }   //end for
+
     // the size of the blocks used when making the hash denser
     var block_size = 16;
     var cur_pos = 0;
@@ -115,7 +121,6 @@ func get_knot_hash(input string, rope []int) (knot_hash string) {
 
         knot_hash += num_hex;
     }   //end for
-
     return;
 }   //end func
 
