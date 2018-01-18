@@ -24,29 +24,30 @@ func main() {
 
 
         // PART I
-        // hash the input and insert it in each row
+        // hash the input and fill in each row of the matrix
         var hash_matrix = hash_each_row(input, matrix_rows);
         var active_bit_count = 0;
         // for each row in the matrix
         for _, row := range hash_matrix {
             // for each element of that row
             for _, el := range row {
-                if el == 1 { active_bit_count++; };
+                if el == true { active_bit_count++; };
             }   //end for
         }   //end for
         println("There are", active_bit_count, "active bits!");
 
         
         // PART II
-        //
+        // traverse the matrix and find all regions (sequences of adjacent set bits)
+        //var region_count = count_regions(hash_matrix);
     }   //end for
 }   //end main
 
 
 
 // hashes the input string for each row of the matrix and fills in the row
-func hash_each_row(input string, matrix_row_count int) (hash_matrix [][]int) {
-    hash_matrix = make([][]int, matrix_row_count);
+func hash_each_row(input string, matrix_row_count int) (hash_matrix [][]bool) {
+    hash_matrix = make([][]bool, matrix_row_count);
     println("Hashing ...")
     // for each row of the matrix
     for i := 0; i < len(hash_matrix); i++ {
@@ -60,15 +61,19 @@ func hash_each_row(input string, matrix_row_count int) (hash_matrix [][]int) {
 
         // for each bit in the binary representation of the hash
         for _, bit := range strings.Split(hashed_row, "") {
-            // convert the bit to an integer
-            var bit_int, _ = strconv.Atoi(bit);
-            // append the bit to the current row of the matrix
-            hash_matrix[i] = append(hash_matrix[i], bit_int);
+            switch bit {
+                case "0": hash_matrix[i] = append(hash_matrix[i], false);
+                case "1": hash_matrix[i] = append(hash_matrix[i], true);
+            }   //end switch
         }   //end for
     }   //end for
     println("Done Hashing!")
     return;
 }   //end func
+
+
+
+//func count_regions(matrix [][]int)
 
 
 
