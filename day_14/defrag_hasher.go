@@ -34,12 +34,13 @@ func main() {
                 if el == true { active_bit_count++; };
             }   //end for
         }   //end for
-        println("There are", active_bit_count, "active bits!");
+        println("There are", active_bit_count, "active bits!")
 
         
         // PART II
         // traverse the matrix and find all regions (sequences of adjacent set bits)
-        //var region_count = count_regions(hash_matrix);
+        var region_count = count_regions(hash_matrix);
+        println("There are", region_count, "regions in the matrix!")
     }   //end for
 }   //end main
 
@@ -73,7 +74,34 @@ func hash_each_row(input string, matrix_row_count int) (hash_matrix [][]bool) {
 
 
 
-//func count_regions(matrix [][]int)
+// counts all the regions from the matrix
+func count_regions(matrix [][]bool) (region_count int) {
+    // make a copy of the input matrix
+    var tmp_matrix = make([][]bool, len(matrix));
+    // for each row of the input matrix
+    for i, row := range matrix {
+        // for each element in the row
+        for _, value := range row {
+            tmp_matrix[i] = append(tmp_matrix[i], value);
+        }   //end for
+    }   //end for
+
+    // for each row of the temp matrix
+    for i, row := range tmp_matrix {
+        // for each element in that row
+        for y, value := range row {
+            // if the element is a set bit
+            if value == true {
+                // recursively enclose the region starting at the current position
+                enclose_region_recursively(tmp_matrix, []Coord{ Coord{i, y} });
+                // increase the region count
+                region_count++;
+            }   //end if
+        }   //end for
+    }   //end for
+
+    return;
+}   //end func
 
 
 
@@ -91,3 +119,83 @@ func hex_hash_to_binary(hex_hash string) (bin_hash string) {
     }   //end for
     return;
 }   //end func
+
+
+
+// encloses the region which contains all the bits from the given coordinates
+// enclosing simply sets all the bits from the region to 0, showing that they have been visited
+func enclose_region_recursively(matrix [][]bool, coords []Coord) (region_size int) {
+    if len(coords) == 0 {
+        region_size = 0;
+    } else {
+        // for each coordinate in the list
+        for _, coord := range coords {
+            // unset the bit at that coordinate
+            matrix[coord.x][coord.y] = false;
+            region_size++;
+
+            // stores the coordinates of adjacent bits which are also set
+            var new_coords = get_adjacent_set_bits(matrix, coord);
+            // recursively enclose the region
+            region_size += enclose_region_recursively(matrix, new_coords);
+        }   //end for
+    }   //end else
+    return;
+}  //end func
+
+
+
+// extracts the coordinates of all bits from the matrix which are adjacent to the given one and are also set
+func get_adjacent_set_bits(matrix [][]bool, coord Coord) (set_adjacents []Coord) {
+    // if there is a bit above this one
+    if (coord.x - 1) >= 0 {
+        // if that bit is set
+        if matrix[coord.x - 1][coord.y] == true {
+            // add it to the list
+            set_adjacents = append(set_adjacents, Coord{(coord.x - 1), coord.y});
+        }   //end if
+    }   //end if
+
+
+    // if there is a bit to the right of this one
+    if (coord.y + 1) < len(matrix[0]) {
+        // if that bit is set
+        if matrix[coord.x][coord.y + 1] == true {
+            // add it to the list
+            set_adjacents = append(set_adjacents, Coord{coord.x, (coord.y + 1)});
+        }   //end if
+    }   //end if
+
+
+    // if there is a bit below this one
+    if (coord.x + 1) < len(matrix) {
+        // if that bit is set
+        if matrix[coord.x + 1][coord.y] == true {
+            // add it to the list
+            set_adjacents = append(set_adjacents, Coord{(coord.x + 1), coord.y});
+        }   //end if
+    }   //end if
+
+
+    // if there is a bit to the left of this one
+    if (coord.y - 1) >= 0 {
+        // if that bit is set
+        if matrix[coord.x][coord.y - 1] == true {
+            // add it to the list
+            set_adjacents = append(set_adjacents, Coord{coord.x, (coord.y - 1)});
+        }   //end if
+    }   //end if
+
+
+    return;
+}   //end func
+
+
+
+
+
+// a coordinate from a matrix
+type Coord struct {
+    x int
+    y int
+}   //end type
