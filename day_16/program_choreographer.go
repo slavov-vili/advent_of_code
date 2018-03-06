@@ -14,6 +14,10 @@ func main() {
     var args = os.Args;
     // stores the number of letters which participate in the dance
     const dancer_count = 16;
+    // stores the number of times the dance needs to be performed
+    const dances_count = 1000000000;
+    // stores whether a particular dance has been seen based on the end result
+    var dance_seen = make(map[string]bool, 0);
 
     // read the input from the file given as an argument
     var input, read_err = ioutil.ReadFile(args[1]);
@@ -29,14 +33,40 @@ func main() {
     var dancers = collect_dancers(dancer_count);
 
 
-    // PART I
-    // for each dance move
-    for _, move := range moves {
-        dancers = handle_move(move, dancers);
+    //TODO: store how long a cycle of dancing is (cycle = comes back to the same result as after the first dance)
+    //      after that calculate how many cycles it takes to reach the 1 BILLION'th iteration
+    //      this will result in a number between 0 and cycle_length, then iterate that many times and voila
+
+    // iterate
+    for {
+        // for each dance move
+        for _, move := range moves {
+            dancers = handle_move(move, dancers);
+        }   //end for
+
+        var dance_result = strings.Join(dancers, "");
+
+        // print the results after the first dance
+        if i == 0 {
+            // PART I
+            fmt.Println(dance_result);
+        }   //end if
+
+        // if the dance has already been seen
+        if dance_seen[dance_result] == true {
+            // stop dancing
+            fmt.Println(dance_result)
+            break;
+        // else, add it to the map and continue
+        } else {
+            dance_seen[dance_result] = true;
+        }   //end else
     }   //end for
-    fmt.Println(strings.Join(dancers, ""));
 
     // PART II
+    // print the result after 1 BILLION dances
+    fmt.Println(strings.Join(dancers, ""));
+
 }   //end main
 
 
