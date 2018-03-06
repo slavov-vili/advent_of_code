@@ -36,7 +36,7 @@ func main() {
                 // fill in the missing layers before this one
                 for next_id < id {
                     layers = append(layers, NewLayer(next_id, -1, 0, "zero"));
-                
+
                     // update the next id
                     next_id++;
                 }   //end for
