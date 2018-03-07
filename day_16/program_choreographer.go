@@ -16,8 +16,8 @@ func main() {
     const dancer_count = 16;
     // stores the number of times the dance needs to be performed
     const dances_count = 1000000000;
-    // stores whether a particular dance has been seen based on the end result
-    var dance_seen = make(map[string]bool, 0);
+    // stores the sequence of dancers (letters from the alphabet)
+    var dancers []string;
 
     // read the input from the file given as an argument
     var input, read_err = ioutil.ReadFile(args[1]);
@@ -29,52 +29,97 @@ func main() {
 
     // split the input into the separate dance moves
     var moves = strings.Split(string(input), ",");
+
+
+    // PART I
     // generate the sequence of letters
-    var dancers = collect_dancers(dancer_count);
+    dancers = collect_dancers(dancer_count);
+    // perform 1 iteration of the dance
+    dancers = dance(dancers, moves);
+    // print the result of the dance
+    fmt.Println(strings.Join(dancers, ""));
 
-
-    //TODO: store how long a cycle of dancing is (cycle = comes back to the same result as after the first dance)
-    //      after that calculate how many cycles it takes to reach the 1 BILLION'th iteration
-    //      this will result in a number between 0 and cycle_length, then iterate that many times and voila
-
-    // iterate
-    for {
-        // for each dance move
-        for _, move := range moves {
-            dancers = handle_move(move, dancers);
-        }   //end for
-
-        var dance_result = strings.Join(dancers, "");
-
-        // print the results after the first dance
-        if i == 0 {
-            // PART I
-            fmt.Println(dance_result);
-        }   //end if
-
-        // if the dance has already been seen
-        if dance_seen[dance_result] == true {
-            // stop dancing
-            fmt.Println(dance_result)
-            break;
-        // else, add it to the map and continue
-        } else {
-            dance_seen[dance_result] = true;
-        }   //end else
-    }   //end for
 
     // PART II
+
+    // PART II
+    // generate the sequence of letters again
+    dancers = collect_dancers(dancer_count);
+    // perform 1 BILLION iterations of the dance
+    dancers = concert(dancers, moves, dances_count);
     // print the result after 1 BILLION dances
     fmt.Println(strings.Join(dancers, ""));
 
 }   //end main
 
+// performs the dance (given as a sequence of moves) a certain amount of times
+func concert(dancers []string, moves []string, dance_count int) (new_dancers []string) {
+    // copy the dancers into a new list
+    new_dancers = make([]string, len(dancers));
+    copy(new_dancers, dancers);
+    // stores which dance results have already been seen
+    var dance_seen = make(map[string]int, 0);
+    // stores how long a cycle of dances is
+    var cycle_size int;
+    // stores how long it takes to reach the beginning of a cycle
+    var iters_til_cycle int;
+
+    // iterate until a cycle is found during dancing (a dance produces a result which has already been seen)
+    for i:=0; i<dance_count; i++{
+        // concatenate the arrangement of the dancers as the dance result
+        var dance_result = strings.Join(new_dancers, "");
+
+        // if the dance has already been seen
+        if seen_at, seen := dance_seen[dance_result]; seen == true {
+            // we have reached a cycle, store how many iterations the cycle consists of
+            cycle_size = i - seen_at;
+            // stop dancing
+            break;
+        // else, add it to the map and continue
+        } else {
+            dance_seen[dance_result] = i;
+            // perform an iteration of the dance
+            new_dancers = dance(new_dancers, moves);
+        }   //end else
+    }   //end for
+
+
+    // now that we know how many iterations it takes to reach a cycle,
+    // calculate how many iterations it takes to reach the same result as when all dances are performed (1 BILLION'th iteration)
+    var iters_to_1_bil = (dance_count - iters_til_cycle) % cycle_size;
+
+    // copy the original arrangement of the dancers
+    new_dancers = make([]string, len(dancers));
+    copy(new_dancers, dancers);
+    // dance until the intended end is reached
+    for i:=0; i<iters_to_1_bil; i++ {
+        new_dancers = dance(new_dancers, moves);
+    }   //end for
+
+    return
+}   //end func
+
+
+
+// performs one iteration of the dance, described in the given moves
+func dance(dancers, moves []string) (new_dancers []string) {
+    // copy the arrangement of the dancers in a new list
+    new_dancers = make([]string, len(dancers));
+    copy(new_dancers, dancers);
+
+    // for each dance move
+    for _, move := range moves {
+        new_dancers = handle_move(move, new_dancers);
+    }   //end for
+    return;
+}   //end func
+
 
 
 // moves the dancers according to the given move
-func handle_move(move string, dancers []string) []string {
+func handle_move(move string, dancers []string) (new_dancers []string) {
     // copy the dancers into a new list
-    var new_dancers = make([]string, len(dancers));
+    new_dancers = make([]string, len(dancers));
     copy(new_dancers, dancers);
 
     var parts = strings.Split(move, "");
@@ -108,7 +153,7 @@ func handle_move(move string, dancers []string) []string {
         // perform the swap move by name
         swap(new_dancers, indices[0], indices[1]);
     }   //end switch
-    return new_dancers;
+    return;
 }   //end func
 
 
