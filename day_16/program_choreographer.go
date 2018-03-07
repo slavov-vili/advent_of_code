@@ -41,8 +41,6 @@ func main() {
 
 
     // PART II
-
-    // PART II
     // generate the sequence of letters again
     dancers = collect_dancers(dancer_count);
     // perform 1 BILLION iterations of the dance
