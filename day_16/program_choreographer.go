@@ -55,7 +55,7 @@ func concert(dancers []string, moves []string, dance_count int) (new_dancers []s
     // copy the dancers into a new list
     new_dancers = make([]string, len(dancers));
     copy(new_dancers, dancers);
-    // stores which dance results have already been seen
+    // stores which dance results have already been seen and after how many performances
     var dance_seen = make(map[string]int, 0);
     // stores how long a cycle of dances is
     var cycle_size int;
