@@ -11,8 +11,11 @@ import (
 func main() {
     // create a scanner to read the input
     var scanner  = bufio.NewScanner(os.Stdin);
+    // store the spinlock
+    var spinlock *Spinlock;
     // store how many items should be added
-    const add_count = 2017;
+    const add_count_1 = 2017;
+    const add_count_2 = 50000000;
 
     // while input is being received
     println("Input:")
@@ -21,16 +24,35 @@ func main() {
         var steps, _ = strconv.Atoi(scanner.Text());
 
         // create the initial spinlock
-        var spinlock = NewSpinlock(steps);
+        spinlock = NewSpinlock(steps);
 
         // PART I
-        for i:=1; i<=add_count; i++ {
+        for i:=1; i<=add_count_1; i++ {
             spinlock.Add(i);
         }   //end for
-        // !! hopefully the last element won't be added at the last position *crosses fingers*
         fmt.Println("Item after last added:", spinlock.buffer[spinlock.cur_pos + 1]);
 
         // PART II
+        // store the buffer size
+        var buffer_size = 1;
+        // store the current position
+        var cur_pos = 0;
+        // store value after 0
+        var after_0 = 0;
+
+        for i:=1; i<=add_count_2; i++ {
+            // calculate the position where an element should be added
+            cur_pos = calc_insert_idx(buffer_size, cur_pos, steps);
+            // increase the buffer size
+            buffer_size++;
+
+            // if the element should be added at index 1
+            if cur_pos == 1 {
+                // store the value
+                after_0 = i;
+            }   //end if
+        }   //end for
+        fmt.Println("Item after 0:", after_0);
 
     }   //end for
 }   //end main
