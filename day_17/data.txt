@@ -1,6 +1,6 @@
 Part I:
     input:  344
-    output: 
+    output: 996
 
 
 Part II:

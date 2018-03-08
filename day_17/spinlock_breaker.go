@@ -24,7 +24,11 @@ func main() {
         var spinlock = NewSpinlock(steps);
 
         // PART I
-        fmt.Println("Steps:", steps);
+        for i:=1; i<=add_count; i++ {
+            spinlock.Add(i);
+        }   //end for
+        // !! hopefully the last element won't be added at the last position *crosses fingers*
+        fmt.Println("Item after last added:", spinlock.buffer[spinlock.cur_pos + 1]);
 
         // PART II
 
@@ -61,6 +65,8 @@ func (spinlock *Spinlock) Add(new_element int) []int {
 
     // insert the given element in the spinlock's buffer
     spinlock.buffer = insert_element(spinlock.buffer, new_element, insert_idx);
+    // change the current position
+    spinlock.cur_pos = insert_idx;
 
     return spinlock.buffer;
 }   //end func
@@ -79,6 +85,12 @@ func calc_insert_idx(buffer_size, cur_pos, steps int) int {
 // inserts an element at the given position in the slice and returns the new slice
 func insert_element(old_buffer []int, new_element int, insert_idx int) (new_buffer []int) {
     // copy the elements before the insert index
-    new_buffer
-    // TODO: finish this
+    new_buffer = append(new_buffer, old_buffer[:insert_idx]...);
+
+    // add the element which needs to be inserted
+    new_buffer = append(new_buffer, new_element);
+
+    // copy the rest of the elements
+    new_buffer = append(new_buffer, old_buffer[insert_idx:]...);
+    return;
 }   //end func
