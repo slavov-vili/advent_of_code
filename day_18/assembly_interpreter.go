@@ -120,7 +120,7 @@ func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int
 func get_arg_value(argument string, registers map[string]int) (arg_value int) {
     var isNumber = regexp.MustCompile("\\d");
 
-    // if the argument is not a number
+    // if the argument IS a number
     if isNumber.MatchString(argument) {
         // the value is the argument itself
         arg_value, _ = strconv.Atoi(argument);
