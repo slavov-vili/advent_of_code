@@ -70,10 +70,7 @@ func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int
 
         // handle the instruction
         switch cur_instruction.name {
-        case "snd":
-            // store the frequency of the sound
-            first_rec_sound_freq = get_arg_value(cur_instruction.args[0], registers);
-
+        // register-related instructions
         case "set":
             // set the respective register's value
             registers[cur_instruction.args[0]] = get_arg_value(cur_instruction.args[1], registers);
@@ -90,6 +87,11 @@ func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int
             // divide the respective register's value
             registers[cur_instruction.args[0]] %= get_arg_value(cur_instruction.args[1], registers);
 
+        // sound-related instructions
+        case "snd":
+            // store the frequency of the sound
+            first_rec_sound_freq = get_arg_value(cur_instruction.args[0], registers);
+
         case "rcv":
             // if the value of the argument is not '0'
             if get_arg_value(cur_instruction.args[0], registers) != 0 {
@@ -97,6 +99,7 @@ func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int
                 break OUTER;
             }   //end if
 
+        // instruction-related instructions
         case "jgz":
             // if the first argument is greater than '0'
             if get_arg_value(cur_instruction.args[0], registers) > 0 {
