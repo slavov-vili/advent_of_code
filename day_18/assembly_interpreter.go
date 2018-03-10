@@ -62,22 +62,17 @@ func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int
 
 
     OUTER:
-    // while the index of the current instruction for the program is within boundaries
-    for (program.cur_instruction_idx >= 0) && (program.cur_instruction_idx < len(instructions)) {
+    // while the program hasn't terminated
+    for !program.IsTerminated(len(instructions)) {
         // store the current instruction
         var cur_instruction = instructions[program.cur_instruction_idx];
 
 
         // handle the instruction
         was_jump, err := program.HandleInstruction(cur_instruction);
-        if err == nil {
-            if was_jump {
-                continue OUTER;
-            }   //end if
-
-        // if an error was thrown
-        } else {
+        if err != nil {
             switch cur_instruction.name {
+
             case "snd":
                 // store the frequency of the sound
                 first_rec_sound_freq = get_arg_value(cur_instruction.args[0], program.registers);
@@ -96,7 +91,50 @@ func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int
 
 
         // increment the index of the current instruction
-        program.cur_instruction_idx++;
+        program.IncrementInstructionIndex(was_jump);
+    }   //end for
+
+    return;
+}   //end func
+
+
+
+// runs the instructions for two programs and returns how many times one of the programs sent out a value to the other
+func find_prog_1_send_count(instructions []*Instruction) (prog_1_send_count int) {
+    // create program '0'
+    var prog_0 = NewProgram(make(map[string]int, 0), 0, false);
+    prog_0.registers["p"] = 0;
+    // stores the values to be received by program '0'
+    var prog_0_inbox = make([]int, 0);
+
+    // create program '1'
+    var prog_1 = NewProgram(make(map[string]int, 0), 0, false);
+    prog_1.registers["p"] = 1;
+    // stores the values to be received by program '1'
+    var prog_1_inbox = make([]int, 0)
+
+    OUTER:
+    for {
+        // whether either program is terminated or receiving a value
+        var prog_0_term_or_rec = prog_0.IsTerminated(len(instructions)) || prog_0.is_receiving;
+        var prog_1_term_or_rec = prog_1.IsTerminated(len(instructions)) || prog_1.is_receiving;
+
+        // if neither of the programs are capable of executing instructions
+        if prog_0_term_or_rec && prog_1_term_or_rec {
+            break OUTER;
+        }   //end if
+
+        // if program '0' hasn't terminated yet
+        if !prog_0.IsTerminated(len(instructions)) {
+            // if the program is waiting to receive a value
+            if prog_0.is_receiving {
+                if len(prog_1_inbox) != 0 {
+                    // TODO: fix this
+                }   //end if
+            } else {
+            
+            }   //end if
+        }   //end if
     }   //end for
 
     return;
@@ -155,6 +193,13 @@ func NewProgram(new_registers map[string]int, new_instruction_idx int, receiving
 }   //end func
 
 
+// shows whether the program can execute its current instruction
+func (program *Program) IsTerminated(instruction_count int) bool {
+    return ((program.cur_instruction_idx < 0) &&
+            (program.cur_instruction_idx >= instruction_count));
+}   //end func
+
+
 func (program *Program) HandleInstruction(instruction *Instruction) (was_jump bool, err error) {
         switch instruction.name {
 
@@ -191,6 +236,16 @@ func (program *Program) HandleInstruction(instruction *Instruction) (was_jump bo
             err = errors.New("Program doesn't support instruction " + instruction.name);
         }   //end switch
         return;
+}   //end func
+
+
+func (program *Program) IncrementInstructionIndex(last_was_jump bool) int {
+    // if the last executed instruction WASN'T a "jump"
+    if !last_was_jump {
+        program.cur_instruction_idx++;
+    }   //end else
+
+    return program.cur_instruction_idx;
 }   //end func
 
 
