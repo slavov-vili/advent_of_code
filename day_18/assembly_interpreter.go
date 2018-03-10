@@ -2,7 +2,9 @@ package main
 
 import (
     "bufio"
+    "errors"
     "fmt"
+    "log"
     "os"
     "regexp"
     "strconv"
@@ -55,67 +57,143 @@ func main() {
 
 // runs the instructions and finds the frequency of the first sound which was received
 func find_first_rec_sound(instructions []*Instruction) (first_rec_sound_freq int) {
-    // stores the index of the current instruction being executed
-    var i = 0;
-    // maps the register names to their values
-    var registers = make(map[string]int, 0);
+    // create a program to execute the given instructions
+    var program = NewProgram(make(map[string]int, 0), 0, false);
 
-    // TODO: make function to handle register-related instructions and skips
+
     OUTER:
-    // while the index of the current instruction is within boundaries
-    for (i >= 0) && (i < len(instructions)) {
+    // while the index of the current instruction for the program is within boundaries
+    for (program.cur_instruction_idx >= 0) && (program.cur_instruction_idx < len(instructions)) {
         // store the current instruction
-        var cur_instruction = instructions[i];
+        var cur_instruction = instructions[program.cur_instruction_idx];
 
 
         // handle the instruction
-        switch cur_instruction.name {
-        // register-related instructions
-        case "set":
-            // set the respective register's value
-            registers[cur_instruction.args[0]] = get_arg_value(cur_instruction.args[1], registers);
-
-        case "add":
-            // increase the respective register's value
-            registers[cur_instruction.args[0]] += get_arg_value(cur_instruction.args[1], registers);
-
-        case "mul":
-            // multiply the respective register's value
-            registers[cur_instruction.args[0]] *= get_arg_value(cur_instruction.args[1], registers);
-
-        case "mod":
-            // divide the respective register's value
-            registers[cur_instruction.args[0]] %= get_arg_value(cur_instruction.args[1], registers);
-
-        // sound-related instructions
-        case "snd":
-            // store the frequency of the sound
-            first_rec_sound_freq = get_arg_value(cur_instruction.args[0], registers);
-
-        case "rcv":
-            // if the value of the argument is not '0'
-            if get_arg_value(cur_instruction.args[0], registers) != 0 {
-                // stop iterating over the instructions
-                break OUTER;
-            }   //end if
-
-        // instruction-related instructions
-        case "jgz":
-            // if the first argument is greater than '0'
-            if get_arg_value(cur_instruction.args[0], registers) > 0 {
-                // add the offset to the current index
-                i += get_arg_value(cur_instruction.args[1], registers);
-                // continue iterating over the instructions
+        was_jump, err := program.HandleInstruction(cur_instruction);
+        if err == nil {
+            if was_jump {
                 continue OUTER;
             }   //end if
-        }   //end switch
+
+        // if an error was thrown
+        } else {
+            switch cur_instruction.name {
+            case "snd":
+                // store the frequency of the sound
+                first_rec_sound_freq = get_arg_value(cur_instruction.args[0], program.registers);
+
+            case "rcv":
+                // if the value of the argument is not '0'
+                if get_arg_value(cur_instruction.args[0], program.registers) != 0 {
+                    // stop iterating over the instructions
+                    break OUTER;
+                }   //end if
+
+            default:
+                log.Fatal(err);
+            }   //end switch
+        }   //end if
+
 
         // increment the index of the current instruction
-        i++;
+        program.cur_instruction_idx++;
     }   //end for
 
     return;
 }   //end func
+
+
+
+
+
+type Instruction struct {
+    name   string
+    args []string
+}   //end type
+
+
+func NewInstruction(new_name string, new_args []string, max_args int) *Instruction {
+    // create a new instruction
+    var new_instruction = new(Instruction);
+
+    // set the new instruction's member variables
+    new_instruction.name = new_name;
+    new_instruction.args = make([]string, max_args);
+    for i, new_arg := range new_args {
+        new_instruction.args[i] = new_arg;
+    }   //end for
+
+    // return the pointer to the new instruction
+    return new_instruction;
+}   //end func
+
+
+
+
+
+type Program struct {
+    registers           map[string]int
+    cur_instruction_idx int
+    is_receiving        bool
+}   //end type
+
+
+func NewProgram(new_registers map[string]int, new_instruction_idx int, receiving_status bool) *Program {
+    // create the new program
+    var new_program = new(Program);
+
+    // set its member variables
+    new_program.registers             = make(map[string]int, len(new_registers));
+    for key, value := range new_registers {
+        new_program.registers[key] = value;
+    }   //end for
+    new_program.cur_instruction_idx   = new_instruction_idx;
+    new_program.is_receiving          = receiving_status;
+
+    // return the pointer to the new program
+    return new_program;
+}   //end func
+
+
+func (program *Program) HandleInstruction(instruction *Instruction) (was_jump bool, err error) {
+        switch instruction.name {
+
+        // register-related instructions
+        case "set":
+            // set the respective register's value
+            program.registers[instruction.args[0]]  = get_arg_value(instruction.args[1], program.registers);
+
+        case "add":
+            // increase the respective register's value
+            program.registers[instruction.args[0]] += get_arg_value(instruction.args[1], program.registers);
+
+        case "mul":
+            // multiply the respective register's value
+            program.registers[instruction.args[0]] *= get_arg_value(instruction.args[1], program.registers);
+
+        case "mod":
+            // divide the respective register's value
+            program.registers[instruction.args[0]] %= get_arg_value(instruction.args[1], program.registers);
+
+
+        // instruction-related instructions
+        case "jgz":
+            // if the first argument is greater than '0'
+            if get_arg_value(instruction.args[0], program.registers) > 0 {
+                // add the offset to the current instruction index
+                program.cur_instruction_idx += get_arg_value(instruction.args[1], program.registers);
+                // set the flag to true
+                was_jump = true;
+            }   //end if
+
+        // any other instruction
+        default:
+            err = errors.New("Program doesn't support instruction " + instruction.name);
+        }   //end switch
+        return;
+}   //end func
+
+
 
 
 
@@ -133,29 +211,4 @@ func get_arg_value(argument string, registers map[string]int) (arg_value int) {
     }   //end if
 
     return;
-}   //end func
-
-
-
-
-
-type Instruction struct {
-    name   string
-    args []string
-}   //end func
-
-
-func NewInstruction(new_name string, new_args []string, max_args int) *Instruction {
-    // create a new instruction
-    var new_instruction = new(Instruction);
-
-    // set the new instruction's member variables
-    new_instruction.name = new_name;
-    new_instruction.args = make([]string, max_args);
-    for i, new_arg := range new_args {
-        new_instruction.args[i] = new_arg;
-    }   //end for
-
-    // return the pointer to the new instruction
-    return new_instruction;
 }   //end func
