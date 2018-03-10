@@ -37,10 +37,8 @@ func main() {
 
 
         // PART I
-        // store the frequency of the first received sound
-        var first_rec_sound_freq = 0;
         // find the frequency of the first received sound
-        first_rec_sound_freq = find_first_rec_sound(instructions);
+        var first_rec_sound_freq = find_first_rec_sound(instructions);
         // print out the frequency
         fmt.Println("Frequency of first received sound:", first_rec_sound_freq);
 
