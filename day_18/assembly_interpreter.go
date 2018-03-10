@@ -120,12 +120,12 @@ func find_prog_1_send_count(instructions []*Instruction) (prog_1_send_count int)
 
     OUTER:
     for {
-        // whether either program is terminated or receiving a value
-        var prog_0_term_or_rec = prog_0.IsTerminated(len(instructions)) || (prog_0.is_receiving && len(prog_0_inbox) == 0);
-        var prog_1_term_or_rec = prog_1.IsTerminated(len(instructions)) || (prog_1.is_receiving && len(prog_1_inbox) == 0);
+        // whether either program is terminated or waiting to receiving a value
+        var prog_0_term_or_wait = prog_0.IsTerminated(len(instructions)) || prog_0.IsWaitingForValue(len(prog_0_inbox));
+        var prog_1_term_or_wait = prog_1.IsTerminated(len(instructions)) || prog_1.IsWaitingForValue(len(prog_1_inbox));
 
         // if NEITHER of the programs is capable of executing instructions
-        if prog_0_term_or_rec && prog_1_term_or_rec {
+        if prog_0_term_or_wait && prog_1_term_or_wait {
             break OUTER;
         }   //end if
 
@@ -258,6 +258,12 @@ func NewProgram(new_registers map[string]int, new_instruction_idx int, receiving
 // shows whether the program can execute its current instruction
 func (program *Program) IsTerminated(instruction_count int) bool {
     return ((program.cur_instruction_idx < 0) || (program.cur_instruction_idx >= instruction_count));
+}   //end func
+
+
+// shows whether the program is waiting to receive a value
+func (program *Program) IsWaitingForValue(inbox_size int) bool {
+    return (program.is_receiving && (inbox_size == 0));
 }   //end func
 
 
