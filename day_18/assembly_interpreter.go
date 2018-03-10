@@ -116,7 +116,6 @@ func find_prog_1_send_count(instructions []*Instruction) (prog_1_send_count int)
     var prog_1_inbox = make([]int, 0)
 
 
-    OUTER:
     for {
         // whether either program is terminated or waiting to receiving a value
         var prog_0_term_or_wait = prog_0.IsTerminated(len(instructions)) || prog_0.IsWaitingForValue(len(prog_0_inbox));
@@ -124,7 +123,7 @@ func find_prog_1_send_count(instructions []*Instruction) (prog_1_send_count int)
 
         // if NEITHER of the programs is capable of executing instructions
         if prog_0_term_or_wait && prog_1_term_or_wait {
-            break OUTER;
+            break;
         }   //end if
 
         // handle instructions with program '0' until a "receive" instruction is reached and there is nothing to receive
