@@ -63,6 +63,7 @@ func main() {
         // if the next character is a letter, store it to the result
         if isLetter.MatchString(next_char) {
             letters += next_char;
+            fmt.Println("Found:", next_char)
         }   //end if
     }   //end for
 
@@ -96,7 +97,7 @@ func NewPacketCarrier(new_pos *Pair, new_direction string) *PacketCarrier {
 func (packet_carrier *PacketCarrier) Move(path [][]string) (next_char string, at_end bool) {
     // store the character at the current position of the carrier
     var cur_char = path[packet_carrier.cur_pos.x][packet_carrier.cur_pos.y];
-    fmt.Println("Moving from:", cur_char)
+    //fmt.Println("Moving from:", cur_char)
 
 
     // stores whether the carrier is currently standing at a crossroad
@@ -148,8 +149,11 @@ func get_new_pos(cur_pos *Pair, cur_direction string, at_crossroad bool, path []
 func get_next_dir(cur_pos *Pair, cur_direction string, at_crossroad bool, path [][]string) (new_direction string) {
     // if we're NOT at a crossroad
     if !at_crossroad {
-        // continue in the same direction
-        new_direction = cur_direction;
+        // if it is possible to continue in the same direction
+        if calc_new_pos(cur_pos, cur_direction).is_valid_coord(len(path), len(path[0])) {
+            // continue in the same direction
+            new_direction = cur_direction;
+        }   //end if
 
     // if we ARE at a crossroad
     } else {
