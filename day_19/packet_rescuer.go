@@ -45,9 +45,10 @@ func main() {
     var packet_carrier = NewPacketCarrier(NewPair(0, start_pos), "south")
 
 
-    // PART I
     // stores all the letters encountered while going through the path
     var letters string;
+    // stores the number of moves made by the package
+    var move_count int;
     // stores the character in the position in the path after the move
     var next_char string;
     // stores whether the packet has reached the end of the path
@@ -64,13 +65,18 @@ func main() {
         if isLetter.MatchString(next_char) {
             letters += next_char;
         }   //end if
+
+        // increment the move count
+        move_count++;
     }   //end for
 
+
+    // PART I
     fmt.Println("Letters found:", letters);
 
 
     // PART II
-
+    fmt.Println("Move count:", move_count);
 }   //end main
 
 
