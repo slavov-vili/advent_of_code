@@ -63,7 +63,6 @@ func main() {
         // if the next character is a letter, store it to the result
         if isLetter.MatchString(next_char) {
             letters += next_char;
-            fmt.Println("Found:", next_char)
         }   //end if
     }   //end for
 
@@ -149,10 +148,15 @@ func get_new_pos(cur_pos *Pair, cur_direction string, at_crossroad bool, path []
 func get_next_dir(cur_pos *Pair, cur_direction string, at_crossroad bool, path [][]string) (new_direction string) {
     // if we're NOT at a crossroad
     if !at_crossroad {
-        // if it is possible to continue in the same direction
-        if calc_new_pos(cur_pos, cur_direction).is_valid_coord(len(path), len(path[0])) {
-            // continue in the same direction
-            new_direction = cur_direction;
+        // store the next position when going in the same direction
+        var new_pos = calc_new_pos(cur_pos, cur_direction);
+        // if the new position is within the path
+        if new_pos.is_valid_coord(len(path), len(path[0])) {
+            // if the character at the new position is not empty space
+            if path[new_pos.x][new_pos.y] != " " {
+                // continue in the same direction
+                new_direction = cur_direction;
+            }   //end if
         }   //end if
 
     // if we ARE at a crossroad
