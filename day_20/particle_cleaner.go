@@ -1,5 +1,7 @@
 package main
 
+// TODO: finish String functions and fix "NewFeature" and update calls to "NewFeature"
+
 import (
     "bufio"
     "fmt"
@@ -14,6 +16,10 @@ import (
 func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
+    // stores the ID of the last seen particle
+    var last_particle_id = 0;
+    // stores the parsed particle from the input
+    var new_particle *Particle;
 
     // while input is being received
     println("Input:")
@@ -23,7 +29,8 @@ func main() {
 
         // if the input is NOT "END"
         if input != "END" {
-            // TODO: process input
+            new_particle, last_particle_id = parse_input_line(input, last_particle_id);
+            fmt.Println(*new_particle)
             continue;
         }   //end if
 
@@ -37,6 +44,58 @@ func main() {
         // TODO: clear the particle list
     }   //end for
 }   //end main
+
+
+
+// parses a line of the input and returns a new particle storing all the data and its id
+func parse_input_line(line string, last_particle_id int) (*Particle, int) {
+    // store the different features
+    var feature_pos *Feature;
+    var feature_vel *Feature;
+    var feature_acc *Feature;
+    // split the different features of the line
+    var features_str = strings.Split(line, ", ");
+
+    // for each feature in the line
+    for _, feature_str := range features_str {
+        // split the name of the feature from its values
+        var parts = strings.Split(feature_str, "=");
+        // remove the opening and closing angle brackets
+        parts[1] = strings.TrimPrefix(parts[1], "<");
+        parts[1] = strings.TrimSuffix(parts[1], ">");
+
+        // split the values from one another
+        var values_str = strings.Split(parts[1], ",");
+
+        // convert the different values into ints
+        value_x, err := strconv.Atoi(values_str[0]);
+        if err != nil { log.Fatal(err) };
+        value_y, err := strconv.Atoi(values_str[1]);
+        if err != nil { log.Fatal(err) };
+        value_z, err := strconv.Atoi(values_str[2]);
+        if err != nil { log.Fatal(err) };
+
+        // create a new feature with the given values
+        var feature_struct = NewFeature(value_x, value_y, value_z);
+
+        // based on the feature's name - store it in the correct variable
+        switch parts[0] {
+        case "p":
+            feature_pos = feature_struct;
+
+        case "v":
+            feature_vel = feature_struct;
+
+        case "a":
+            feature_acc = feature_struct;
+        }   //end switch
+    }   //end for
+
+    // create a new particle with an incremented ID and the given features
+    var new_particle = NewParticle((last_particle_id + 1), feature_pos, feature_vel, feature_acc);
+
+    return new_particle, new_particle.id;
+}   //end func
 
 
 
@@ -100,13 +159,19 @@ func (particle Particle) DistFrom(other_particle *Particle) (manh_dist int) {
 }   //end func
 
 
+func (particle Particle) String() string {
+    return fmt.Sprintf("%v:{%v, %v, %v}", particle.id, particle.pos, particle.vel, particle.acc);
+}   //end func
+
+
 
 
 
 type Feature struct {
-    x int
-    y int
-    z int
+    name string
+    x    int
+    y    int
+    z    int
 }   //end type
 
 
@@ -118,4 +183,9 @@ func NewFeature(new_x, new_y, new_z int) *Feature {
     feature.z = new_z;
 
     return feature;
+}   //end func
+
+
+func (feature Feature) String() string {
+    return fmt.Sprintf("", feature.x)
 }   //end func
