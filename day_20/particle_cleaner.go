@@ -1,7 +1,5 @@
 package main
 
-// TODO: finish String functions and fix "NewFeature" and update calls to "NewFeature"
-
 import (
     "bufio"
     "fmt"
@@ -16,8 +14,10 @@ import (
 func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
+    // maps particle IDs to a pointer to an actual particle structure
+    var particles = make(map[int]*Particle, 0);
     // stores the ID of the last seen particle
-    var last_particle_id = 0;
+    var last_particle_id = -1;
     // stores the parsed particle from the input
     var new_particle *Particle;
 
@@ -29,19 +29,23 @@ func main() {
 
         // if the input is NOT "END"
         if input != "END" {
+            // parse the input and store the data into a struct
             new_particle, last_particle_id = parse_input_line(input, last_particle_id);
-            fmt.Println(*new_particle)
+            // map the particle's ID to the struct
+            particles[last_particle_id] = new_particle;
             continue;
         }   //end if
 
 
         // PART I
+        fmt.Println("Particle", get_closest_to_0(particles), "will stay closest to 0!");
 
 
         // PART II
 
 
-        // TODO: clear the particle list
+        // clear the particle container
+        particles = make(map[int]*Particle, 0);
     }   //end for
 }   //end main
 
@@ -76,10 +80,10 @@ func parse_input_line(line string, last_particle_id int) (*Particle, int) {
         if err != nil { log.Fatal(err) };
 
         // create a new feature with the given values
-        var feature_struct = NewFeature(value_x, value_y, value_z);
+        var feature_struct = NewFeature(parts[0], value_x, value_y, value_z);
 
         // based on the feature's name - store it in the correct variable
-        switch parts[0] {
+        switch feature_struct.name {
         case "p":
             feature_pos = feature_struct;
 
@@ -99,11 +103,52 @@ func parse_input_line(line string, last_particle_id int) (*Particle, int) {
 
 
 
-// return the Manhattan distance between the two positions
-func calc_manh_dist(pos_a, pos_b *Feature) (manh_dist int) {
-    return int(math.Abs(float64(pos_a.x - pos_b.x)) +
-               math.Abs(float64(pos_a.y - pos_b.y)) +
-               math.Abs(float64(pos_a.z - pos_b.z)));
+// finds the particle, which will stay closest to the 0 point of the 3D space
+func get_closest_to_0(particles map[int]*Particle) (closest_id int) {
+    // ASSUMPTION: the particle with the lowest acceleration will stay near 0
+
+    // convert the map to a list
+    var particles_list = make([]*Particle, 0);
+    for i:=0; i<len(particles); i++ {
+        particles_list = append(particles_list, particles[i]);
+    }   //end for
+    // get all particles with the lowest acceleration
+    var closest_to_0_ids = get_lowest_feat_sum(particles_list, "acc");
+    //fmt.Println("Particles with minimum acceleration:", closest_to_0_ids);
+
+    if len(closest_to_0_ids) != 0 {
+        log.Fatal("Multiple particles with lowest acceleration")
+    } else {
+        closest_id = closest_to_0_ids[0];
+    }   //end else
+
+    return;
+}   //end func
+
+
+// gets a list of particles who have the lowest value for a given feature
+func get_lowest_feat_sum(particles []*Particle, feature_name string) (lowest_ids []int) {
+    // set the minimum value for the feature to be that of particle '0'
+    var min_feat_value = particles[0].GetFeature(feature_name).GetAbsSum();
+
+    // for each particle
+    for id, particle := range particles {
+        // store the absolute sum of the particle's feature
+        var temp_abs_sum = particle.GetFeature(feature_name).GetAbsSum();
+
+        // if the absolute sum is lower than the minimum
+        if temp_abs_sum < min_feat_value {
+            // update the minimum value
+            min_feat_value = temp_abs_sum;
+            // all previous particles are further, so clear the list
+            lowest_ids = []int{id};
+        // if the absolute sum is equal to the minimum
+        } else if temp_abs_sum == min_feat_value {
+            // add the id of the particle to the list
+            lowest_ids = append(lowest_ids, id);
+        }   //end else
+    }   //end for
+    return;
 }   //end func
 
 
@@ -130,25 +175,37 @@ func NewParticle(new_id int, new_pos, new_vel, new_acc *Feature) *Particle {
 }   //end func
 
 
+// returns a given feature for the particle based on the feature's name
+func (particle Particle) GetFeature(feature_name string) (feature *Feature) {
+    switch feature_name {
+    case "acc":
+        feature = particle.acc;
+
+    case "vel":
+        feature = particle.vel;
+
+    case "pos":
+        feature = particle.pos;
+    }   //end switch
+    return;
+}   //end func
+
+
 // updates the values in the particle and then return the new position
 func (particle Particle) Update() (new_pos *Feature) {
     // increase velocity
-    particle.vel.x += particle.acc.x;
-    particle.vel.y += particle.acc.y;
-    particle.vel.z += particle.acc.z;
+    particle.vel = add_features(particle.vel, particle.acc);
 
     // increase position
-    particle.pos.x += particle.vel.x;
-    particle.pos.y += particle.vel.y;
-    particle.pos.z += particle.vel.z;
+    particle.pos = add_features(particle.pos, particle.vel);
 
     return particle.pos;
 }   //end func
 
 
 // returns the Manhattan distance between this particle and the center of the 3D space
-func (particle Particle) DistFromZero(other_particle *Particle) (manh_dist_from_0 int) {
-    var zero_feature = NewFeature(0, 0, 0);
+func (particle Particle) DistFromZero() (manh_dist_from_0 int) {
+    var zero_feature = NewFeature("zero", 0, 0, 0);
     return particle.DistFrom(NewParticle(-1, zero_feature, zero_feature, zero_feature));
 }   //end func
 
@@ -165,6 +222,15 @@ func (particle Particle) String() string {
 
 
 
+// return the Manhattan distance between the two positions
+func calc_manh_dist(pos_a, pos_b *Feature) (manh_dist int) {
+    return int(math.Abs(float64(pos_a.x - pos_b.x)) +
+               math.Abs(float64(pos_a.y - pos_b.y)) +
+               math.Abs(float64(pos_a.z - pos_b.z)));
+}   //end func
+
+
+
 
 
 type Feature struct {
@@ -175,17 +241,35 @@ type Feature struct {
 }   //end type
 
 
-func NewFeature(new_x, new_y, new_z int) *Feature {
+func NewFeature(new_name string, new_x, new_y, new_z int) *Feature {
     var feature = new(Feature);
 
-    feature.x = new_x;
-    feature.y = new_y;
-    feature.z = new_z;
+    feature.name = new_name;
+    feature.x    = new_x;
+    feature.y    = new_y;
+    feature.z    = new_z;
 
     return feature;
 }   //end func
 
 
+// returns the sum of the absolute values of the feature's coordinates
+func (feature Feature) GetAbsSum() int {
+    return int(math.Abs(float64(feature.x)) +
+               math.Abs(float64(feature.y)) +
+               math.Abs(float64(feature.z)));
+}   //end func
+
+
 func (feature Feature) String() string {
-    return fmt.Sprintf("", feature.x)
+    return fmt.Sprintf("%v:{%v,%v,%v}", feature.name, feature.x, feature.y, feature.z);
+}   //end func
+
+
+// adds the corresponding coordinates of feat2 to feat1
+func add_features(feat1, feat2 *Feature) *Feature {
+    return NewFeature(feat1.name,
+                     (feat1.x + feat2.x),
+                     (feat1.y + feat2.y),
+                     (feat1.z + feat2.z));
 }   //end func
