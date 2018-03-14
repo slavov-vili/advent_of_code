@@ -42,7 +42,7 @@ func main() {
 
 
         // PART II
-
+        fmt.Println(handle_collisions(particles), "particles are left after collisions are done!");
 
         // clear the particle container
         particles = make(map[int]*Particle, 0);
@@ -126,6 +126,14 @@ func get_closest_to_0(particles map[int]*Particle) (closest_id int) {
 }   //end func
 
 
+
+// finds out how many particles are left after all collisions are resolved
+func handle_collisions(particles map[int]*Particle) (particles_left int) {
+    // TODO: implement
+}   //end func
+
+
+
 // gets a list of particles who have the lowest value for a given feature
 func get_lowest_feat_sum(particles []*Particle, feature_name string) (lowest_ids []int) {
     // set the minimum value for the feature to be that of particle '0'
@@ -203,30 +211,8 @@ func (particle Particle) Update() (new_pos *Feature) {
 }   //end func
 
 
-// returns the Manhattan distance between this particle and the center of the 3D space
-func (particle Particle) DistFromZero() (manh_dist_from_0 int) {
-    var zero_feature = NewFeature("zero", 0, 0, 0);
-    return particle.DistFrom(NewParticle(-1, zero_feature, zero_feature, zero_feature));
-}   //end func
-
-
-// returns the Manhattan distance between this particle and another particle
-func (particle Particle) DistFrom(other_particle *Particle) (manh_dist int) {
-    return calc_manh_dist(particle.pos, other_particle.pos);
-}   //end func
-
-
 func (particle Particle) String() string {
     return fmt.Sprintf("%v:{%v, %v, %v}", particle.id, particle.pos, particle.vel, particle.acc);
-}   //end func
-
-
-
-// return the Manhattan distance between the two positions
-func calc_manh_dist(pos_a, pos_b *Feature) (manh_dist int) {
-    return int(math.Abs(float64(pos_a.x - pos_b.x)) +
-               math.Abs(float64(pos_a.y - pos_b.y)) +
-               math.Abs(float64(pos_a.z - pos_b.z)));
 }   //end func
 
 
