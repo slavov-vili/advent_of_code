@@ -6,7 +6,6 @@ import (
     "log"
     "math"
     "os"
-    "sort"
     "strconv"
     "strings"
 )   //end imports
@@ -39,7 +38,7 @@ func main() {
 
 
         // PART I
-        //fmt.Println("Particle", get_closest_to_0(particles), "will stay closest to 0!");
+        fmt.Println("Particle", get_closest_to_0(particles), "will stay closest to 0!");
 
 
         // PART II
@@ -131,11 +130,14 @@ func run_til_no_collisions(particles []*Particle) (particles_left int) {
         particles_alive[i] = part;
     }   //end for
 
+    // stores how many consecutive ticks have passed without particle collision
+    var days_without_collision = 0;
 
-    OUTER:
-    // iterate until stopped
-    for {
-        fmt.Println("Particles alive:", len(particles_alive))
+
+    // iterate until the number of consecutive ticks without collisions is reached
+    for days_without_collision < 30 {
+        var old_alive_count = len(particles_alive);
+
         // maps a position to the IDs of all the particles that are currently there
         var pos_to_parts = make(map[Feature][]int, 0);
         // for each particle that is still alive
@@ -155,17 +157,12 @@ func run_til_no_collisions(particles []*Particle) (particles_left int) {
             }   //end if
         }   //end for
 
-        // get a list of particle IDs sorted based on acceleration
-        var ids_sorted_by_acc = get_ids_sorted_by_acc(particles_alive);
-        // get a list of particle IDs sorted based on
-        // the particle's distance from the 0 point of the 3D space
-        var ids_sorted_by_dist = get_ids_sorted_by_dist_from_0(particles_alive);
-
-        fmt.Println("Sorted by acc:",  ids_sorted_by_acc);
-        fmt.Println("Sorted by dist:", ids_sorted_by_dist);
-
-        if arrays_are_equal(ids_sorted_by_acc, ids_sorted_by_dist) {
-            break OUTER;
+        var new_alive_count = len(particles_alive);
+        // if no particles have died
+        if old_alive_count == new_alive_count {
+            days_without_collision++;
+        } else {
+            days_without_collision = 0;
         }   //end if
 
         // update the positions of all particles
@@ -202,47 +199,6 @@ func get_lowest_feat_sum(particles []*Particle, feature_name string) (lowest_ids
             lowest_ids = append(lowest_ids, id);
         }   //end else
     }   //end for
-    return;
-}   //end func
-
-
-
-// returns a list of particle IDs, sorted by their acceleration
-func get_ids_sorted_by_acc(particles_map map[int]*Particle) (sorted_ids []int) {
-    // store the particles in a list
-    var particles_list = make([]*Particle, 0);
-    for _, particle := range particles_map {
-        particles_list = append(particles_list, particle);
-    }   //end for
-
-    // sort the particles list based on acceleration
-    sort.Sort(Particles_acc(particles_list));
-
-    // make the particle list into one with ids
-    for _, particle := range particles_list {
-        sorted_ids = append(sorted_ids, particle.id);
-    }   //end for
-
-    return;
-}   //end func
-
-
-// returns a list of particle IDs, sorted by their distance from 0
-func get_ids_sorted_by_dist_from_0(particles_map map[int]*Particle) (sorted_ids []int) {
-    // store the particles in a list
-    var particles_list = make([]*Particle, 0);
-    for _, particle := range particles_map {
-        particles_list = append(particles_list, particle);
-    }   //end for
-
-    // sort the particles list based on their distance from 0
-    sort.Sort(Particles_dist_0(particles_list));
-
-    // make the particle list into one with ids
-    for _, particle := range particles_list {
-        sorted_ids = append(sorted_ids, particle.id);
-    }   //end for
-
     return;
 }   //end func
 
@@ -315,60 +271,8 @@ func (particle *Particle) Update() *Feature {
 }   //end func
 
 
-// returns the Manhattan distance between this particle and the center of the 3D space
-func (particle Particle) DistFromZero() (manh_dist_from_0 int) {
-    var zero_feature = NewFeature("zero", 0, 0, 0);
-    return particle.DistFrom(NewParticle(-1, zero_feature, zero_feature, zero_feature));
-}   //end func
-
-
-// returns the Manhattan distance between this particle and another particle
-func (particle Particle) DistFrom(other_particle *Particle) (manh_dist int) {
-    return calc_manh_dist(particle.pos, other_particle.pos);
-}   //end func
-
-
 func (particle Particle) String() string {
     return fmt.Sprintf("%v:{%v, %v, %v}", particle.id, particle.pos, particle.vel, particle.acc);
-}   //end func
-
-
-
-// return the Manhattan distance between the two positions
-func calc_manh_dist(pos_a, pos_b *Feature) (manh_dist int) {
-    return int(math.Abs(float64(pos_a.x - pos_b.x)) +
-               math.Abs(float64(pos_a.y - pos_b.y)) +
-               math.Abs(float64(pos_a.z - pos_b.z)));
-}   //end func
-
-
-
-// a type and functions used to sort a list of particles according to their acceleration
-type Particles_acc []*Particle
-
-func (particles_list Particles_acc) Len() int { return len(particles_list) }
-
-func (particles_list Particles_acc) Less(i, j int) bool {
-    return features_less_than(particles_list[i].acc, particles_list[j].acc);
-}   //end func
-
-func (particles_list Particles_acc) Swap(i, j int) {
-    particles_list[i], particles_list[j] = particles_list[j], particles_list[i];
-}   //end func
-
-
-
-// a type and functions used to sort a list of particles according to their distance from 0
-type Particles_dist_0 []*Particle
-
-func (particles_list Particles_dist_0) Len() int { return len(particles_list) }
-
-func (particles_list Particles_dist_0) Less(i, j int) bool {
-    return particles_list[i].DistFromZero() < particles_list[j].DistFromZero();
-}   //end func
-
-func (particles_list Particles_dist_0) Swap(i, j int) {
-    particles_list[i], particles_list[j] = particles_list[j], particles_list[i];
 }   //end func
 
 
@@ -414,10 +318,4 @@ func add_features(feat1, feat2 *Feature) *Feature {
                      (feat1.x + feat2.x),
                      (feat1.y + feat2.y),
                      (feat1.z + feat2.z));
-}   //end func
-
-
-// checks whether feat1 is smaller than feat2
-func features_less_than(feat1, feat2 *Feature) bool {
-    return feat1.GetAbsSum() < feat2.GetAbsSum();
 }   //end func
