@@ -136,6 +136,7 @@ func run_til_no_collisions(particles []*Particle) (particles_left int) {
 
     // iterate until the number of consecutive ticks without collisions is reached
     for days_without_collision < 30 {
+        // store the number of particles alive BEFORE the tick
         var old_alive_count = len(particles_alive);
 
         // maps a position to the IDs of all the particles that are currently there
@@ -157,7 +158,9 @@ func run_til_no_collisions(particles []*Particle) (particles_left int) {
             }   //end if
         }   //end for
 
+        // store the number of particles alive AFTER the tick
         var new_alive_count = len(particles_alive);
+
         // if no particles have died
         if old_alive_count == new_alive_count {
             days_without_collision++;
@@ -200,23 +203,6 @@ func get_lowest_feat_sum(particles []*Particle, feature_name string) (lowest_ids
         }   //end else
     }   //end for
     return;
-}   //end func
-
-
-// returns whether the two int arrays are equal
-func arrays_are_equal(arr1, arr2 []int) bool {
-    if len(arr1) != len(arr2) {
-        return false;
-
-    }   else {
-        for i := 0; i < len(arr1); i++ {
-            if arr1[i] != arr2[i] {
-                return false;
-            }   //end if
-        }   //end for
-    }   //end else
-
-    return true;
 }   //end func
 
 
