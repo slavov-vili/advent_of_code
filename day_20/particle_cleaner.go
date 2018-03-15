@@ -6,6 +6,7 @@ import (
     "log"
     "math"
     "os"
+    "sort"
     "strconv"
     "strings"
 )   //end imports
@@ -124,7 +125,46 @@ func get_closest_to_0(particles []*Particle) (closest_id int) {
 
 // finds out how many particles are left after all collisions are resolved
 func run_til_no_collisions(particles []*Particle) (particles_left int) {
-    // TODO: each tick: handle collisions, sort by acceleration and position, if same lists - done
+    // stores the particles which are still alive
+    var particles_alive = make(map[int]*Particle, 0);
+    for i, part := range particles {
+        particles_alive[i] = part;
+    }   //end for
+
+    // iterate until stopped
+    for {
+        // maps a position to the IDs of all the particles that are currently there
+        var pos_to_parts = make(map[Feature][]int);
+        // for each particle that is still alive
+        for id, particle := range particles_alive {
+            pos_to_parts[*particle.pos] = append(pos_to_parts[*particle.pos], id);
+        }   //end for
+
+        // for each position which contains a particle
+        for _, particles_at_pos := range pos_to_parts {
+            // if there is more than 1 particle at that position
+            if len(particles_at_pos) > 1 {
+                // for each particle at that position
+                for _, particle_id := range particles_at_pos {
+                    // remove the particle from the alive list
+                    delete(particles_alive, particle_id);
+                }   //end for
+            }   //end if
+        }   //end for
+
+        // TODO: sort particles by acceleration and then by distance from 0 and check if lists are the same
+
+        // get a list of particle IDs sorted based on acceleration
+        var ids_sorted_by_acc = get_ids_sorted_by_acc(particles_alive);
+        // get a list of particle IDs sorted based on
+        // the particle's distance from the 0 point of the 3D space
+        var ids_sorted_by_dist = get_ids_sorted_by_dist_from_0(particles_alive);
+
+        // update the positions of all particles
+        for _, particle := range particles_alive {
+            particle.Update();
+        }   //end for
+    }   //end for
     return;
 }   //end func
 
@@ -152,6 +192,47 @@ func get_lowest_feat_sum(particles []*Particle, feature_name string) (lowest_ids
             lowest_ids = append(lowest_ids, id);
         }   //end else
     }   //end for
+    return;
+}   //end func
+
+
+
+// returns a list of particle IDs, sorted by their acceleration
+func get_ids_sorted_by_acc(particles_map map[int]*Particle) (sorted_ids []int) {
+    // store the particles in a list
+    var particles_list = make([]*Particle, 0);
+    for _, particle := range particles_map {
+        particles_list = append(particles_list, particle);
+    }   //end for
+
+    // sort the particles list based on acceleration
+    sort.Sort(Particles_acc(particles_list));
+
+    // make the particle list into one with ids
+    for _, particle := range particles_list {
+        sorted_ids = append(sorted_ids, particle.id);
+    }   //end for
+
+    return;
+}   //end func
+
+
+// returns a list of particle IDs, sorted by their distance from 0
+func get_ids_sorted_by_dist_from_0(particles_map map[int]*Particle) (sorted_ids []int) {
+    // store the particles in a list
+    var particles_list = make([]*Particle, 0);
+    for _, particle := range particles_map {
+        particles_list = append(particles_list, particle);
+    }   //end for
+
+    // sort the particles list based on their distance from 0
+    sort.Sort(Particles_dist_0(particles_list));
+
+    // make the particle list into one with ids
+    for _, particle := range particles_list {
+        sorted_ids = append(sorted_ids, particle.id);
+    }   //end for
+
     return;
 }   //end func
 
@@ -213,6 +294,36 @@ func (particle Particle) String() string {
 
 
 
+// a type and functions used to sort a list of particles according to their acceleration
+type Particles_acc []*Particle
+
+func (particles_list Particles_acc) Len() int { return len(particles_list) }
+
+func (particles_list Particles_acc) Less(i, j int) bool {
+    return features_less_than(particles_list[i].acc, particles_list[j].acc);
+}   //end func
+
+func (particles_list Particles_acc) Swap(i, j int) {
+    particles_list[i], particles_list[j] = particles_list[j], particles_list[i];
+}   //end func
+
+
+
+// a type and functions used to sort a list of particles according to their distance from 0
+type Particles_dist_0 []*Particle
+
+func (particles_list Particles_dist_0) Len() int { return len(particles_list) }
+
+func (particles_list Particles_dist_0) Less(i, j int) bool {
+    return particles_list[i].DistFrom0() < particles_list[j].DistFrom0();
+}   //end func
+
+func (particles_list Particles_dist_0) Swap(i, j int) {
+    particles_list[i], particles_list[j] = particles_list[j], particles_list[i];
+}   //end func
+
+
+
 
 
 type Feature struct {
@@ -254,4 +365,10 @@ func add_features(feat1, feat2 *Feature) *Feature {
                      (feat1.x + feat2.x),
                      (feat1.y + feat2.y),
                      (feat1.z + feat2.z));
+}   //end func
+
+
+// checks whether feat1 is smaller than feat2
+func features_less_than(feat1, feat2 *Feature) bool {
+    return feat1.GetAbsSum() < feat2.GetAbsSum();
 }   //end func
