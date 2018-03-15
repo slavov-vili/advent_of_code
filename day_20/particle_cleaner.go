@@ -39,7 +39,7 @@ func main() {
 
 
         // PART I
-        fmt.Println("Particle", get_closest_to_0(particles), "will stay closest to 0!");
+        //fmt.Println("Particle", get_closest_to_0(particles), "will stay closest to 0!");
 
 
         // PART II
@@ -131,10 +131,13 @@ func run_til_no_collisions(particles []*Particle) (particles_left int) {
         particles_alive[i] = part;
     }   //end for
 
+
+    OUTER:
     // iterate until stopped
     for {
+        fmt.Println("Particles alive:", len(particles_alive))
         // maps a position to the IDs of all the particles that are currently there
-        var pos_to_parts = make(map[Feature][]int);
+        var pos_to_parts = make(map[Feature][]int, 0);
         // for each particle that is still alive
         for id, particle := range particles_alive {
             pos_to_parts[*particle.pos] = append(pos_to_parts[*particle.pos], id);
@@ -152,20 +155,27 @@ func run_til_no_collisions(particles []*Particle) (particles_left int) {
             }   //end if
         }   //end for
 
-        // TODO: sort particles by acceleration and then by distance from 0 and check if lists are the same
-
         // get a list of particle IDs sorted based on acceleration
         var ids_sorted_by_acc = get_ids_sorted_by_acc(particles_alive);
         // get a list of particle IDs sorted based on
         // the particle's distance from the 0 point of the 3D space
         var ids_sorted_by_dist = get_ids_sorted_by_dist_from_0(particles_alive);
 
+        fmt.Println("Sorted by acc:",  ids_sorted_by_acc);
+        fmt.Println("Sorted by dist:", ids_sorted_by_dist);
+
+        if arrays_are_equal(ids_sorted_by_acc, ids_sorted_by_dist) {
+            break OUTER;
+        }   //end if
+
         // update the positions of all particles
         for _, particle := range particles_alive {
             particle.Update();
         }   //end for
+
     }   //end for
-    return;
+
+    return len(particles_alive);
 }   //end func
 
 
@@ -237,6 +247,23 @@ func get_ids_sorted_by_dist_from_0(particles_map map[int]*Particle) (sorted_ids 
 }   //end func
 
 
+// returns whether the two int arrays are equal
+func arrays_are_equal(arr1, arr2 []int) bool {
+    if len(arr1) != len(arr2) {
+        return false;
+
+    }   else {
+        for i := 0; i < len(arr1); i++ {
+            if arr1[i] != arr2[i] {
+                return false;
+            }   //end if
+        }   //end for
+    }   //end else
+
+    return true;
+}   //end func
+
+
 
 
 
@@ -277,7 +304,7 @@ func (particle Particle) GetFeature(feature_name string) (feature *Feature) {
 
 
 // updates the values in the particle and then return the new position
-func (particle Particle) Update() (new_pos *Feature) {
+func (particle *Particle) Update() *Feature {
     // increase velocity
     particle.vel = add_features(particle.vel, particle.acc);
 
@@ -288,8 +315,30 @@ func (particle Particle) Update() (new_pos *Feature) {
 }   //end func
 
 
+// returns the Manhattan distance between this particle and the center of the 3D space
+func (particle Particle) DistFromZero() (manh_dist_from_0 int) {
+    var zero_feature = NewFeature("zero", 0, 0, 0);
+    return particle.DistFrom(NewParticle(-1, zero_feature, zero_feature, zero_feature));
+}   //end func
+
+
+// returns the Manhattan distance between this particle and another particle
+func (particle Particle) DistFrom(other_particle *Particle) (manh_dist int) {
+    return calc_manh_dist(particle.pos, other_particle.pos);
+}   //end func
+
+
 func (particle Particle) String() string {
     return fmt.Sprintf("%v:{%v, %v, %v}", particle.id, particle.pos, particle.vel, particle.acc);
+}   //end func
+
+
+
+// return the Manhattan distance between the two positions
+func calc_manh_dist(pos_a, pos_b *Feature) (manh_dist int) {
+    return int(math.Abs(float64(pos_a.x - pos_b.x)) +
+               math.Abs(float64(pos_a.y - pos_b.y)) +
+               math.Abs(float64(pos_a.z - pos_b.z)));
 }   //end func
 
 
@@ -315,7 +364,7 @@ type Particles_dist_0 []*Particle
 func (particles_list Particles_dist_0) Len() int { return len(particles_list) }
 
 func (particles_list Particles_dist_0) Less(i, j int) bool {
-    return particles_list[i].DistFrom0() < particles_list[j].DistFrom0();
+    return particles_list[i].DistFromZero() < particles_list[j].DistFromZero();
 }   //end func
 
 func (particles_list Particles_dist_0) Swap(i, j int) {
