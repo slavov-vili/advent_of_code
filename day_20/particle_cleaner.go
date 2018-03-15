@@ -15,7 +15,7 @@ func main() {
     // create a scanner to read the input
     var scanner = bufio.NewScanner(os.Stdin);
     // maps particle IDs to a pointer to an actual particle structure
-    var particles = make(map[int]*Particle, 0);
+    var particles = make([]*Particle, 0);
     // stores the ID of the last seen particle
     var last_particle_id = -1;
     // stores the parsed particle from the input
@@ -31,8 +31,8 @@ func main() {
         if input != "END" {
             // parse the input and store the data into a struct
             new_particle, last_particle_id = parse_input_line(input, last_particle_id);
-            // map the particle's ID to the struct
-            particles[last_particle_id] = new_particle;
+            // append the particle to the list (index in slice = particle ID)
+            particles = append(particles, new_particle);
             continue;
         }   //end if
 
@@ -42,10 +42,10 @@ func main() {
 
 
         // PART II
-        fmt.Println(handle_collisions(particles), "particles are left after collisions are done!");
+        fmt.Println(run_til_no_collisions(particles), "particles are left after collisions are done!");
 
         // clear the particle container
-        particles = make(map[int]*Particle, 0);
+        particles = make([]*Particle, 0);
     }   //end for
 }   //end main
 
@@ -104,19 +104,14 @@ func parse_input_line(line string, last_particle_id int) (*Particle, int) {
 
 
 // finds the particle, which will stay closest to the 0 point of the 3D space
-func get_closest_to_0(particles map[int]*Particle) (closest_id int) {
+func get_closest_to_0(particles []*Particle) (closest_id int) {
     // ASSUMPTION: the particle with the lowest acceleration will stay near 0
 
-    // convert the map to a list
-    var particles_list = make([]*Particle, 0);
-    for i:=0; i<len(particles); i++ {
-        particles_list = append(particles_list, particles[i]);
-    }   //end for
     // get all particles with the lowest acceleration
-    var closest_to_0_ids = get_lowest_feat_sum(particles_list, "acc");
+    var closest_to_0_ids = get_lowest_feat_sum(particles, "acc");
     //fmt.Println("Particles with minimum acceleration:", closest_to_0_ids);
 
-    if len(closest_to_0_ids) != 0 {
+    if len(closest_to_0_ids) != 1 {
         log.Fatal("Multiple particles with lowest acceleration")
     } else {
         closest_id = closest_to_0_ids[0];
@@ -128,8 +123,9 @@ func get_closest_to_0(particles map[int]*Particle) (closest_id int) {
 
 
 // finds out how many particles are left after all collisions are resolved
-func handle_collisions(particles map[int]*Particle) (particles_left int) {
-    // TODO: implement
+func run_til_no_collisions(particles []*Particle) (particles_left int) {
+    // TODO: each tick: handle collisions, sort by acceleration and position, if same lists - done
+    return;
 }   //end func
 
 
