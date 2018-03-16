@@ -15,8 +15,9 @@ func main() {
     var scanner = bufio.NewScanner(os.Stdin);
     // maps the input of a rule to its output
     var rules = make(map[string]string, 0);
-    // stores how many times the program should iterate in part I
+    // stores how many times the program should iterate in each part of the assignment
     const part_1_iters = 5;
+    const part_2_iters = 18;
 
     // while input is being received
     println("Input:")
@@ -38,11 +39,14 @@ func main() {
 
 
         // PART I
-        var final_pattern = expand_pattern(start_pattern, rules, part_1_iters);
-        fmt.Printf("%v\n%v", "Final Pattern:", final_pattern)
-        fmt.Println("Set bits after", part_1_iters, "expansions:", final_pattern.GetSetBits());
+        var final_pattern_1 = expand_pattern(start_pattern, rules, part_1_iters);
+        fmt.Printf("%v\n%v", "Final Pattern:", final_pattern_1)
+        fmt.Println("Set bits after", part_1_iters, "expansions:", final_pattern_1.GetSetBits());
 
         // PART II
+        var final_pattern_2 = expand_pattern(start_pattern, rules, part_2_iters);
+        fmt.Printf("%v\n%v", "Final Pattern:", final_pattern_2)
+        fmt.Println("Set bits after", part_2_iters, "expansions:", final_pattern_2.GetSetBits());
 
 
         // clear the input map
