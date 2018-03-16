@@ -34,12 +34,6 @@ func main() {
 
 
         // PART I
-        fmt.Println("Starting Pattern:");
-        fmt.Println(starting_pattern);
-        fmt.Println("Pattern flipped X:");
-        fmt.Println(starting_pattern.GetFlipX());
-        fmt.Println("Pattern flipped Y:");
-        fmt.Println(starting_pattern.GetFlipY());
 
 
         // PART II
@@ -140,12 +134,18 @@ func (pattern Pattern) GetFlipY() *Pattern {
 }   //end func
 
 
-// returns the result of rotating the give pattern by 90 degrees
+// returns the result of rotating the given pattern by 90 degrees
 func (pattern Pattern) GetRotate90() *Pattern {
     var pattern_size = len(pattern);
     var pattern_rotated = NewPattern(pattern_size);
 
-
+    // for each line in the pattern
+    for i, line := range pattern {
+        // for each character in the line
+        for j, char := range line {
+            (*pattern_rotated)[j][pattern_size-i-1] = char;
+        }   //end for
+    }   //end for
 
     return pattern_rotated;
 }   //end func
