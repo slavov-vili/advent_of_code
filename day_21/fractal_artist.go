@@ -4,6 +4,7 @@ import (
     "bufio"
     "fmt"
     "log"
+    "math"
     "os"
     "strings"
 )   //end imports
@@ -14,6 +15,8 @@ func main() {
     var scanner = bufio.NewScanner(os.Stdin);
     // maps the input of a rule to its output
     var rules = make(map[string]string, 0);
+    // stores how many times the program should iterate in part I
+    const part_1_iters = 5;
 
     // while input is being received
     println("Input:")
@@ -31,11 +34,13 @@ func main() {
         }   //end if
 
         // create the starting pattern of the art
-        var starting_pattern = PatternFromRule(".#./..#/###");
+        var start_pattern = PatternFromRule(".#./..#/###");
 
 
         // PART I
-
+        var final_pattern = expand_pattern(start_pattern, rules, part_1_iters);
+        fmt.Printf("%v\n%v", "Final Pattern:", final_pattern)
+        fmt.Println("Set bits after", part_1_iters, "expansions:", final_pattern.GetSetBits());
 
         // PART II
 
@@ -47,32 +52,94 @@ func main() {
 
 
 
+// expands the given starting pattern 'count' times given a set of rules
+func expand_pattern(start_pattern *Pattern, rules map[string]string, count int) *Pattern {
+    // set the starting pattern to be the current pattern
+    var cur_pattern = PatternFromPattern(start_pattern);
+
+    // iterate the given amount of times
+    for i := 0; i < count; i++ {
+        // divide the pattern into sub-patterns
+        var sub_patterns = cur_pattern.GetSubPatterns();
+
+        // for each sub-pattern
+        for j, sub_pattern := range sub_patterns {
+            // apply the appropriate rule to the sub-pattern
+            var sub_rule_match = match_rule_by_pattern(sub_pattern, rules);
+
+            // replace the sub-pattern with the extended version
+            sub_patterns[j] = PatternFromRule(sub_rule_match);
+        }   //end for
+
+        if len(sub_patterns) == 1 {
+            cur_pattern = sub_patterns[0];
+        } else {
+            // join the list of sub-patterns
+            cur_pattern = join_patterns(sub_patterns);
+        }   //end if
+    }   //end for
+
+    return cur_pattern;
+}   //end func
+
+
+
+// joins the given pattern list
+func join_patterns(patterns []*Pattern) *Pattern {
+    var sub_pattern_size = len(*patterns[0]);
+    // calculate how many patterns should be put in 1 row when joining them
+    var patterns_per_row = int(math.Sqrt(float64(len(patterns))));
+    var new_pattern = NewPattern(patterns_per_row * sub_pattern_size);
+
+    // for each pattern in the list
+    for pattern_idx, cur_pattern := range patterns {
+        var start_row    = safe_division(pattern_idx, patterns_per_row) * sub_pattern_size;
+        var start_column = safe_modulo(pattern_idx, patterns_per_row) * sub_pattern_size;
+
+        //fmt.Println("Pattern", pattern_idx, "starts at row:", start_row, "and column:", start_column)
+
+        // for each line in the current pattern
+        for i, line := range *cur_pattern {
+            // for each character in the line
+            for j, char := range line {
+                // set the corresponding character in the joined pattern
+                (*new_pattern)[start_row + i][start_column + j] = char;
+            }   //end for
+        }   //end for
+    }   //end for
+    return new_pattern;
+}   //end func
+
+
+
 // applies the rule which matches the given pattern (in any form) and returns the result
 func match_rule_by_pattern(pattern *Pattern, rules map[string]string) (result string) {
-    // stores all the possible forms in which the given pattern can occur
-    var possible_rules = make([]string, 0);
-
-    // add the pattern itself
-    possible_rules = append(possible_rules, RuleFromPattern(pattern));
-
-    // add the flipped versions of the pattern
-    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetFlipX()));
-    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetFlipY()));
-
-    // add the rotated versions of the pattern
-    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetRotate90()));
-    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetRotate90().GetRotate90()));
-    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetRotate90().GetRotate90().GetRotate90()));
-
-    // stores whether a rule is found in the map
+    var cur_pattern = PatternFromPattern(pattern);
+    // stores if the pattern is found in the rulebook
     var in_map = false;
-    // for each possible rule form of the pattern
-    for _, rule := range possible_rules {
-        // try to get the result of applying a rule to the pattern
-        result, in_map = rules[rule];
+    // stores how many times the pattern has been rotated
+    var rotate_count = 0;
+
+    for rotate_count < 4 {
+        // try to find the current pattern in the rulebook
+        result, in_map = rules[RuleFromPattern(cur_pattern)];
         if in_map {
             break;
         }   //end if
+
+        // try to find the flipped versions of the pattern in the rulebook
+        result, in_map = rules[RuleFromPattern(cur_pattern.GetFlipX())];
+        if in_map {
+            break;
+        }   //end if
+        result, in_map = rules[RuleFromPattern(cur_pattern.GetFlipY())];
+        if in_map {
+            break;
+        }   //end if
+
+        // rotate the pattern
+        cur_pattern = cur_pattern.GetRotate90();
+        rotate_count++;
     }   //end for
 
     // if no form of the pattern was found in the rule book, complain
@@ -103,6 +170,21 @@ func NewPattern(size int) *Pattern {
 }   //end func
 
 
+// returns a pattern, created from the given pattern
+func PatternFromPattern(pattern *Pattern) *Pattern {
+    var new_pattern = NewPattern(len(*pattern));
+
+    // for each line in the pattern
+    for i, line := range *pattern {
+        // for each character in the line
+        for j, char := range line {
+            (*new_pattern)[i][j] = char;
+        }   //end for
+    }   //end for
+    return new_pattern;
+}   //end func
+
+
 // return a pattern, created from the given rule
 func PatternFromRule(rule string) *Pattern {
     // split the rule into the lines of the pattern
@@ -128,6 +210,19 @@ func RuleFromPattern(pattern *Pattern) (rule string) {
             format_string += "/";
         }   //end if
         rule += fmt.Sprintf(format_string, strings.Join(line, ""));
+    }   //end for
+    return;
+}   //end func
+
+
+// returns the number of set bits in the pattern
+func (pattern Pattern) GetSetBits() (count int) {
+    for _, line := range pattern {
+        for _, char := range line {
+            if char == "#" {
+                count++;
+            }   //end if
+        }   //end for
     }   //end for
     return;
 }   //end func
@@ -187,17 +282,12 @@ func (pattern Pattern) GetRotate90() *Pattern {
 // splits the pattern into equal squares
 func (pattern Pattern) GetSubPatterns() (sub_patterns []*Pattern) {
     var pattern_size     = len(pattern);
-    var sub_pattern_size = 0;
-    if (pattern_size % 2) == 0 {
-        sub_pattern_size = 2;
-    } else {
-        sub_pattern_size = 3;
-    }   //end else
+    var sub_pattern_size = get_divisor(pattern_size);
 
     // iterate over the lines of the pattern in steps = to 1 sub-pattern
-    for start_row := 0; start_row < (pattern_size - 1); start_row += sub_pattern_size {
+    for start_row := 0; start_row < pattern_size; start_row += sub_pattern_size {
         // iterate over the columns of the pattern in steps = to 1 sub-pattern
-        for start_column := 0; start_column < (pattern_size - 1); start_column += sub_pattern_size {
+        for start_column := 0; start_column < pattern_size; start_column += sub_pattern_size {
             var new_sub_pattern = NewPattern(0);
 
             // for each line, belonging to the current sub-pattern
@@ -218,7 +308,6 @@ func (pattern Pattern) GetSubPatterns() (sub_patterns []*Pattern) {
             sub_patterns = append(sub_patterns, new_sub_pattern);
         }   //end for
     }   //end for
-
     return;
 }   //end func
 
@@ -229,4 +318,32 @@ func (pattern Pattern) String() (pretty_pattern string) {
         pretty_pattern += fmt.Sprintf("%v\n", strings.Join(line, ""));
     }   //end for
     return;
+}   //end func
+
+
+
+// returns whether the number is divisible by 2, if not - then it is divisible by 3
+func get_divisor(number int) (divisor int) {
+    if (number % 2) == 0 {
+        divisor = 2;
+    } else {
+        divisor = 3;
+    }   //end else
+    return;
+}   //end func
+
+
+func safe_division(x, y int) int {
+    if x == 0 {
+        return 0;
+    }   //end if
+    return (x / y);
+}   //end func
+
+
+func safe_modulo(x, y int) int {
+    if x == 0 {
+        return 0;
+    }   //end if
+    return (x % y);
 }   //end func
