@@ -3,6 +3,7 @@ package main
 import (
     "bufio"
     "fmt"
+    "log"
     "os"
     "strings"
 )   //end imports
@@ -38,16 +39,48 @@ func main() {
 
         // PART II
 
+
         // clear the input map
         rules = make(map[string]string, 0);
     }   //end for
 }   //end main
 
 
-// TODO: implement function to find the rule which matches the given pattern
-// applies the rule which matches the given pattern and returns the result
-func match_rule_by_pattern(pattern *Pattern, rules map[string]string) string {
-    return "";
+
+// applies the rule which matches the given pattern (in any form) and returns the result
+func match_rule_by_pattern(pattern *Pattern, rules map[string]string) (result string) {
+    // stores all the possible forms in which the given pattern can occur
+    var possible_rules = make([]string, 0);
+
+    // add the pattern itself
+    possible_rules = append(possible_rules, RuleFromPattern(pattern));
+
+    // add the flipped versions of the pattern
+    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetFlipX()));
+    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetFlipY()));
+
+    // add the rotated versions of the pattern
+    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetRotate90()));
+    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetRotate90().GetRotate90()));
+    possible_rules = append(possible_rules, RuleFromPattern(pattern.GetRotate90().GetRotate90().GetRotate90()));
+
+    // stores whether a rule is found in the map
+    var in_map = false;
+    // for each possible rule form of the pattern
+    for _, rule := range possible_rules {
+        // try to get the result of applying a rule to the pattern
+        result, in_map = rules[rule];
+        if in_map {
+            break;
+        }   //end if
+    }   //end for
+
+    // if no form of the pattern was found in the rule book, complain
+    if !in_map {
+        log.Fatal("Pattern doesn't exist in rulebook under any form !");
+    }   //end if
+
+    return;
 }   //end func
 
 
@@ -151,7 +184,43 @@ func (pattern Pattern) GetRotate90() *Pattern {
 }   //end func
 
 
-// TODO: implement function to split Pattern in smaller chunks
+// splits the pattern into equal squares
+func (pattern Pattern) GetSubPatterns() (sub_patterns []*Pattern) {
+    var pattern_size     = len(pattern);
+    var sub_pattern_size = 0;
+    if (pattern_size % 2) == 0 {
+        sub_pattern_size = 2;
+    } else {
+        sub_pattern_size = 3;
+    }   //end else
+
+    // iterate over the lines of the pattern in steps = to 1 sub-pattern
+    for start_row := 0; start_row < (pattern_size - 1); start_row += sub_pattern_size {
+        // iterate over the columns of the pattern in steps = to 1 sub-pattern
+        for start_column := 0; start_column < (pattern_size - 1); start_column += sub_pattern_size {
+            var new_sub_pattern = NewPattern(0);
+
+            // for each line, belonging to the current sub-pattern
+            for i := start_row; i < (start_row + sub_pattern_size); i++ {
+                var new_sub_line = make([]string, 0);
+
+                // for each column, belonging to the current sub-pattern
+                for j := start_column; j < (start_column + sub_pattern_size); j++ {
+                    // append the character at this position to the sub-pattern's line
+                    new_sub_line = append(new_sub_line, pattern[i][j]);
+                }   //end for
+
+                // append the sub-pattern's line 
+                *new_sub_pattern = append(*new_sub_pattern, new_sub_line);
+            }   //end for
+
+            // add the sub-pattern to the list
+            sub_patterns = append(sub_patterns, new_sub_pattern);
+        }   //end for
+    }   //end for
+
+    return;
+}   //end func
 
 
 func (pattern Pattern) String() (pretty_pattern string) {
