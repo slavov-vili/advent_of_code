@@ -5,7 +5,6 @@ import (
     "errors"
     "fmt"
     "log"
-    "math"
     "os"
     "strings"
 )   //end imports
@@ -27,6 +26,8 @@ func main() {
     var scanner = bufio.NewScanner(os.Stdin);
     // stores the input matrix
     var nodes = make([][]string, 0);
+    // stores how many times the program should iterate in part 1
+    const part_1_iters = 10000;
 
     // while input is being received
     println("Input:")
@@ -41,16 +42,18 @@ func main() {
             continue;
         }   //end if
 
+        // TODO: figure out why position is out of grid
+
 
         // calculate the row and column, where the virus carrier starts
-        var start_row    = int(math.Sqrt(float64(len(nodes))));
-        var start_column = int(math.Sqrt(float64(len(nodes[0]))));
+        var start_row    = (len(nodes) / 2) + 1;
+        var start_column = (len(nodes[0]) / 2) + 1;
 
 
         // PART I
         var carrier_1 = NewVirusCarrier(North, start_row, start_column);
-        var bursts_until_infect = iterate_until_infect(carrier_1, nodes);
-        fmt.Println("It took", bursts_until_infect, " bursts to infect a node !");
+        var infecting_burst_count = iterate_to_infect(carrier_1, nodes, part_1_iters);
+        fmt.Println(infecting_burst_count, "burst caused an infection!");
 
 
         // PART II
@@ -64,25 +67,34 @@ func main() {
 
 
 // moves the virus carrier until an "infect" operation is performed
-func iterate_until_infect(vc *VirusCarrier, nodes [][]string) (count int) {
+func iterate_to_infect(vc *VirusCarrier, nodes [][]string, iter_count int) (count int) {
     var nodes_copy = copy_2d_array(nodes);
 
     // iterate until stopped
-    for {
+    for i := 0; i < iter_count; i++ {
+        //fmt.Println("Cur-Dir:", vc.direction)
+        //fmt.Println("Node status:", nodes[vc.pos.x][vc.pos.y])
+        //fmt.Println("Cur-Pos:", *vc.pos)
+
         // turn the virus carrier
         vc.Turn(nodes_copy);
+        //fmt.Println("New-Dir:", vc.direction)
 
         // do work on the current node
-        var new_node_status = vc.DoWork(nodes);
-        count++;
+        var new_node_status = vc.DoWork(nodes_copy);
+        //fmt.Println("New Node status:", nodes[vc.pos.x][vc.pos.y])
         // if the node was infected
-        if new_node_status == "#" { break; }   //end if
+        if new_node_status == "#" {
+            count++;
+        }   //end if
 
         // move the carrier
-        _, err := vc.Move(nodes);
+        _, err := vc.Move(nodes_copy);
         if err != nil {
             log.Fatal(err);
         }   //end if
+        //fmt.Println("New-Pos:", *vc.pos)
+        //println()
     }   //end for
     return;
 }   //end func
@@ -122,7 +134,7 @@ func NewVirusCarrier(new_direction Direction, new_row, new_column int) *VirusCar
 
 
 // turns based on the status of the current node
-func (vc VirusCarrier) Turn(nodes [][]string) Direction {
+func (vc *VirusCarrier) Turn(nodes [][]string) Direction {
     var cur_node_status = nodes[vc.pos.x][vc.pos.y];
 
     // if the current node IS infected
@@ -139,7 +151,7 @@ func (vc VirusCarrier) Turn(nodes [][]string) Direction {
 
 
 // moves the virus carrier along the grid based on its direction
-func (vc VirusCarrier) Move(nodes [][]string) (new_pos *Pos, err error) {
+func (vc *VirusCarrier) Move(nodes [][]string) (new_pos *Pos, err error) {
     switch vc.direction {
     case East:
         new_pos = &Pos{vc.pos.x, (vc.pos.y - 1)};
