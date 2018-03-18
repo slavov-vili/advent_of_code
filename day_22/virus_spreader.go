@@ -176,15 +176,24 @@ func NewVirusCarrier(new_direction Direction, new_row, new_column int) *VirusCar
 // turns based on the status of the current node
 func (vc *VirusCarrier) Turn(nodes [][]string) Direction {
     var cur_node_status = nodes[vc.pos.x][vc.pos.y];
-    // if the current node IS infected
-    if cur_node_status == "#" {
+
+    switch cur_node_status {
+    // if the current node is INFECTED
+    case "#":
         // turn right
         vc.direction = (vc.direction + 1) % DirectionCount;
-    // if the current node is NOT infected
-    } else {
+    
+    // if the current node is CLEAN
+    case ".":
         // turn left
         vc.direction = ((vc.direction - 1) + DirectionCount) % DirectionCount;
-    }   //end if
+
+    // if the current node is FLAGGED
+    case "F":
+        // turn around
+        vc.direction = (vc.direction + (DirectionCount / 2)) % DirectionCount;
+    }   //end switch
+
     return vc.direction;
 }   //end func
 
@@ -220,14 +229,38 @@ func (vc VirusCarrier) DoWork(nodes [][]string) (node_status string) {
     // store the initial status of the node
     node_status = nodes[vc.pos.x][vc.pos.y];
 
-    // if the node is infected
-    if node_status == "#" {
-        // clean it
-        node_status = ".";
-    // if the node is clean
-    } else {
+    // if the node is CLEAN
+    if node_status == "." {
         // infect it
         node_status = "#";
+    // if the node is INFECTED
+    } else {
+        // clean it
+        node_status = ".";
+    }   // end else
+
+    // set the new status of the node
+    nodes[vc.pos.x][vc.pos.y] = node_status;
+    return;
+}   //end func
+
+
+// performs an ADVANCED action based on the status of the current node in the grid
+func (vc VirusCarrier) DoAdvancedWork(nodes [][]string) (node_status string) {
+    // store the initial status of the node
+    node_status = nodes[vc.pos.x][vc.pos.y];
+
+    switch node_status {
+    
+    }   //end switch
+    // if the node is CLEAN
+    if node_status == "." {
+        // infect it
+        node_status = "#";
+    // if the node is INFECTED
+    } else {
+        // clean it
+        node_status = ".";
     }   // end else
 
     // set the new status of the node
