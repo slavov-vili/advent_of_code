@@ -25,8 +25,9 @@ func main() {
     var scanner = bufio.NewScanner(os.Stdin);
     // stores the input matrix
     var nodes = make([][]string, 0);
-    // stores how many times the program should iterate in part 1
+    // stores how many times the program should iterate in each part of the assignment
     const part_1_iters = 10000;
+    const part_2_iters = 10000000;
 
     // while input is being received
     println("Input:")
@@ -41,8 +42,6 @@ func main() {
             continue;
         }   //end if
 
-        // TODO: figure out why position is out of grid
-
 
         // calculate the row and column, where the virus carrier starts
         var start_row    = len(nodes) / 2;
@@ -51,11 +50,14 @@ func main() {
 
         // PART I
         var carrier_1 = NewVirusCarrier(North, start_row, start_column);
-        var infecting_burst_count = iterate_to_infect(carrier_1, nodes, part_1_iters);
-        fmt.Println(infecting_burst_count, "bursts caused an infection!");
+        var infecting_burst_count_1 = iterate_to_infect(carrier_1, VirusCarrier.DoWork, nodes, part_1_iters);
+        fmt.Println(infecting_burst_count_1, "bursts caused an infection!");
 
 
         // PART II
+        var carrier_2 = NewVirusCarrier(North, start_row, start_column);
+        var infecting_burst_count_2 = iterate_to_infect(carrier_2, VirusCarrier.DoAdvancedWork, nodes, part_2_iters);
+        fmt.Println(infecting_burst_count_2, "bursts caused an infection!");
 
 
         // clear the input map
@@ -66,7 +68,7 @@ func main() {
 
 
 // moves the virus carrier until an "infect" operation is performed
-func iterate_to_infect(vc *VirusCarrier, nodes [][]string, iter_count int) (count int) {
+func iterate_to_infect(vc *VirusCarrier, do_work func(VirusCarrier, [][]string) string, nodes [][]string, iter_count int) (count int) {
     var nodes_copy = copy_2d_array(nodes);
 
     // iterate until stopped
@@ -75,7 +77,7 @@ func iterate_to_infect(vc *VirusCarrier, nodes [][]string, iter_count int) (coun
         vc.Turn(nodes_copy);
 
         // do work on the current node
-        var new_node_status = vc.DoWork(nodes_copy);
+        var new_node_status = do_work(*vc, nodes_copy);
         // if the node was infected
         if new_node_status == "#" {
             count++;
@@ -229,15 +231,17 @@ func (vc VirusCarrier) DoWork(nodes [][]string) (node_status string) {
     // store the initial status of the node
     node_status = nodes[vc.pos.x][vc.pos.y];
 
+    switch node_status {
     // if the node is CLEAN
-    if node_status == "." {
+    case ".":
         // infect it
         node_status = "#";
+
     // if the node is INFECTED
-    } else {
+    case "#":
         // clean it
-        node_status = ".";
-    }   // end else
+        node_status = "."
+    }   //end switch
 
     // set the new status of the node
     nodes[vc.pos.x][vc.pos.y] = node_status;
@@ -251,17 +255,26 @@ func (vc VirusCarrier) DoAdvancedWork(nodes [][]string) (node_status string) {
     node_status = nodes[vc.pos.x][vc.pos.y];
 
     switch node_status {
-    
-    }   //end switch
     // if the node is CLEAN
-    if node_status == "." {
+    case ".":
+        // weaken it
+        node_status = "W";
+
+    // if the node is WEAKEND
+    case "W":
         // infect it
         node_status = "#";
+
     // if the node is INFECTED
-    } else {
+    case "#":
+        // flag it
+        node_status = "F";
+
+    // if the node is FLAGGED
+    case "F":
         // clean it
-        node_status = ".";
-    }   // end else
+        node_status = "."
+    }   //end switch
 
     // set the new status of the node
     nodes[vc.pos.x][vc.pos.y] = node_status;
