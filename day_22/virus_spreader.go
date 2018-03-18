@@ -4,7 +4,6 @@ import (
     "bufio"
     "errors"
     "fmt"
-    "log"
     "os"
     "strings"
 )   //end imports
@@ -14,9 +13,9 @@ import (
 type Direction int
 const (
     North Direction = iota;
-    West  
-    South 
     East  
+    South 
+    West  
     DirectionCount  = 4;
 )   //end const
 
@@ -46,14 +45,14 @@ func main() {
 
 
         // calculate the row and column, where the virus carrier starts
-        var start_row    = (len(nodes) / 2) + 1;
-        var start_column = (len(nodes[0]) / 2) + 1;
+        var start_row    = len(nodes) / 2;
+        var start_column = len(nodes[0]) / 2;
 
 
         // PART I
         var carrier_1 = NewVirusCarrier(North, start_row, start_column);
         var infecting_burst_count = iterate_to_infect(carrier_1, nodes, part_1_iters);
-        fmt.Println(infecting_burst_count, "burst caused an infection!");
+        fmt.Println(infecting_burst_count, "bursts caused an infection!");
 
 
         // PART II
@@ -72,17 +71,11 @@ func iterate_to_infect(vc *VirusCarrier, nodes [][]string, iter_count int) (coun
 
     // iterate until stopped
     for i := 0; i < iter_count; i++ {
-        //fmt.Println("Cur-Dir:", vc.direction)
-        //fmt.Println("Node status:", nodes[vc.pos.x][vc.pos.y])
-        //fmt.Println("Cur-Pos:", *vc.pos)
-
         // turn the virus carrier
         vc.Turn(nodes_copy);
-        //fmt.Println("New-Dir:", vc.direction)
 
         // do work on the current node
         var new_node_status = vc.DoWork(nodes_copy);
-        //fmt.Println("New Node status:", nodes[vc.pos.x][vc.pos.y])
         // if the node was infected
         if new_node_status == "#" {
             count++;
@@ -90,11 +83,14 @@ func iterate_to_infect(vc *VirusCarrier, nodes [][]string, iter_count int) (coun
 
         // move the carrier
         _, err := vc.Move(nodes_copy);
+        // if the carrier is trying to move to a node outside the grid
         if err != nil {
-            log.Fatal(err);
+            // expand the grid by 2 rows and 2 columns
+            nodes_copy = expand_grid(nodes_copy);
+            // update the current position
+            vc.pos.x++;
+            vc.pos.y++;
         }   //end if
-        //fmt.Println("New-Pos:", *vc.pos)
-        //println()
     }   //end for
     return;
 }   //end func
@@ -111,7 +107,51 @@ func copy_2d_array(arr [][]string) [][]string {
     for i := range arr_copy {
         arr_copy[i] = make([]string, column_count);
     }   //end for
+
+    for i, row := range arr {
+        for j, char := range row {
+            arr_copy[i][j] = char;
+        }   //end for
+    }   //end for
     return arr_copy;
+}   //end func
+
+
+// expands a 2D grid by adding 2 rows and 2 columns
+func expand_grid(grid [][]string) [][]string {
+    // store the sizes of the new grid
+    var new_column_count = len(grid[0]) + 2;
+    // make a new grid
+    var new_grid = make([][]string, 0);
+
+    // make two empty rows for the first and last row
+    var empty_row_first = make([]string,  new_column_count);
+    var empty_row_last  = make([]string,  new_column_count);
+    for i := range empty_row_first {
+        empty_row_first[i] = ".";
+        empty_row_last[i]  = ".";
+    }   //end for
+
+    // append the first empty row
+    new_grid = append(new_grid, empty_row_first);
+    // for each row in the old grid
+    for _, row := range grid {
+        // create a new row for the new grid
+        var new_row = make([]string, 0);
+
+        // fill in the new row
+        new_row = append(new_row, ".");
+        for _, char := range row {
+            new_row = append(new_row, char);
+        }   //end for
+        new_row = append(new_row, ".");
+
+        // add the new row to the new grid
+        new_grid = append(new_grid, new_row);
+    }   //end for
+    // append the last empty row
+    new_grid = append(new_grid, empty_row_last);
+    return new_grid;
 }   //end func
 
 
@@ -136,7 +176,6 @@ func NewVirusCarrier(new_direction Direction, new_row, new_column int) *VirusCar
 // turns based on the status of the current node
 func (vc *VirusCarrier) Turn(nodes [][]string) Direction {
     var cur_node_status = nodes[vc.pos.x][vc.pos.y];
-
     // if the current node IS infected
     if cur_node_status == "#" {
         // turn right
@@ -153,10 +192,10 @@ func (vc *VirusCarrier) Turn(nodes [][]string) Direction {
 // moves the virus carrier along the grid based on its direction
 func (vc *VirusCarrier) Move(nodes [][]string) (new_pos *Pos, err error) {
     switch vc.direction {
-    case East:
-        new_pos = &Pos{vc.pos.x, (vc.pos.y - 1)};
-        
     case West:
+        new_pos = &Pos{vc.pos.x, (vc.pos.y - 1)};
+
+    case East:
         new_pos = &Pos{vc.pos.x, (vc.pos.y + 1)};
 
     case North:

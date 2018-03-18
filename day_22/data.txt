@@ -1,6 +1,6 @@
 Part I:
     input:  look at file "input_1.txt"
-    output: 
+    output: 5280
 
 Part II:
     input:  same as Part I
