@@ -50,13 +50,13 @@ func main() {
 
         // PART I
         var carrier_1 = NewVirusCarrier(North, start_row, start_column);
-        var infecting_burst_count_1 = iterate_to_infect(carrier_1, VirusCarrier.DoWork, nodes, part_1_iters);
+        var infecting_burst_count_1 = iterate_to_infect(carrier_1, nodes, part_1_iters, VirusCarrier.DoWork);
         fmt.Println(infecting_burst_count_1, "bursts caused an infection!");
 
 
         // PART II
         var carrier_2 = NewVirusCarrier(North, start_row, start_column);
-        var infecting_burst_count_2 = iterate_to_infect(carrier_2, VirusCarrier.DoAdvancedWork, nodes, part_2_iters);
+        var infecting_burst_count_2 = iterate_to_infect(carrier_2, nodes, part_2_iters, VirusCarrier.DoAdvancedWork);
         fmt.Println(infecting_burst_count_2, "bursts caused an infection!");
 
 
@@ -68,7 +68,7 @@ func main() {
 
 
 // moves the virus carrier until an "infect" operation is performed
-func iterate_to_infect(vc *VirusCarrier, do_work func(VirusCarrier, [][]string) string, nodes [][]string, iter_count int) (count int) {
+func iterate_to_infect(vc *VirusCarrier, nodes [][]string, iter_count int, do_work func(VirusCarrier, [][]string) string) (count int) {
     var nodes_copy = copy_2d_array(nodes);
 
     // iterate until stopped
