@@ -37,8 +37,7 @@ func main() {
 
 
         // PART I
-        var program_1 = NewProgram(make(map[string]int, 0), 0, false);
-        fmt.Println("The 'mul' instruction was called", count_muls(program_1, instructions), "times!");
+        fmt.Println("The 'mul' instruction was called", count_muls(instructions), "times!");
 
         // PART II
 
@@ -51,7 +50,9 @@ func main() {
 
 
 // counts the number of times the 'mul' instruction was called
-func count_muls(program *Program, instructions []*Instruction) (mul_count int) {
+func count_muls(instructions []*Instruction) (mul_count int) {
+    var program = NewProgram(make(map[string]int, 0), 0, false);
+
     // while the program hasn't terminated
     for !program.IsTerminated(len(instructions)) {
         // store the current instruction
