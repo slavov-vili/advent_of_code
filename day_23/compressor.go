@@ -193,10 +193,8 @@ func (program *Program) IncrementInstructionIndex(last_was_jump bool) int {
 
 // gets the value of an instruction argument
 func get_arg_value(argument string, registers map[string]int) (arg_value int) {
-    var isNumber = regexp.MustCompile("\\d");
-
     // if the argument IS a number
-    if isNumber.MatchString(argument) {
+    if str_is_number(argument) {
         // the value is the argument itself
         arg_value, _ = strconv.Atoi(argument);
     } else {
@@ -208,15 +206,34 @@ func get_arg_value(argument string, registers map[string]int) (arg_value int) {
 }   //end func
 
 
-// returns a clone of the given int array
-func clone_int_array(array_to_clone []int) (cloned_array []int) {
-    // make an array of the same length
-    cloned_array = make([]int, len(array_to_clone));
+// returns if the given string is anumber
+func str_is_number(str string) bool {
+    var isNumber = regexp.MustCompile("\\d");
+    return isNumber.MatchString(str);
+}   //end func
 
-    // transfer all elements from the initial array
-    for i, value := range array_to_clone {
-        cloned_array[i] = value;
+
+// appends the string to the slice IF it is not already there
+func safe_append_to_str_slice(str string, slice []string) (new_slice []string) {
+    new_slice = make([]string, len(slice))
+    for i, el := range slice {
+        new_slice[i] = el;
     }   //end for
 
-    return;
+    if !in_str_slice(str, new_slice) {
+        new_slice = append(new_slice, str);
+    }   //end if
+
+    return new_slice;
+}   //end func
+
+
+func in_str_slice(str string, slice []string) (found bool) {
+    for _, el := range slice {
+        if el == str {
+            found = true;
+            break;
+        }   //end if
+    }   //end for
+    return found;
 }   //end func
