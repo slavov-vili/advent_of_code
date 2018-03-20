@@ -1,0 +1,39 @@
+              iter 1                iter 2             iter 3             iter 4             iter 5             ... iter 106497
+set b 65
+set c b
+jnz a 2
+jnz 1 5
+mul b 100     \\ b = 6500
+sub b -100000 \\ b = 106500
+set c b       \\ c = 106500
+sub c -17000  \\ c = 123500
+set f 1
+set d 2
+set e 2
+set g d       \\ g = 2              g = 2              g = 2              g = 2              g = 2                  g = 2
+mul g e       \\ g = 4              g = 6              g = 8              g = 10             g = 12                 g = 2 * 106499
+sub g b       \\ g = -106496        g = -106494        g = -106492        g = -106490        g = -106488            g = g - b
+jnz g 2       \\ JUMP               JUMP               JUMP               JUMP               JUMP                   JUMP
+set f 0       \\ f = 1              f = 1              f = 1              f = 1              f = 1                  f = 0
+sub e -1      \\ e = 3              e = 4              e = 5              e = 6              e = 7                  e = 106500
+set g e       \\ g = 3              g = 4              g = 5              g = 6              g = 7                  g = 106500
+sub g b       \\ g = -106497        g = -106496        g = -106495        g = -106494        g = -106493            g = 0
+jnz g -8      \\ JUMP (GOTO iter 2) JUMP (GOTO iter 3) JUMP (GOTO iter 4) JUMP (GOTO iter 5) JUMP (GOTO iter 6) ... NO JUMP
+
+              iter 106497           iter 106498
+                                    do ^ again
+sub d -1      \\ d = 3
+set g d       \\ g = 3
+sub g b       \\ g = -106497
+jnz g -13     \\ JUMP (GOTO iter n)
+
+              iter 212994           iter next
+                                    do ^ and ^^ again
+jnz f 2       \\ JUMP               f = 0 when (b % 2 == 0)
+sub h -1      \\ h = 1
+set g b       \\ g = 106500         g = b + 17
+sub g c       \\ g = -17000         g = -(c + 17)
+jnz g 2       \\ JUMP               if (c % 17) == 0, then JUMP at some point
+jnz 1 3                             EXIT
+sub b -17     \\ b = 106517
+jnz 1 -23     \\ JUMP (GOTO iter n)
