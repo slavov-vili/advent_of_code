@@ -21,7 +21,7 @@ set g e       // g = 3              g = 4              g = 5              g = 6 
 sub g b       // g = -106497        g = -106496        g = -106495        g = -106494        g = -106493            g = 0
 jnz g -8      // JUMP (GOTO iter 2) JUMP (GOTO iter 3) JUMP (GOTO iter 4) JUMP (GOTO iter 5) JUMP (GOTO iter 6) ... NO JUMP
 
-              // INCREMENTS tha value of d (also repeats the above loop 106497 times)
+              // INCREMENTS the value of 'd' (also repeats the above loop 106497 times)
               iter 106497           iter 106498
                                     do ^ again
 sub d -1      // d = 3
@@ -29,13 +29,15 @@ set g d       // g = 3
 sub g b       // g = -106497
 jnz g -13     // JUMP (GOTO iter n)
 
+              // ITERATES while b != c AND
+              // INCREMENTS the value of 'h' if f == 0
               iter 212994           iter next
                                     do ^ and ^^ again
-jnz f 2       // NO JUMP            f = 0 when (b % d == 0)
+jnz f 2       // NO JUMP            f = 0 when (b % (e *d) == 0)
 sub h -1      // h = 1              h = 2 = h++
-set g b       // g = 106500
-sub g c       // g = -17000         -16983 = -(g + 17)
-jnz g 2       // JUMP               if (g == -17), then NO JUMP
+set g b       // g = 106500         g = b
+sub g c       // g = -17000         g = b - c
+jnz g 2       // JUMP               if (g == 0), then NO JUMP
 jnz 1 3       //                    EXIT
 sub b -17     // b = 106517
 jnz 1 -23     // JUMP (GOTO iter n)

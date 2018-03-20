@@ -76,11 +76,24 @@ func count_muls(program *Program, instructions []*Instruction) (mul_count int) {
 
 // runs the program until the value in register 'h' stops changing
 func get_end_value_of_h() (end_value int) {
-    var g = 17000;
-    for g >= -17 {
-        end_value++;
-        g-=17;
+    var b = (65 * 100) + 100000;
+    var c = b + 17000;
+
+    for (c - b) >= 0 {
+        var d = 2;
+
+        for d < b {
+            if (b % d) == 0 {
+                end_value++;
+               break;
+            }   //end if
+
+            d++;
+        }   //end for
+
+        b += 17;
     }   //end for
+
     return;
 }   //end func
 
