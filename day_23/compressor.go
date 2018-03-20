@@ -41,10 +41,7 @@ func main() {
         fmt.Println("The 'mul' instruction was called", count_muls(program_1, instructions), "times!");
 
         // PART II
-        var program_2_regs = make(map[string]int, 0);
-        program_2_regs["a"] = 1;
-        var program_2 = NewProgram(program_2_regs, 0, false);
-        fmt.Println("End value for register h:", get_end_value_of_h(program_2, instructions));
+        fmt.Println("End value for register h:", get_end_value_of_h());
 
 
         // clear the instruction list
@@ -52,7 +49,6 @@ func main() {
     }   //end for
 }   //end main
 
-// TODO: if find a cycle of instructions - break
 
 
 // counts the number of times the 'mul' instruction was called
@@ -79,9 +75,13 @@ func count_muls(program *Program, instructions []*Instruction) (mul_count int) {
 
 
 // runs the program until the value in register 'h' stops changing
-func get_end_value_of_h(program *Program, instructions []*Instruction) (end_value int) {
-
-    return program.registers["h"];
+func get_end_value_of_h() (end_value int) {
+    var g = 17000;
+    for g >= -17 {
+        end_value++;
+        g-=17;
+    }   //end for
+    return;
 }   //end func
 
 
