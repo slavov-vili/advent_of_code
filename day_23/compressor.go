@@ -76,13 +76,17 @@ func count_muls(program *Program, instructions []*Instruction) (mul_count int) {
 
 // runs the program until the value in register 'h' stops changing
 func get_end_value_of_h() (end_value int) {
+    // set the initial values for registers b and c
     var b = (65 * 100) + 100000;
     var c = b + 17000;
 
+    // while c != b
     for (c - b) >= 0 {
         var d = 2;
 
+        // while d < b
         for d < b {
+            // if b is divisible d then f = 0, which means h will be incremented
             if (b % d) == 0 {
                 end_value++;
                break;
