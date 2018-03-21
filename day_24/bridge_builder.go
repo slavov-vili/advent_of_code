@@ -120,6 +120,7 @@ func find_best_bridge(start_port int, port2comps map[int][]*Component, condition
                 }   //end if
             }   //end else
         }   //end switch
+
     }   //end for
     return;
 }   //end func
