@@ -45,16 +45,23 @@ func main() {
 
 
         // PART I
-        var bridge, sum = find_longest_bridge(port2comps, start_port);
-        fmt.Println("Longest bridge:");
-        for _, comp := range bridge {
+        var p1_bridge, p1_sum = find_best_bridge(start_port, port2comps, "sum");
+        fmt.Println("Strongest bridge:");
+        for _, comp := range p1_bridge {
             fmt.Print(*comp, " ");
         }   //end for
         println();
-        fmt.Println("Longest bridge strength:", sum);
+        fmt.Println("Strongest bridge strength:", p1_sum);
 
 
         // PART II
+        var p2_bridge, p2_sum = find_best_bridge(start_port, port2comps, "length");
+        fmt.Println("Longest bridge:");
+        for _, comp := range p2_bridge {
+            fmt.Print(*comp, " ");
+        }   //end for
+        println();
+        fmt.Println("Longest bridge strength:", p2_sum);
 
 
         // clear the instruction list
@@ -65,7 +72,7 @@ func main() {
 
 
 
-func find_longest_bridge(port2comps map[int][]*Component, start_port int) (bridge []*Component, sum int) {
+func find_best_bridge(start_port int, port2comps map[int][]*Component, condition string) (bridge []*Component, sum int) {
     var next_comps = port2comps[start_port];
     if len(next_comps) == 0 {
         return;
@@ -89,18 +96,31 @@ func find_longest_bridge(port2comps map[int][]*Component, start_port int) (bridg
         // mark the component's port as busy
         var free_port = comp.BlockPort(start_port);
         // recursively find the rest of the bridge and the sum of the next components
-        var bridge_rest, sum_rest = find_longest_bridge(port2comps_copy, free_port);
+        var bridge_rest, sum_rest = find_best_bridge(free_port, port2comps_copy, condition);
 
         // append the rest of the bridge and add to the sum
         temp_bridge = append(temp_bridge, bridge_rest...);
         temp_sum += sum_rest;
         
-        if temp_sum > sum {
-            bridge = temp_bridge;
-            sum    = temp_sum;
-        }   //end if
-    }   //end for
+        switch condition {
+        case "sum":
+            if temp_sum > sum {
+                bridge = temp_bridge;
+                sum    = temp_sum;
+            }   //end if
 
+        case "length":
+            if len(temp_bridge) > len(bridge) {
+                bridge = temp_bridge;
+                sum    = temp_sum;
+            } else {
+                if (len(temp_bridge) == len(bridge)) && (temp_sum > sum) {
+                    bridge = temp_bridge;
+                    sum    = temp_sum;
+                }   //end if
+            }   //end else
+        }   //end switch
+    }   //end for
     return;
 }   //end func
 
@@ -219,24 +239,5 @@ func (comp Component) GetFreePorts() (free_ports []int) {
         free_ports = append(free_ports, comp.ports[0]);
         free_ports = append(free_ports, comp.ports[1]);
     }   //end switch
-    return;
-}   //end func
-
-
-func (comp Component) MatchesComp(comp2 *Component) (matches bool) {
-    var comp1_free_ports = comp.GetFreePorts();
-    var comp2_free_ports = comp2.GetFreePorts();
-
-    OUTER:
-    // for each free port in the given component
-    for _, comp1_port := range comp1_free_ports {
-        // for each free port in the second component
-        for _, comp2_port := range comp2_free_ports {
-            if comp1_port == comp2_port {
-                matches = true;
-                break OUTER;
-            }   //end if
-        }   //end for
-    }   //end for
     return;
 }   //end func
