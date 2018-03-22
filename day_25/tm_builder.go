@@ -50,7 +50,7 @@ func main() {
                 // remove the punctuation before the first word (if any)
                 var first_word = words[0];
                 if first_word == "-" {
-                    first_word = words[1]
+                    first_word = words[1];
                 }   //end if
                 // remove the punctuation from the last word
                 var last_word = words[len(words)-1];
@@ -111,8 +111,6 @@ func main() {
             checksum += val;
         }   //end for
         fmt.Println("Checksum:", checksum);
-
-        // PART II
 
 
         // clear the states map and the tape
