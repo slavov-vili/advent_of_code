@@ -1,0 +1,3 @@
+Part I:
+    input:  look at file "input_1.txt"
+    output: 3732
