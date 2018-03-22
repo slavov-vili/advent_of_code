@@ -78,7 +78,7 @@ func main() {
                     if err != nil { log.Fatal(err) }
 
                 default:
-                    // append a new action to the list
+                    // append a new action to the current state's list
                     cur_state_input.AppendAction(cur_value_input, NewAction(first_word, last_word));
                 }   //end switch
             }   //end else
@@ -147,9 +147,11 @@ func do_actions(cur_state_name string, states map[string]*State, cur_idx int, ta
             // convert the action's argument to an int
             var new_value, err = strconv.Atoi(action.argument);
             if err != nil { log.Fatal(err) }
+            // change the value in the tape
             tape[cur_idx] = new_value;
 
         case "Move":
+            // increment the current position accordingly
             if action.argument == "right" {
                 next_idx = cur_idx + 1;
             } else {
@@ -157,6 +159,7 @@ func do_actions(cur_state_name string, states map[string]*State, cur_idx int, ta
             }   //end else
 
         case "Continue":
+            // store the name of the next state
             next_state_name = action.argument;
         }   //end switch
     }   //end for
