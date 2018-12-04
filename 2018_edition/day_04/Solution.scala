@@ -8,14 +8,6 @@ val minuteFormatter   = new SimpleDateFormat("mm")
 
 val guards = parseInput(readInput("input.txt"), dateTimeFormatter)
 
-//guards.foreach(x => {
-  //println("Guard: " + x.getId)
-  //x.getNaps.foreach(y => {
-    //println("Falls asleep: " + y.getStart + " => Wakes up: " + y.getEnd)
-  //})
-  //println()
-//})
-
 println("Solution to A: " + solveA(guards, minuteFormatter))
 
 println("Solution to B: " + solveB(guards, minuteFormatter))
@@ -23,11 +15,11 @@ println("Solution to B: " + solveB(guards, minuteFormatter))
 
 
 def solveA(guards: List[Guard], minuteFormatter: SimpleDateFormat): Int = {
-  val sleepyGuard = guards.map(x => (x, x.calcTotalSleepTime))
-                            .maxBy(x => x._2)
-                            ._1
+  val sleepyGuard = guards.map(guard => (guard, guard.calcTotalSleepTime))
+                          .maxBy(x => x._2)
+                          ._1
 
-  val sleepyGuardsMinute = sleepyGuard.calcSleepyMinute(minuteFormatter)
+  val sleepyGuardsMinute = sleepyGuard.calcSleepyMinute(minuteFormatter)._1
 
   return sleepyGuard.getId * sleepyGuardsMinute
 }
@@ -35,23 +27,18 @@ def solveA(guards: List[Guard], minuteFormatter: SimpleDateFormat): Int = {
 
 
 def solveB(guards: List[Guard], minuteFormatter: SimpleDateFormat): Int = {
-  val minutesToGuardIds = guards.flatMap(guard => guard.getMinutesAsleep(minuteFormatter)
-                                                       .map(minute => (minute, guard.getId)))
-                                .groupBy(_._1)
-                                .map({case (minute, minuteToGuardIdTuples) =>
-                                           (minute, minuteToGuardIdTuples.map(_._2))})
-                                .toMap
+  val guardIdToSleepyMinuteAndCount = guards.filterNot(_.getNaps.isEmpty)
+                                            .map(guard =>
+                                                 (guard.getId,
+                                                  guard.calcSleepyMinute(minuteFormatter)))
 
-  val sleepyMinute = minutesToGuardIds.maxBy(_._2.size)
-                                      ._1
-  println("Sleepy minute: " + sleepyMinute)
+  val guardToMostSleptMinute = guardIdToSleepyMinuteAndCount.maxBy({ case (_, minuteToCount) =>
+                                                                          minuteToCount._2})
 
-  val sleepyGuardId = minutesToGuardIds(sleepyMinute).groupBy(x => x)
-                                                     .maxBy(_._2.size)
-                                                     ._1
-  println("Sleepy Guard ID: " + sleepyGuardId)
-
-  return sleepyGuardId * sleepyMinute
+  return guardToMostSleptMinute match {
+    case (guardId, maxMinuteToCount) => guardId * maxMinuteToCount._1
+    case default => -1
+  }
 }
 
 
@@ -69,13 +56,13 @@ def parseInput(input: List[String], dateTimeFormatter: SimpleDateFormat): List[G
   val sortedEvents = input.map(x => parseLine(x, dateTimeFormatter))
                           .sortWith((x, y) => x._1.before(y._1))
 
-  val guardIdsToEvents = mapGuardIdToEvents(sortedEvents, -1)
+  val guardIdToEvent = mapGuardIdToEvent(sortedEvents, -1)
 
-  return guardIdsToEvents.groupBy(_._1)
-                         .map(idToEventsGroup => (idToEventsGroup._1, idToEventsGroup._2.map(_._2)))
-                         .map(idToEvents => 
-                              new Guard(idToEvents._1, groupEventsIntoNaps(idToEvents._2)))
-                         .toList
+  return guardIdToEvent.groupBy(_._1)
+                       .map({ case (id, idToEventTuples) => (id, idToEventTuples.map(_._2))})
+                       .map(idToEvents => 
+                            new Guard(idToEvents._1, groupEventsIntoNaps(idToEvents._2)))
+                       .toList
 }
 
 
@@ -88,7 +75,7 @@ def parseLine(line: String, dateTimeFormatter: SimpleDateFormat): (Date, String)
 }
 
 
-def mapGuardIdToEvents(dtToAction: List[(Date, String)], latestGuardId: Int):
+def mapGuardIdToEvent(dtToAction: List[(Date, String)], latestGuardId: Int):
     List[(Int, (Date, String))] = {
   dtToAction match {
     case Nil => return List()
@@ -100,7 +87,7 @@ def mapGuardIdToEvents(dtToAction: List[(Date, String)], latestGuardId: Int):
       val newAction  = if (action.startsWith("Guard")) "shift"
                        else action
 
-      return (newGuardId, (dateTime, newAction)) :: mapGuardIdToEvents(tail, newGuardId)
+      return (newGuardId, (dateTime, newAction)) :: mapGuardIdToEvent(tail, newGuardId)
     }
   }
 }
@@ -109,7 +96,8 @@ def mapGuardIdToEvents(dtToAction: List[(Date, String)], latestGuardId: Int):
 def groupEventsIntoNaps(events: List[(Date, String)]): List[Nap] = {
   return events.filterNot(_._2 == "shift")
                .grouped(2)
-               .map(x => (x.head, x.tail.head))
+               // Converted to tuples for convenience
+               .map(sleepWakeList => (sleepWakeList.head, sleepWakeList.tail.head))
                .map({ case (sleep, wake) => new Nap(sleep._1, wake._1)})
                .toList
 }
@@ -128,11 +116,11 @@ class Guard(id: Int, naps: List[Nap]) {
                .sum
   }
 
-  def calcSleepyMinute(minuteFormatter: SimpleDateFormat): Int = {
-  return this.getMinutesAsleep(minuteFormatter)
-             .groupBy(x => x)
-             .maxBy(_._2.size)
-             ._1
+  def calcSleepyMinute(minuteFormatter: SimpleDateFormat): (Int, Int) = {
+    return this.getMinutesAsleep(minuteFormatter)
+               .groupBy(x => x)
+               .map(minuteToOcurrences => (minuteToOcurrences._1, minuteToOcurrences._2.size))
+               .maxBy(_._2)
   }
 
   def getMinutesAsleep(minuteFormatter: SimpleDateFormat): List[Int] = {
