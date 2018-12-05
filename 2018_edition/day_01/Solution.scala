@@ -22,8 +22,8 @@ def solveA_alt(input: List[Int]): Int = {
 }
 
 
-def solveB(input: List[Int], seenFreqs: Set[Int],
-    initialFreq: Int): Int = {
+def solveB(input: List[Int], seenFreqs: Set[Int], initialFreq: Int): Int = {
+  println(seenFreqs.size)
 
   val (curFreq, curSeenFreqs) = solveB_internal(input, seenFreqs, initialFreq)
   curSeenFreqs match {
@@ -51,16 +51,14 @@ def solveB_internal(curInput: List[Int], curSeenFreqs: Set[Int],
 def solveB_alt(input: List[Int], prevSums: Set[Int],
     initialFreq: Int): Int = {
   val newSums = input.scanLeft(initialFreq)(_ + _).tail
-  val firstDuplicate = newSums.find(x => prevSums.contains(x))
+  val combinedSums = prevSums.toList ++ newSums
+  // Fails when the sum is in newSums
+  val firstDuplicate = newSums.find(x => combinedSums.count(_ == x) > 1)
 
   firstDuplicate match {
     case Some(x) => x
     case None => {
-      // Exclude first element, because else it will be there twice
-      // - Once because it was calculated last call
-      // - Another time because scanLeft adds it this call as well
-      val combinedSums = prevSums ++ newSums
-      solveB_alt(input, combinedSums, newSums.last)
+      solveB_alt(input, combinedSums.toSet, newSums.last)
     }
   }
 }
