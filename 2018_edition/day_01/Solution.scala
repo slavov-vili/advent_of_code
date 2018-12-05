@@ -23,7 +23,6 @@ def solveA_alt(input: List[Int]): Int = {
 
 
 def solveB(input: List[Int], seenFreqs: Set[Int], initialFreq: Int): Int = {
-  println(seenFreqs.size)
 
   val (curFreq, curSeenFreqs) = solveB_internal(input, seenFreqs, initialFreq)
   curSeenFreqs match {
