@@ -21,16 +21,17 @@ def solveA(results: Map[Int, Set[Marble]]): Int = {
 
 
 
+// TODO: replace curMarbleNumber with idx
+// TODO: remove index from marble object
 def playGame(rules: Rules, curMarbleNumber: Int, gameCircle: List[Marble],
-             curPlayerId: Int, playerIdToMarbles: Map[Int, Set[Marble]]): (Map[Int, Marble], Map[Int, Set[Marble]]) = {
+             curPlayerId: Int, playerIdToMarbles: Map[Int, Set[Marble]]): (List[Marble], Map[Int, Set[Marble]]) = {
   //println()
   //println("Playing: ")
   //println(rules)
   //println("Current Player ID: " + curPlayerId)
-  println("Current Marble Number: " + curMarbleNumber)
-  //println("Circle size: " + numberToMarble.size)
+  //println("Circle size: " + gameCircle.size)
   //println("Circle:")
-  //numberToMarble.foreach(println)
+  //gameCircle.foreach(println)
   //println("Scores size: " + playerIdToMarbles.flatMap(_._2).size)
   //println("Scores:")
   //playerIdToMarbles.foreach(println)
@@ -38,22 +39,25 @@ def playGame(rules: Rules, curMarbleNumber: Int, gameCircle: List[Marble],
   val totalMarbleCount = gameCircle.size + playerIdToMarbles.flatMap(_._2).size
   //println("Total Marble Count: " + totalMarbleCount)
 
-  return if(totalMarbleCount > rules.getMarbleCount) (numberToMarble, playerIdToMarbles)
+  return if(totalMarbleCount > rules.getMarbleCount) (gameCircle, playerIdToMarbles)
          else {
-           val curMarble = numberToMarble(curMarbleNumber)
+           val curMarble = gameCircle.find(_.getNumber == curMarbleNumber)
+                                     .get
+           println("Current Marble: " + curMarble)
            val (newCurMarbleNumber, newCircle, newScores) =
-             takeTurn(rules, curMarble, numberToMarble, curPlayerId, playerIdToMarbles)
+             takeTurn(rules, curMarble, gameCircle, curPlayerId, playerIdToMarbles)
            playGame(rules, newCurMarbleNumber, newCircle,
                     (curPlayerId + 1) % rules.getPlayerCount, newScores)
          }
 }
 
 
-def takeTurn(rules: Rules, lastMarble: Marble, numberToMarble: Map[Int, Marble],
+// TODO: since prepending, left is clockwise and right is counter-clockwise
+def takeTurn(rules: Rules, lastMarble: Marble, gameCircle: List[Marble],
              curPlayerId: Int, playerIdToMarbles: Map[Int, Set[Marble]]):
-            (Int, Map[Int, Marble], Map[Int, Set[Marble]]) = {
+            (Int, List[Marble], Map[Int, Set[Marble]]) = {
   //println(curPlayerId + "'s turn")
-  val circleSize = numberToMarble.size
+  val circleSize = gameCircle.size
   val lastMarbleIndex = lastMarble.getIndex
   //println("Circle Size: " + circleSize)
   //println("Collected Marbles: " + playerIdToMarbles.flatMap(_._2).size)
@@ -63,35 +67,37 @@ def takeTurn(rules: Rules, lastMarble: Marble, numberToMarble: Map[Int, Marble],
                                                        .size
   return if(nextMarbleNumber % rules.getMagicNumber != 0) {
            val nextMarbleIndex = ((lastMarbleIndex + 1) % circleSize) + 1
-           //println("Next Marble Index : " + nextMarbleIndex)
-           //println("Next Marble Number : " + nextMarbleNumber)
+           println("Next Marble Index : " + nextMarbleIndex)
+           println("Next Marble Number : " + nextMarbleNumber)
            val nextMarble = new Marble(nextMarbleIndex, nextMarbleNumber, None)
-           val (prevMarbles, nextMarbles) = numberToMarble.partition(_._2.getIndex < nextMarbleIndex)
+           // TODO: replace with splitAt
+           val (prevMarbles, nextMarbles) = gameCircle.partition(_.getIndex < nextMarbleIndex)
            // update the indices of all marbles after the next one
            return (nextMarbleNumber,
-                   prevMarbles + (nextMarbleNumber -> nextMarble)
-                     ++ nextMarbles.mapValues(x => x.setIndex(x.getIndex+1)),
+                   nextMarble :: prevMarbles ++ nextMarbles.map(x => x.setIndex(x.getIndex+1)),
                    playerIdToMarbles)
          } else {
            // should take care of the cases where curIndex < 7
            val sevenBehindIndex = (circleSize + lastMarbleIndex - 7) % circleSize
-           //println("Seven Behind Index: " + sevenBehindIndex)
-           val sevenBehindMarble = numberToMarble.find(_._2.getIndex == sevenBehindIndex)
-                                                 .get
-                                                 ._2
-           val (prevMarbles, nextMarbles) = numberToMarble.partition(_._2.getIndex < sevenBehindIndex)
-           val nextMarblesUpdated = (nextMarbles - sevenBehindMarble.getNumber)
-                                     .mapValues(x => x.setIndex(x.getIndex-1))
-           val newNextMarbleNumber = nextMarblesUpdated.find(_._2.getIndex == sevenBehindIndex)
+           println("Seven Behind Index: " + sevenBehindIndex)
+           val sevenBehindMarble = gameCircle.find(_.getIndex == sevenBehindIndex)
+                                             .get
+           val (prevMarbles, nextMarbles) = gameCircle.partition(_.getIndex < sevenBehindIndex)
+           // TODO: make prettier
+           val nextMarblesWithoutSevenBehind = nextMarbles.partition(_.getIndex == sevenBehindIndex)
+                                                          ._2
+           val nextMarblesUpdated = nextMarblesWithoutSevenBehind
+                                               .map(x => x.setIndex(x.getIndex-1))
+           val newNextMarbleNumber = nextMarblesUpdated.find(_.getIndex == sevenBehindIndex)
                                                        .get
-                                                       ._1
+                                                       .getNumber
            //println("New Next Marble Number: " + newNextMarbleNumber)
            // add the next marble to the current player's collected marble set
            val collectedMarblesUpdated = playerIdToMarbles.getOrElse(curPlayerId, Set()) +
                                          sevenBehindMarble +
                                          new Marble(-1, nextMarbleNumber, Some(curPlayerId))
            return (newNextMarbleNumber,
-                   prevMarbles ++ nextMarblesUpdated,
+                   prevMarbles ::: nextMarblesUpdated,
                    playerIdToMarbles + (curPlayerId -> collectedMarblesUpdated))
          }
 }
