@@ -1,29 +1,66 @@
 import scala.io.Source
+import java.util.LinkedList
 
+object Solution extends App {
 val input = readInput("input.txt")
 
 val rules = parseInput(input, 23).get
-
-val initialSetup = new GameSetup(0, List(new Marble(0, None)))
+val newCircle = new LinkedList[Marble]()
+newCircle.add(new Marble(0, None))
+val initialSetup = new GameSetup(0, newCircle)
 
 //println("Solution to A: " + solveA(initialSetup, rules))
 
-println("Solution to B: " + solveB(initialSetup, rules))
+println("Solution: " + solve_alt(rules))
+
+//println("Solution to B: " + solveB(initialSetup, rules))
 
 def solveA(initialSetup: GameSetup, rules: Rules): Int = {
   val (endCircle, endResults) = playGame(rules, initialSetup, 0, Map())
-  println("Results: " + endResults.size)
-  endResults.foreach(println)
+  //println("Results: " + endResults.size)
+  //endResults.foreach(println)
 
   return endResults.map(x => x._2.map(_.getNumber).sum)
                    .max
 }
 
 
+def solve_alt(rules: Rules): Int = {
+  val gameCircle = new LinkedList[Marble]()
+  gameCircle.add(new Marble(0, None))
+  var curMarbleIndex = 0
+  var nextMarbleNumber = 1
+  var curPlayerId = 0
+  var collectedMarbles = Set[Marble]()
+
+  while(nextMarbleNumber <= rules.getMarbleCount) {
+    //println("Current Marble Index: " + curMarbleIndex)
+    println("Next Marble Number: " + nextMarbleNumber)
+    var nextMarbleIndex = 0
+    if(nextMarbleNumber % rules.getMagicNumber != 0) {
+      nextMarbleIndex = ((curMarbleIndex + 1) % gameCircle.size) + 1
+      gameCircle.add(nextMarbleIndex, new Marble(nextMarbleNumber, None))
+    } else {
+      nextMarbleIndex = (gameCircle.size + curMarbleIndex - 7) % gameCircle.size
+      collectedMarbles = collectedMarbles + new Marble(nextMarbleNumber, Some(curPlayerId))
+      collectedMarbles = collectedMarbles + gameCircle.remove(nextMarbleIndex)
+    }
+
+    curPlayerId = (curPlayerId + 1) % rules.getPlayerCount
+    nextMarbleNumber += 1
+    curMarbleIndex = nextMarbleIndex
+  }
+
+  return collectedMarbles.groupBy(x => Some(x.getOwnerId))
+                         .mapValues(_.map(x => x.getNumber).sum)
+                         .maxBy(_._2)
+                         ._2
+}
+
 
 def playGame(rules: Rules, curGameSetup: GameSetup,
              curPlayerId: Int, playerIdToMarbles: Map[Int, Set[Marble]]):
-            (List[Marble], Map[Int, Set[Marble]]) = {
+            (LinkedList[Marble], Map[Int, Set[Marble]]) = {
   //println()
   //println("Playing: ")
   //println(rules)
@@ -106,13 +143,12 @@ def simulateGame(curGameSetup: GameSetup, rules: Rules, curBatchIndex: Int,
 }
 
 
-// TODO: keep track of deleted marbles (maybe pass previous setup?)
 def processStage(curGameSetup: GameSetup, nextMarbleNumber: Int, significantPlayerId: Int,
                  significantMarbleNumber: Int): (GameSetup, Set[Marble]) = {
   //println("Current Setup: " + curGameSetup)
   println("Current Significant Marble ID: " + significantMarbleNumber)
-  val newCurGameSetup = Range(nextMarbleNumber, significantMarbleNumber)
-                        .foldLeft(curGameSetup)((nextSetup, x) => nextSetup.addToCircle(x))
+  val newCurGameSetup = curGameSetup
+  Range(nextMarbleNumber, significantMarbleNumber).foreach(x => newCurGameSetup.addToCircle((x)))
   //println("Stage:")
   //println("Significant Marble: " + significantMarbleNumber)
   //println("Significant Player: " + significantPlayerId)
@@ -159,11 +195,11 @@ class Rules(playerCount: Int, marbleCount: Int, magicNumber: Int) {
 }
 
 
-class GameSetup(curMarbleIndex: Int, gameCircle: List[Marble]) {
+class GameSetup(var curMarbleIndex: Int, gameCircle: LinkedList[Marble]) {
   def getCurMarbleIndex(): Int = this.curMarbleIndex;
-  def getGameCircle(): List[Marble] = this.gameCircle;
+  def getGameCircle(): LinkedList[Marble] = this.gameCircle;
 
-  def getCurMarble(): Marble = this.gameCircle(this.curMarbleIndex)
+  def getCurMarble(): Marble = this.gameCircle.get(this.curMarbleIndex)
 
   def getCircleSize(): Int = this.gameCircle.size
 
@@ -171,9 +207,10 @@ class GameSetup(curMarbleIndex: Int, gameCircle: List[Marble]) {
     val nextMarbleIndex = ((this.curMarbleIndex + 1) % this.gameCircle.size) + 1
     //println("Next Marble Index : " + nextMarbleIndex)
     val nextMarble = new Marble(nextMarbleNumber, None)
-    val (prevMarbles, nextMarbles) = this.gameCircle.splitAt(nextMarbleIndex)
-  
-    return new GameSetup(nextMarbleIndex, prevMarbles ++ List(nextMarble) ++ nextMarbles)
+
+    this.curMarbleIndex = nextMarbleIndex
+    this.gameCircle.add(nextMarbleIndex, nextMarble)
+    return this
   }
   
   
@@ -183,11 +220,11 @@ class GameSetup(curMarbleIndex: Int, gameCircle: List[Marble]) {
     // should take care of the cases where curIndex < 7
     val sevenBackwardsIndex = (this.gameCircle.size + this.curMarbleIndex - 7) % this.gameCircle.size
     //println("Index 7 Marbles Counter-Clockwise: " + sevenBackwardsIndex)
-    val sevenBackwardsMarble = this.gameCircle(sevenBackwardsIndex)
-    val (prevMarbles, nextMarbles) = this.gameCircle.splitAt(sevenBackwardsIndex)
+    val sevenBackwardsMarble = this.gameCircle.remove(sevenBackwardsIndex)
+    this.curMarbleIndex = sevenBackwardsIndex
     //println("New Next Marble Index: " + sevenBackwardsIndex)
   
-    return (new GameSetup(sevenBackwardsIndex, prevMarbles ++ nextMarbles.tail), Set(nextMarble, sevenBackwardsMarble))
+    return (this, Set(nextMarble, sevenBackwardsMarble))
   }
 
   override def toString(): String = "(" + this.curMarbleIndex + " : " + this.gameCircle + ")"
@@ -213,4 +250,5 @@ class Marble(number: Int, ownerId: Option[Int]) {
   }
 
   override def hashCode() = this.number.hashCode + this.ownerId.hashCode
+}
 }
