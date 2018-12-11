@@ -25,31 +25,30 @@ def solveA(initialSetup: GameSetup, rules: Rules): Int = {
 }
 
 
+// FIXME: sth broke :(
 def solve_alt(rules: Rules): Int = {
   val gameCircle = new LinkedList[Marble]()
   gameCircle.add(new Marble(0, None))
   var curMarbleIndex = 0
-  var nextMarbleNumber = 1
   var curPlayerId = 0
   var collectedMarbles = Set[Marble]()
 
-  while(nextMarbleNumber <= rules.getMarbleCount) {
+  Range(1, rules.getMarbleCount+1).foreach( curMarbleNumber => {
     //println("Current Marble Index: " + curMarbleIndex)
-    println("Next Marble Number: " + nextMarbleNumber)
+    println("Current Marble Number: " + curMarbleNumber)
     var nextMarbleIndex = 0
-    if(nextMarbleNumber % rules.getMagicNumber != 0) {
+    if(curMarbleNumber % rules.getMagicNumber != 0) {
       nextMarbleIndex = ((curMarbleIndex + 1) % gameCircle.size) + 1
-      gameCircle.add(nextMarbleIndex, new Marble(nextMarbleNumber, None))
+      gameCircle.add(nextMarbleIndex, new Marble(curMarbleNumber, None))
     } else {
       nextMarbleIndex = (gameCircle.size + curMarbleIndex - 7) % gameCircle.size
-      collectedMarbles = collectedMarbles + new Marble(nextMarbleNumber, Some(curPlayerId))
+      collectedMarbles = collectedMarbles + new Marble(curMarbleNumber, Some(curPlayerId))
       collectedMarbles = collectedMarbles + gameCircle.remove(nextMarbleIndex)
     }
 
     curPlayerId = (curPlayerId + 1) % rules.getPlayerCount
-    nextMarbleNumber += 1
     curMarbleIndex = nextMarbleIndex
-  }
+  })
 
   return collectedMarbles.groupBy(x => Some(x.getOwnerId))
                          .mapValues(_.map(x => x.getNumber).sum)
