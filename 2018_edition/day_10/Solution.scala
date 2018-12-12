@@ -75,11 +75,11 @@ def getFirstLastColumn(pixels: List[Pixel]): (Int, Int) = {
 }
 
 
-def getPixelsSize(pixels: List[Pixel]): Long = {
+def getPixelsSize(pixels: List[Pixel]): Int = {
   val firstLastLinePixels = getFirstLastLine(pixels)
   val firstLastColumnPixels = getFirstLastColumn(pixels)
-  return (Math.abs(firstLastLinePixels._2.toLong + 1 - firstLastLinePixels._1.toLong) *
-          Math.abs(firstLastColumnPixels._2.toLong + 1 - firstLastColumnPixels._1.toLong))
+  return (Math.abs(firstLastLinePixels._2 + 1 - firstLastLinePixels._1) +
+          Math.abs(firstLastColumnPixels._2 + 1 - firstLastColumnPixels._1))
 
 }
 
