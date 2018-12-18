@@ -14,7 +14,23 @@ val (initialTrack, initialCars) = separateCars(readInput("input.txt"), carSymbol
 println("Initial cars: " + initialCars)
 
 val (finalCarsA, crashesA) = solveA(initialCars, List[Tuple2[Int, Int]](), directions, initialTrack)
-println("Solution to A: " + (crashesA.head._2, crashesA.head._1))
+println("Final cars A:")
+finalCarsA.foreach(println)
+println("Crashes A:")
+crashesA.foreach(println)
+// TODO: reverse coordinates when giving answer
+println("Solution to A: " + crashesA.head)
+
+val (finalCarsB, crashesB, lastCarB) = solveB(initialCars, List[Tuple2[Int, Int]](), directions, initialTrack)
+println()
+println("Final cars B:")
+finalCarsA.foreach(println)
+println("Crashes B:")
+crashesA.foreach(println)
+println("Last Car B:")
+println(lastCarB)
+// TODO: reverse coordinates when giving answer
+println("Solution to B: " + lastCarB)
 
 
 def solveA(curCars: List[Car], curCrashes: List[Tuple2[Int, Int]], directions: List[Direction],
@@ -24,10 +40,22 @@ def solveA(curCars: List[Car], curCrashes: List[Tuple2[Int, Int]], directions: L
   //println("Moved cars: " + movedCars)
 
   return if(crashes.size == 0) solveA(movedCars, crashes, directions, track)
-         else {
-           // reverse the crashes, since they were prepended
-           (movedCars, crashes)
-         }
+         else (movedCars, crashes)
+}
+
+
+def solveB(curCars: List[Car], curCrashes: List[Tuple2[Int, Int]], directions: List[Direction],
+           track: Vector[Vector[Char]]): (List[Car], List[Tuple2[Int, Int]], Car) = {
+  val (movedCars, crashes) = findCrashes(curCars.sortBy(_.getPosition), track, directions)
+  //println("Moved cars:" + movedCars.size)
+  //movedCars.foreach(println)
+  //println("Crashes:")
+  //crashes.foreach(println)
+  //println("Moved cars: " + movedCars)
+  val intactCars = movedCars.filterNot(x => crashes.contains(x.getPosition))
+
+  return if(intactCars.size == 1) (movedCars, crashes, intactCars.head)
+         else solveB(intactCars, crashes, directions, track)
 }
 
 
@@ -37,11 +65,15 @@ def findCrashes(curCars: List[Car], track: Vector[Vector[Char]], directions: Lis
   val (movedCars, crashes) = curCars.zipWithIndex
       .foldLeft((curCars, List[Tuple2[Int, Int]]()))(
         (carsCrashes, carIdx) => {
-        val movedCar = carIdx._1.move(track, directions)
-        val newCrashes = carsCrashes._2 ++ carsCrashes._1
-                                           .map(_.getPosition)
-                                           .filter(_ == movedCar.getPosition)
-        (carsCrashes._1.updated(carIdx._2, movedCar), newCrashes)
+        // ignore cars, which are at a crash site before even moving
+        if(carsCrashes._2.contains(carIdx._1.getPosition)) (carsCrashes._1, carsCrashes._2)
+        else {
+          val movedCar = carIdx._1.move(track, directions)
+          val newCrashes = carsCrashes._2 ++ carsCrashes._1
+                                             .map(_.getPosition)
+                                             .filter(_ == movedCar.getPosition)
+          (carsCrashes._1.updated(carIdx._2, movedCar), newCrashes)
+        }
       })
   return (movedCars, crashes)
 }
