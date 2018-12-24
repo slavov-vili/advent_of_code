@@ -1,33 +1,71 @@
-val initialBoard = Vector(3, 7)
-val initialElves = List(new Elf(0), new Elf(1))
+val initialScoreboard = new Scoreboard(Vector(3, 7),
+                                       List(new Elf(0), new Elf(1)))
 
-val recipeCount = 939601
-
-
-println("Solution to A: " + solveA(initialBoard, recipeCount, initialElves, 10).mkString(""))
-
+val inputA = 939601
+val solutionA = solveA(initialScoreboard, inputA, 10)
+println("Solution to A: " + solutionA.mkString(""))
 
 
-def solveA(curScoreboard: Vector[Int], requiredRecipes: Int, curElves: List[Elf], lookahead: Int): Vector[Int] = {
+val inputB = inputA.toString
+                   .split("")
+                   .map(_.toInt)
+                   .toList
+val solutionB = solveB(initialScoreboard, inputB, 100000)
+println("Solution to B: " + solutionB.size)
+
+
+
+def solveA(curScoreboard: Scoreboard, requiredRecipes: Int, lookahead: Int): Vector[Int] = {
   //println("Board: " + curScoreboard)
   //println(curElves)
-  return if(curScoreboard.size >= (requiredRecipes + lookahead)) {
-           curScoreboard.drop(requiredRecipes)
-            .take(lookahead)
+  return if(curScoreboard.getScores.size >= (requiredRecipes + lookahead)) {
+           curScoreboard.getScores
+                        .drop(requiredRecipes)
+                        .take(lookahead)
          } else {
-           val nextRecipesInt = curElves.map(x => curScoreboard(x.getRecipeIndex))
-                                        .sum
-           val nextRecipes = nextRecipesInt.toString
-                                           .split("")
-                                           .map(_.toInt)
-           val updatedScoreboard = curScoreboard ++ nextRecipes
-           val updatedElves = curElves.map(_.updateRecipeIndex(updatedScoreboard))
-           solveA(updatedScoreboard, requiredRecipes, updatedElves, lookahead)
+           solveA(curScoreboard.update, requiredRecipes, lookahead)
          }
 }
 
 
+def solveB(curScoreboard: Scoreboard, relevantRecipeValues: List[Int], batchSize: Int): Vector[Int] = {
+  //println("Board: " + curScoreboard.getScores.size)
+  //println(curElves)
+  val updatedScoreboard = curScoreboard.update(batchSize)
+  val inputFoundAt = updatedScoreboard.getScores.indexOfSlice(relevantRecipeValues)
+  return if(inputFoundAt == -1) {
+           solveB(updatedScoreboard, relevantRecipeValues, batchSize)
+         }
+         else updatedScoreboard.getScores.take(inputFoundAt)
+}
 
+
+
+
+
+class Scoreboard(scores: Vector[Int], elves: List[Elf]) {
+  def getScores(): Vector[Int] = this.scores;
+  def getElves(): List[Elf] = this.elves;
+
+  def update(): Scoreboard = {
+    val nextRecipesInt = this.elves.map(x => this.scores(x.getRecipeIndex))
+                                   .sum
+    val nextRecipeScores = nextRecipesInt.toString
+                                         .split("")
+                                         .map(_.toInt)
+    val updatedScores = this.scores ++ nextRecipeScores
+    val updatedElves = this.elves.map(_.updateRecipeIndex(updatedScores))
+    return new Scoreboard(updatedScores, updatedElves)
+  }
+
+  def update(batchSize: Int): Scoreboard = {
+    return Range(0, batchSize).foldLeft(this)((tempScoreboard, i) => tempScoreboard.update)
+  }
+
+  override def toString(): String = {
+    return "(Elves:\n" + this.elves.toString + "\nScores:\n" + this.scores.toString + ")"
+  }
+}
 
 
 class Elf(recipeIndex: Int) {
