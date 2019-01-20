@@ -50,9 +50,9 @@ def solveB_internal(curInput: List[Int], curSeenFreqs: Set[Int],
 def solveB_alt(input: List[Int], prevSums: Set[Int],
     initialFreq: Int): Int = {
   val newSums = input.scanLeft(initialFreq)(_ + _).tail
-  val combinedSums = prevSums.toList ++ newSums
+  val commonSums = prevSums.intersect(newSums)
   // Fails when the sum is in newSums
-  val firstDuplicate = newSums.find(x => combinedSums.count(_ == x) > 1)
+  val firstDuplicate = newSums.find(x => commonSums)
 
   firstDuplicate match {
     case Some(x) => x
