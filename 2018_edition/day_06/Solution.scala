@@ -8,7 +8,6 @@ println("Solution to B: " + solveB(parseInput(input)))
 
 
 
-// TODO: find corners, generate outer rim, for each point in rim - find closest point
 def solveA(coords: List[Coord]): Int = {
   val infiniteCoords = findInfiniteCoords(coords)
   val finiteCoords = coords.filterNot(x => infiniteCoords.contains(x))

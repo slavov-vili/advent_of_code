@@ -29,7 +29,7 @@ def solveA(curScoreboard: Scoreboard, requiredRecipes: Int, lookahead: Int): Vec
 
 
 def solveB(curScoreboard: Scoreboard, relevantRecipeValues: List[Int], batchSize: Int): Vector[Int] = {
-  //println("Board: " + curScoreboard.getScores.size)
+  println("Board: " + curScoreboard.getScores.size)
   //println(curElves)
   val updatedScoreboard = curScoreboard.update(batchSize)
   val inputFoundAt = updatedScoreboard.getScores.indexOfSlice(relevantRecipeValues)
