@@ -61,12 +61,26 @@ class Battlefield(dimensions: Tuple2[Int, Int], wallChar: Char, fieldUnits: Vect
     new Battlefield(this.dimensions, this.wallChar, newFieldUnits)
   }
 
+  def canDoBattle(): Boolean = {
+    return this.fieldUnits.forall(_.getType.equals(this.fieldUnits.head.getType))
+  }
 
-  // TODO: implement
-  //def doBattle(): 
 
-  // TODO: figure out how to deal with dead units
+  def doBattle(): (Battlefield, Int) = {
+    return doBattle_internal(0)
+  }
+
+  private def doBattle_internal(curRoundIdx: Int): (Battlefield, Int) = {
+           // if ALL units are of the SAME TYPE
+    return if(!this.canDoBattle) (this, curRoundIdx)
+           else {
+             val newBattlefield = this.setFieldUnits(this.doRound())
+             newBattlefield.doBattle_internal(curRoundIdx+1)
+           }
+  }
+
   // to constantly update the battlefield after each unit's turn - use foldLeft
+  // NOTE: since free space isn't stored in the unit list, dead units are regarded as free space
   def doRound(): Vector[FieldUnit] = {
     val unitsInitialOrder = this.getLivingUnits
                                 .sortBy(_.getCoords)
@@ -94,13 +108,14 @@ class Battlefield(dimensions: Tuple2[Int, Int], wallChar: Char, fieldUnits: Vect
         val enemyUnitIndex = this.fieldUnits.indexWhere(_.getCoords.equals(action.getCoords))
         val oldEnemyUnit = this.fieldUnits(enemyUnitIndex)
         // Can't attack walls/empty space AND can't attack allies
-        val newEnemyUnit = if(oldEnemyUnit.isInstanceOf[LivingUnit] &&
-                             !oldEnemyUnit.getType.equals(unit.getType)) {
-                               oldEnemyUnit.asInstanceOf[LivingUnit].adjustHealth(-unit.getDamage)
-                             }
-                           else oldEnemyUnit
-        if(newEnemyUnit.getType.equals(FieldUnit.UNITTYPE_DEAD)) this.fieldUnits.filter(_.equals(oldEnemyUnit))
-        else this.fieldUnits.updated(enemyUnitIndex, newEnemyUnit)
+        if(oldEnemyUnit.isInstanceOf[LivingUnit] && !oldEnemyUnit.getType.equals(unit.getType)) {
+            val newEnemyUnit = oldEnemyUnit.asInstanceOf[LivingUnit]
+                                           .adjustHealth(-unit.getDamage)
+
+            if(newEnemyUnit.isDead) this.fieldUnits.filter(_.equals(oldEnemyUnit))
+            else this.fieldUnits.updated(enemyUnitIndex, newEnemyUnit)
+          }
+        else this.fieldUnits
       }
       case Action.ACTIONNAME_MOVE => {
         val unitIndex = this.fieldUnits.indexWhere(_.equals(unit))
@@ -129,11 +144,10 @@ extends FieldUnit(unitType, coords) {
   def getHealth(): Int = this.health;
 
   def setHealth(newHealth: Int): LivingUnit = {
-    // change the type if the unit dies
-    val newType = if(newHealth <= 0) FieldUnit.UNITTYPE_DEAD
-                  else this.unitType
-    return new LivingUnit(newType, this.coords, this.damage, newHealth)
+    return new LivingUnit(this.unitType, this.coords, this.damage, newHealth)
   }
+
+  def isDead(): Boolean = this.health <= 0;
 
   def adjustHealth(hpAdjust: Int): LivingUnit = {
     return this.setHealth(this.health + hpAdjust)
@@ -182,7 +196,6 @@ object FieldUnit {
   val UNITTYPE_EMPTY = '.'
   val UNITTYPE_ELF = 'E'
   val UNITTYPE_GOBLIN = 'G'
-  val UNITTYPE_DEAD = 'X'
 }
 
 
