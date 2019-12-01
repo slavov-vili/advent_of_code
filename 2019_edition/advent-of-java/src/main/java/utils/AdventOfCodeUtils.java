@@ -40,10 +40,10 @@ public class AdventOfCodeUtils {
 	return Files.readAllLines(fileToRead.toPath());
     }
     
-    
-    
-    public static int sumListOfIntegers(List<Integer> inputList) {
-	return inputList.stream().reduce(0, (a, b) -> a + b);
+    public static <T> int mapAndSumList(List<T> inputList, Function<? super T, Integer> functionToApply) {
+	return inputList.stream()
+		.map(functionToApply)
+		.reduce(0, (a, b) -> a + b);
     }
 
 }

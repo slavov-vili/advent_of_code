@@ -7,14 +7,8 @@ import utils.AdventOfCodeUtils;
 
 public class Day01Solver {
 
-    public int solveA(List<Integer> moduleMasses) {
-	return AdventOfCodeUtils.sumListOfIntegers(calcSimplifiedFuelCostForAllModuleMasses(moduleMasses));
-    }
-
-    protected static List<Integer> calcSimplifiedFuelCostForAllModuleMasses(List<Integer> moduleMasses) {
-	return moduleMasses.stream()
-		.map(mass -> calcSimplifiedFuelCostOfModule(mass))
-		.collect(Collectors.toList());
+    public static int solveA(List<Integer> moduleMasses) {
+	return AdventOfCodeUtils.mapAndSumList(moduleMasses, Day01Solver::calcSimplifiedFuelCostOfModule);
     }
 
     protected static int calcSimplifiedFuelCostOfModule(int moduleMass) {
@@ -23,14 +17,8 @@ public class Day01Solver {
 
     
     
-    public int solveB(List<Integer> moduleMasses) {
-	return AdventOfCodeUtils.sumListOfIntegers(calcAdvancedFuelCostForAllModuleMasses(moduleMasses));
-    }
-    
-    protected static List<Integer> calcAdvancedFuelCostForAllModuleMasses(List<Integer> moduleMasses) {
-	return moduleMasses.stream()
-		.map(mass -> calcAdvancedFueldCostOfModule(mass))
-		.collect(Collectors.toList());
+    public static int solveB(List<Integer> moduleMasses) {
+	return AdventOfCodeUtils.mapAndSumList(moduleMasses, Day01Solver::calcAdvancedFueldCostOfModule);
     }
     
     protected static int calcAdvancedFueldCostOfModule(int moduleMass) {
