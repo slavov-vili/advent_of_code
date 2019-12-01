@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public class AdventOfCodeUtils {
 
@@ -37,6 +38,12 @@ public class AdventOfCodeUtils {
 
 	File fileToRead = new File(fileUrl.toURI().getPath());
 	return Files.readAllLines(fileToRead.toPath());
+    }
+    
+    
+    
+    public static int sumListOfIntegers(List<Integer> inputList) {
+	return inputList.stream().reduce(0, (a, b) -> a + b);
     }
 
 }
