@@ -16,9 +16,8 @@ public class IntCodeComputer {
     }
     
     public void processInput() throws InvalidIntCodeException {
-	int curIntCode = this.getCurIntCode();
-	while (curIntCode != INT_CODE_TERMINATE) {
-	    handleIntCode(curIntCode);
+	while (this.getCurIntCode() != INT_CODE_TERMINATE) {
+	    handleIntCode(this.getCurIntCode());
 	}
     }
 
