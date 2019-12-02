@@ -13,89 +13,34 @@ import exceptions.InvalidIntCodeException;
 public class Day02Test {
 
     @Test
-    void IntCodeComputer_InvlidIntCodeTest() {
-        int invalidIntCode = 11;
-        IntCodeComputer computer = Day02Main.getComputerDay02();
-        try {
-            computer.processInput(Arrays.asList(11, 0, 0, 0, 99), 0);
-            fail("An exception should be thrown, since IntCode " + invalidIntCode + " should not be known");
-        } catch (InvalidIntCodeException e) {
-            return;
-        } catch (Exception e) {
-            fail("Only InvalidIntCodeException should be thrown!");
-        }
-    }
-
-    @Test
-    void IntCodeComputer_BasicInput1Test() {
-        List<Integer> expected = Arrays.asList(2, 0, 0, 0, 99);
-        List<Integer> actual;
-        IntCodeComputer computer = Day02Main.getComputerDay02();
-        try {
-            actual = computer.processInput(Arrays.asList(1, 0, 0, 0, 99), 0);
-        } catch (InvalidIntCodeException e) {
-            return;
-        }
-
-        assertEquals(expected, actual, "End sequence should look like " + expected + " instead of " + actual);
-    }
-
-    @Test
-    void IntCodeComputer_BasicInput2Test() {
-        List<Integer> expected = Arrays.asList(2, 3, 0, 6, 99);
-        List<Integer> actual;
-        IntCodeComputer computer = Day02Main.getComputerDay02();
-        try {
-            actual = computer.processInput(Arrays.asList(2, 3, 0, 3, 99), 0);
-        } catch (InvalidIntCodeException e) {
-            return;
-        }
-
-        assertEquals(expected, actual, "End sequence should look like " + expected + " instead of " + actual);
-    }
-
-    @Test
-    void IntCodeComputer_AdvancedInputTest() {
-        List<Integer> expected = Arrays.asList(2, 4, 4, 5, 99, 9801);
-        List<Integer> actual;
-        IntCodeComputer computer = Day02Main.getComputerDay02();
-        try {
-            actual = computer.processInput(Arrays.asList(2, 4, 4, 5, 99, 0), 0);
-        } catch (InvalidIntCodeException e) {
-            return;
-        }
-
-        assertEquals(expected, actual, "End sequence should look like " + expected + " instead of " + actual);
-    }
-
-    @Test
-    void IntCodeComputer_ComplicatedInputTest() {
-        List<Integer> expected = Arrays.asList(30, 1, 1, 4, 2, 5, 6, 0, 99);
-        List<Integer> actual;
-        IntCodeComputer computer = Day02Main.getComputerDay02();
-        try {
-            actual = computer.processInput(Arrays.asList(1, 1, 1, 4, 99, 5, 6, 0, 99), 0);
-        } catch (InvalidIntCodeException e) {
-            return;
-        }
-
-        assertEquals(expected, actual, "End sequence should look like " + expected + " instead of " + actual);
-    }
-
-    @Test
-    void partA_Test() {
+    void partATest() {
         int expected = 2894520;
         int actual;
-        List<Integer> inputCodes = Day02Main.getInputA();
-        IntCodeComputer computer = Day02Main.getComputerDay02();
-
+        
         try {
-            List<Integer> endSequence = computer.processInput(inputCodes, 0);
-            actual = endSequence.get(0);
+            actual = Day02Main.solveA(Day02Main.getComputerDay02());
 
-            assertEquals(expected, actual, "Output should look like " + expected + " instead of " + actual);
+            assertEquals(expected, actual);
         } catch (Exception e) {
             fail("No exception should be thrown!");
         }
+    }
+    
+    @Test
+    void partB_BasicTest() {
+        int expected = 1202;
+        int valueToFind = 2894520;
+        int actual = Day02Main.solveB(Day02Main.getComputerDay02(), valueToFind);
+        
+        assertEquals(expected, actual);
+    }
+    
+    @Test
+    void partB_RealTest() {
+        int expected = 9342;
+        int valueToFind = 19690720;
+        int actual = Day02Main.solveB(Day02Main.getComputerDay02(), valueToFind);
+        
+        assertEquals(expected, actual);
     }
 }

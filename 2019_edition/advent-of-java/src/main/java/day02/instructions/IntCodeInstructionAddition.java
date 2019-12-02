@@ -4,12 +4,12 @@ import java.util.List;
 
 import exceptions.InvalidArgumentCountException;
 
-public class IntCodeInstructionAdd implements IntCodeInstruction {
+public class IntCodeInstructionAddition implements IntCodeInstruction {
 
     private int inputSize;
     private int instructionCode;
 
-    public IntCodeInstructionAdd(int instructionCode, int inputSize) {
+    public IntCodeInstructionAddition(int instructionCode, int inputSize) {
         this.instructionCode = instructionCode;
         this.inputSize = inputSize;
     }

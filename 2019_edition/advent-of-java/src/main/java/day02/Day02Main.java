@@ -3,8 +3,8 @@ package day02;
 import java.util.Arrays;
 import java.util.List;
 
-import day02.instructions.IntCodeInstructionAdd;
-import day02.instructions.IntCodeInstructionMultiply;
+import day02.instructions.IntCodeInstructionAddition;
+import day02.instructions.IntCodeInstructionMultiplication;
 import exceptions.InvalidIntCodeException;
 import utils.AdventOfCodeUtils;
 
@@ -53,8 +53,8 @@ public class Day02Main {
     protected static IntCodeComputer getComputerDay02() {
         IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
         try {
-            instructionProvider.addNewInstruction(new IntCodeInstructionAdd(1, 2));
-            instructionProvider.addNewInstruction(new IntCodeInstructionMultiply(2, 2));
+            instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 2));
+            instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 2));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
