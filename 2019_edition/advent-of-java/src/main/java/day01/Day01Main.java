@@ -1,7 +1,6 @@
 package day01;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import utils.AdventOfCodeUtils;
 

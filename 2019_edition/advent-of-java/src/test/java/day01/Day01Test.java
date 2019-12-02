@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 public class Day01Test {
 
-
     @Test
     void calcSimplifiedFuelForMass_BasicTest() {
         int expected = 2;
@@ -33,15 +32,11 @@ public class Day01Test {
 
     @Test
     void calcSimplifiedFuelForMass_ComplicatedTest() {
-        int expected =33583;
+        int expected = 33583;
         int inputMass = 100756;
         int actual = Day01Solver.calcSimplifiedFuelCostOfModule(inputMass);
         assertEquals(expected, actual, "A module mass of " + inputMass + " should yield a fuel cost of " + expected);
     }
-
-
-
-
 
     @Test
     void calcAdvancedFuelCostOfFuel_BasicTest() {

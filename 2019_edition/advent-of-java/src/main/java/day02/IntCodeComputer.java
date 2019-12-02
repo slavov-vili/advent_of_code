@@ -1,75 +1,46 @@
 package day02;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import exceptions.InvalidArgumentException;
+import day02.instructions.IntCodeInstruction;
+import exceptions.InvalidIntCodeException;
 import utils.AdventOfCodeUtils;
 
 public class IntCodeComputer {
-	private int haltCode;
-	private Map<Integer, IntCodeInstruction> instructionCodeToInstruction;
+    private int haltCode;
+    private IntCodeInstructionProvider instructionProvider;
 
-	public IntCodeComputer(int haltCode) {
-		this.haltCode = haltCode;
-		this.instructionCodeToInstruction = new HashMap<>();
-	}
+    public IntCodeComputer(int haltCode, IntCodeInstructionProvider instructionProvider) {
+        this.haltCode = haltCode;
+        this.instructionProvider = instructionProvider;
+    }
 
-	public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
-		List<Integer> memory = AdventOfCodeUtils.cloneList(inputCodes);
+    public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
+        List<Integer> memory = AdventOfCodeUtils.cloneList(inputCodes);
+        int curInstructionIdx = startIndex;
+        int curInstructionCode = memory.get(curInstructionIdx);
 
-		int curInstructionIdx = startIndex;
-		int curInstructionCode = memory.get(curInstructionIdx);
+        do {
 
-		while (!this.codeIsHaltCode(curInstructionCode)) {
-			IntCodeInstruction curInstruction = this.getInstructionByCode(curInstructionCode);
-			List<Integer> instructionInput = this.extractInputForInstruction(memory, curInstructionIdx, curInstruction);
+            IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByCode(curInstructionCode);
+            List<Integer> instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
+                    curInstruction);
 
-			int outputIndex = this.extractOutputIndexForInstruction(memory, curInstructionIdx, curInstruction);
-			int outputValue = curInstruction.apply(instructionInput);
-			
-			memory.set(outputIndex, outputValue);
-			curInstructionIdx = this.calcNextInstructionIndex(curInstructionIdx, curInstruction);
-			curInstructionCode = memory.get(curInstructionIdx);
-		}
+            int outputValue = curInstruction.apply(instructionInput);
+            int outputIndex = IntCodeComputerUtils.extractOutputIndexForInstruction(memory, curInstructionIdx,
+                    curInstruction);
 
-		return memory;
-	}
+            memory.set(outputIndex, outputValue);
 
-	private int calcNextInstructionIndex(int curInstructionIdx, IntCodeInstruction curInstruction) {
-		return curInstructionIdx + curInstruction.getInputSize() + 2;
-	}
+            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstruction);
+            curInstructionCode = memory.get(curInstructionIdx);
+        } while (!this.codeIsHaltCode(curInstructionCode));
 
-	private int extractOutputIndexForInstruction(List<Integer> memory, int curInstructionIdx, IntCodeInstruction curInstruction) {
-		int indexOfOutputIndex = curInstructionIdx + curInstruction.getInputSize() + 1;
-		return memory.get(indexOfOutputIndex);
-	}
+        return memory;
+    }
 
-	private List<Integer> extractInputForInstruction(List<Integer> memory, int curInstructionIdx, IntCodeInstruction curInstruction) {
-		List<Integer> inputIndices = memory.subList(curInstructionIdx + 1, curInstructionIdx + curInstruction.getInputSize() + 1);
-		return AdventOfCodeUtils.getElementsAt(memory, inputIndices);
-	}
-
-	public IntCodeInstruction getInstructionByCode(Integer instructionCode) throws InvalidIntCodeException {
-		if (!this.instructionCodeToInstruction.containsKey(instructionCode))
-			throw new InvalidIntCodeException("Instruction code " + instructionCode + " is unknown!");
-		
-		return this.instructionCodeToInstruction.get(instructionCode);
-	}
-
-	public IntCodeInstruction addNewInstruction(IntCodeInstruction instruction)
-			throws InvalidArgumentException {
-		int instructionCode = instruction.getCode();
-		
-		if (instructionCode == this.haltCode)
-			throw new InvalidArgumentException("Instruction code " + instructionCode + " cannot be overriden");
-
-		return this.instructionCodeToInstruction.put(instructionCode, instruction);
-	}
-	
-	private boolean codeIsHaltCode(int code) {
-		return code == this.haltCode;
-	}
+    private boolean codeIsHaltCode(int code) {
+        return code == this.haltCode;
+    }
 
 }

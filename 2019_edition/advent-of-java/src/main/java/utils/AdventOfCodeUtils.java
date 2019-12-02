@@ -6,17 +6,17 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class AdventOfCodeUtils {
 
     /*
-     * Returns an immutable list of the lines of a given file.
-     * If the file does not exists, it returns an empty list and prints an exception.
+     * Returns an immutable list of the lines of a given file. If the file does not
+     * exists, it returns an empty list and prints an exception.
      */
     public static List<String> readClasspathFileLines(Class sourceClass, String fileName) {
         List<String> fileLines = Collections.emptyList();
@@ -31,7 +31,7 @@ public class AdventOfCodeUtils {
     }
 
     private static List<String> getLinesFromClasspathFile(Class sourceClass, String fileName)
-    throws URISyntaxException, IOException {
+            throws URISyntaxException, IOException {
         URL fileUrl = sourceClass.getResource(fileName);
 
         if (fileUrl == null) {
@@ -43,26 +43,22 @@ public class AdventOfCodeUtils {
     }
 
     public static <T> int mapAndSumList(List<T> inputList, Function<? super T, Integer> functionToApply) {
-        return inputList.stream()
-        .map(functionToApply)
-        .reduce(0, (a, b) -> a + b);
+        return inputList.stream().map(functionToApply).reduce(0, (a, b) -> a + b);
     }
 
     public static List<Integer> parseAllStringsToInt(List<String> valuesString) {
-        return valuesString.stream()
-        .map(Integer::parseInt)
-        .collect(Collectors.toList());
+        return valuesString.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
     public static <T> List<T> cloneList(List<T> listToClone) {
         return new ArrayList(listToClone);
     }
-    
+
     public static <T> List<T> getElementsAt(List<T> inputList, List<Integer> indices) {
-    	List<T> outputList = new ArrayList();
-    	
-    	indices.forEach(idx -> outputList.add(inputList.get(idx)));
-    	
-    	return outputList;
+        List<T> outputList = new ArrayList();
+
+        indices.forEach(idx -> outputList.add(inputList.get(idx)));
+
+        return outputList;
     }
 }

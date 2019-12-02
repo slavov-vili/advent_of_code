@@ -1,8 +1,8 @@
-package day02;
+package exceptions;
 
 public class InvalidIntCodeException extends Exception {
 
     public InvalidIntCodeException(String string) {
-       super(string);
+        super(string);
     }
 }
