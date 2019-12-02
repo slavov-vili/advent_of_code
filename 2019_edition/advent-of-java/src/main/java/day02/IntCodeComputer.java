@@ -1,76 +1,75 @@
 package day02;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import exceptions.InvalidArgumentException;
+import utils.AdventOfCodeUtils;
 
 public class IntCodeComputer {
-    private static int INT_CODE_TERMINATE = 99;
+	private int haltCode;
+	private Map<Integer, IntCodeInstruction> instructionCodeToInstruction;
 
-    private List<Integer> memory;
-    private int stepsToNextIntCode;
-    private int curIntCodeIdx;
+	public IntCodeComputer(int haltCode) {
+		this.haltCode = haltCode;
+		this.instructionCodeToInstruction = new HashMap<>();
+	}
 
-    public IntCodeComputer(List<Integer> inputIntCodes, int stepsToNextIntCode) {
-        this.curIntCodeIdx = 0;
-        this.memory = inputIntCodes;
-        this.stepsToNextIntCode = stepsToNextIntCode;
-    }
+	public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
+		List<Integer> memory = AdventOfCodeUtils.cloneList(inputCodes);
 
-    public void processInput() throws InvalidIntCodeException {
-        while (this.getCurIntCode() != INT_CODE_TERMINATE) {
-            handleIntCode(this.getCurIntCode());
-        }
-    }
+		int curInstructionIdx = startIndex;
+		int curInstructionCode = memory.get(curInstructionIdx);
 
-    private void handleIntCode(int code) throws InvalidIntCodeException {
-        int arg1 = this.getValueAt(curIntCodeIdx + 1);
-        int arg2 = this.getValueAt(curIntCodeIdx + 2);
-        int out = this.getValueAt(curIntCodeIdx + 3);
+		while (!this.codeIsHaltCode(curInstructionCode)) {
+			IntCodeInstruction curInstruction = this.getInstructionByCode(curInstructionCode);
+			List<Integer> instructionInput = this.extractInputForInstruction(memory, curInstructionIdx, curInstruction);
 
-        switch (code) {
-        case 1: {
-            int newValue = addValuesAt(arg1, arg2);
-            this.setValueAt(out, newValue);
-            break;
-        }
-        case 2: {
-            int newValue = multiplyValuesAt(arg1, arg2);
-            this.setValueAt(out, newValue);
-            break;
-        }
-        default:
-            throw new InvalidIntCodeException("IntCode " + code + " is not valid!");
-        }
+			int outputIndex = this.extractOutputIndexForInstruction(memory, curInstructionIdx, curInstruction);
+			int outputValue = curInstruction.apply(instructionInput);
+			
+			memory.set(outputIndex, outputValue);
+			curInstructionIdx = this.calcNextInstructionIndex(curInstructionIdx, curInstruction);
+			curInstructionCode = memory.get(curInstructionIdx);
+		}
 
-        updateNextInstructionIdx();
-    }
+		return memory;
+	}
 
-    private int addValuesAt(int idxA, int idxB) {
-       return this.getValueAt(idxA) + this.getValueAt(idxB);
-    }
+	private int calcNextInstructionIndex(int curInstructionIdx, IntCodeInstruction curInstruction) {
+		return curInstructionIdx + curInstruction.getInputSize() + 2;
+	}
 
-    private int multiplyValuesAt(int idxA, int idxB) {
-       return this.getValueAt(idxA) * this.getValueAt(idxB);
-    }
+	private int extractOutputIndexForInstruction(List<Integer> memory, int curInstructionIdx, IntCodeInstruction curInstruction) {
+		int indexOfOutputIndex = curInstructionIdx + curInstruction.getInputSize() + 1;
+		return memory.get(indexOfOutputIndex);
+	}
 
-    private void updateNextInstructionIdx() {
-       this.curIntCodeIdx += this.stepsToNextIntCode;
-    }
+	private List<Integer> extractInputForInstruction(List<Integer> memory, int curInstructionIdx, IntCodeInstruction curInstruction) {
+		List<Integer> inputIndices = memory.subList(curInstructionIdx + 1, curInstructionIdx + curInstruction.getInputSize() + 1);
+		return AdventOfCodeUtils.getElementsAt(memory, inputIndices);
+	}
 
+	public IntCodeInstruction getInstructionByCode(Integer instructionCode) throws InvalidIntCodeException {
+		if (!this.instructionCodeToInstruction.containsKey(instructionCode))
+			throw new InvalidIntCodeException("Instruction code " + instructionCode + " is unknown!");
+		
+		return this.instructionCodeToInstruction.get(instructionCode);
+	}
 
+	public IntCodeInstruction addNewInstruction(IntCodeInstruction instruction)
+			throws InvalidArgumentException {
+		int instructionCode = instruction.getCode();
+		
+		if (instructionCode == this.haltCode)
+			throw new InvalidArgumentException("Instruction code " + instructionCode + " cannot be overriden");
 
-    private int getCurIntCode() {
-       return this.getValueAt(this.curIntCodeIdx);
-    }
+		return this.instructionCodeToInstruction.put(instructionCode, instruction);
+	}
+	
+	private boolean codeIsHaltCode(int code) {
+		return code == this.haltCode;
+	}
 
-    public int getValueAt(int idx) {
-       return memory.get(idx);
-    }
-
-    private void setValueAt(int idx, int newValue) {
-       this.memory.set(idx, newValue);
-    }
-
-    public List<Integer> getEndSequence() {
-       return this.memory;
-    }
 }

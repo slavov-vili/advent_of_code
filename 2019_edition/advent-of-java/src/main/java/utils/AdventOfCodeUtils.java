@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -53,4 +54,15 @@ public class AdventOfCodeUtils {
         .collect(Collectors.toList());
     }
 
+    public static <T> List<T> cloneList(List<T> listToClone) {
+        return new ArrayList(listToClone);
+    }
+    
+    public static <T> List<T> getElementsAt(List<T> inputList, List<Integer> indices) {
+    	List<T> outputList = new ArrayList();
+    	
+    	indices.forEach(idx -> outputList.add(inputList.get(idx)));
+    	
+    	return outputList;
+    }
 }
