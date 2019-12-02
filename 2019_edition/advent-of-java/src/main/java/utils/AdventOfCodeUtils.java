@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AdventOfCodeUtils {
 
@@ -44,6 +45,12 @@ public class AdventOfCodeUtils {
 	return inputList.stream()
 		.map(functionToApply)
 		.reduce(0, (a, b) -> a + b);
+    }
+
+    public static List<Integer> parseAllStringsToInt(List<String> valuesString) {
+	return valuesString.stream()
+		.map(Integer::parseInt)
+		.collect(Collectors.toList());
     }
 
 }

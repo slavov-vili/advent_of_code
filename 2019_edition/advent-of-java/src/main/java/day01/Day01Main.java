@@ -8,8 +8,8 @@ import utils.AdventOfCodeUtils;
 public class Day01Main {
 
     public static void main(String[] args) {
-	List<String> massesString = AdventOfCodeUtils.readClasspathFileLines(Day01Solver.class, "input.txt");
-	List<Integer> massesInt = massesString.stream().map(Integer::parseInt).collect(Collectors.toList());
+	List<String> massesString = AdventOfCodeUtils.readClasspathFileLines(Day01Main.class, "input.txt");
+	List<Integer> massesInt = AdventOfCodeUtils.parseAllStringsToInt(massesString);
 	
 	int solutionA = Day01Solver.solveA(massesInt);
 	System.out.println(solutionA);
