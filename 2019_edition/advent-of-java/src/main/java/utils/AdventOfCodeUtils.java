@@ -50,9 +50,11 @@ public class AdventOfCodeUtils {
     /*
      * Generates a list of all points which exist within the area of the square
      * that is formed after connecting the given arguments.
+     * 
+     * The generation first goes horizontally and then vertically!
      */
-    public static Set<Point> generatePointsInArea(Point a, Point b) {
-    	Set<Point> pointsInArea = new HashSet();
+    public static List<Point> generatePointsInArea(Point a, Point b) {
+    	List<Point> pointsInArea = new ArrayList();
     	List<Integer> rangeX = generateRange(a.x, b.x);
     	List<Integer> rangeY = generateRange(a.y, b.y);
     	
