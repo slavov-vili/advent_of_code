@@ -1,81 +1,59 @@
 package day03;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import utils.AdventOfCodeUtils;
 
 public class Day03Main {
 
 	public static void main(String[] args) {
-		System.out.println("Solution A: " + solveA());
+	    List<List<String>> wireInputs = getInputs();
+        List<Wire> wires = getWires(wireInputs);
+        Set<Point> intersections = WireUtils.intersectWires(wires.get(0), wires.get(1));
+        
+		System.out.println("Solution A: " + solveA(intersections));
 		
-		System.out.println("Solution B: " + solveB());
-		
+		System.out.println("Solution B: " + solveB(intersections, wires));
 	}
 
-	protected static int solveA() {
-	    Set<Point> intersections = determineIntersections();
-	    
+	protected static int solveA(Set<Point> intersections) {
 		Point closestPoint = intersections.stream()
-				.min(Comparator.comparing(point -> AdventOfCodeUtils.calcManhattanDistance(point, getOriginPoint())))
+				.min(Comparator.comparing(point -> AdventOfCodeUtils.calcManhattanDistance(point, AdventOfCodeUtils.getOriginPoint())))
 				.get();
 		
-		return AdventOfCodeUtils.calcManhattanDistance(closestPoint, getOriginPoint());
+		return AdventOfCodeUtils.calcManhattanDistance(closestPoint, AdventOfCodeUtils.getOriginPoint());
 	}
 
-    protected static int solveB() {
-        List<Wire> wires = getWires();
-        Set<Point> intersections = determineIntersections();
-        
+    protected static int solveB(Set<Point> intersections, List<Wire> wires) {
         Point closestPoint = intersections.stream()
-                .min(Comparator.comparing(point -> calcCombinedDistance(point, wires.get(0), wires.get(1))))
+                .min(Comparator.comparing(point -> WireUtils.calcCombinedDistance(point, wires.get(0), wires.get(1))))
                 .get();
         
-        return calcCombinedDistance(closestPoint, wires.get(0), wires.get(1));
+        return WireUtils.calcCombinedDistance(closestPoint, wires.get(0), wires.get(1));
     }
 	
-	protected static int calcCombinedDistance(Point point, Wire wireA, Wire wireB) {
-	    int combinedDistance = -1;
+	protected static List<Wire> getWires(List<List<String>> wireInputLists) {
+	    List<Wire> wires = new ArrayList();
 	    
-	    try {
-	        combinedDistance = wireA.calcStepsToPreviousPosition(point) + wireB.calcStepsToPreviousPosition(point);
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        System.exit(1);
+	    for (List<String> curWireInput : wireInputLists) {
+	        Wire newWire = new Wire(AdventOfCodeUtils.getOriginPoint());
+	        newWire.moveAlongPath(curWireInput);
+	        wires.add(newWire);
 	    }
-	    return combinedDistance;
-    }
-
-    protected static Set<Point> determineIntersections() {
-	    List<Wire> wires = getWires();
-	    
-        return WireUtils.intersectWires(wires.get(0), wires.get(1));
-	}
-	
-	protected static List<Wire> getWires() {
-	    Wire wireA = new Wire(getOriginPoint());
-        Wire wireB = new Wire(getOriginPoint());
-        wireA.moveAlongPath(getInputWireA());
-        wireB.moveAlongPath(getInputWireB());
         
-	    return Arrays.asList(wireA, wireB);
+	    return wires;
 	}
-	
-	protected static Point getOriginPoint() {
-		return new Point(0, 0);
-	}
-	
-    protected static List<String> getInputWireA() {
-        String pathWireA = AdventOfCodeUtils.readClasspathFileLines(Day03Main.class, "input.txt").get(0);
-        return Arrays.asList(pathWireA.split(","));
-    }
     
-    protected static List<String> getInputWireB() {
-        String pathWireB = AdventOfCodeUtils.readClasspathFileLines(Day03Main.class, "input.txt").get(1);
-        return Arrays.asList(pathWireB.split(","));
+    protected static List<List<String>> getInputs() {
+        List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day03Main.class, "input.txt");
+        return inputLines.stream()
+                .map(line -> Arrays.asList(line.split(",")))
+                .collect(Collectors.toList());
     }
 }
