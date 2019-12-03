@@ -1,5 +1,6 @@
 package utils;
 
+import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,7 +9,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,26 +47,59 @@ public class AdventOfCodeUtils {
 
     
     
-    public static List<Integer> generateRange(int a, int b) {
+    /*
+     * Generates a list of all points which exist within the area of the square
+     * that is formed after connecting the given arguments.
+     */
+    public static Set<Point> generatePointsInArea(Point a, Point b) {
+    	Set<Point> pointsInArea = new HashSet();
+    	List<Integer> rangeX = generateRange(a.x, b.x);
+    	List<Integer> rangeY = generateRange(a.y, b.y);
+    	
+    	for (Integer x : rangeX)
+    		for (Integer y : rangeY)
+    			pointsInArea.add(new Point(x, y));
+    	
+    	return pointsInArea;
+    }
+    
+    public static int calcManhattanDistance(Point a, Point b) {
+    	return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+    }
+    
+    /*
+     * Generates a range of the numbers given the beginning and end values.
+     * The range is INCLUSIVE.
+     */
+    public static List<Integer> generateRange(int firstValue, int lastValue) {
         List<Integer> range = new ArrayList();
-        range.add(a);
-        int increment = -compareInts(a, b);
-        int stepCount = Math.abs(a - b);
+        int stepCount = Math.abs(firstValue - lastValue);
+        int increment = -compareInts(firstValue, lastValue);
+        int lastValueIncremented = lastValue+increment;
         
-        for (int i = 0; i < stepCount; i++) {
-            range.add(a + increment);
-        }
+        int curValue = firstValue;
+        do {
+        	range.add(curValue);
+        	curValue += increment;
+        } while(curValue != lastValueIncremented);
         
         return range;
     }
     
+    /*
+     * Compares two integers and returns:
+     *  1 - if the first integer is bigger
+     * -1 - if the first integer is smaller
+     *  0 - if the two integers are equal
+     */
     public static int compareInts(int a, int b) {
         if (a > b)
             return 1;
-        else if (a < b)
-            return -1;
         else
-            return 0;
+        	if (a < b)
+        		return -1;
+        	else
+        		return 0;
     }
     
     
