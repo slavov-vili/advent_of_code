@@ -42,6 +42,32 @@ public class AdventOfCodeUtils {
         return Files.readAllLines(fileToRead.toPath());
     }
 
+    
+    
+    public static List<Integer> generateRange(int a, int b) {
+        List<Integer> range = new ArrayList();
+        range.add(a);
+        int increment = -compareInts(a, b);
+        int stepCount = Math.abs(a - b);
+        
+        for (int i = 0; i < stepCount; i++) {
+            range.add(a + increment);
+        }
+        
+        return range;
+    }
+    
+    public static int compareInts(int a, int b) {
+        if (a > b)
+            return 1;
+        else if (a < b)
+            return -1;
+        else
+            return 0;
+    }
+    
+    
+    
     public static <T> int mapAndSumList(List<T> inputList, Function<? super T, Integer> functionToApply) {
         return inputList.stream().map(functionToApply).reduce(0, (a, b) -> a + b);
     }
