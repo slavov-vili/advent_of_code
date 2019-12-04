@@ -7,40 +7,40 @@ import exceptions.InvalidIntCodeException;
 import utils.AdventOfCodeUtils;
 
 public class IntCodeComputer {
-    private int haltCode;
-    private IntCodeInstructionProvider instructionProvider;
+	private int haltCode;
+	private IntCodeInstructionProvider instructionProvider;
 
-    public IntCodeComputer(int haltCode, IntCodeInstructionProvider instructionProvider) {
-        this.haltCode = haltCode;
-        this.instructionProvider = instructionProvider;
-    }
+	public IntCodeComputer(int haltCode, IntCodeInstructionProvider instructionProvider) {
+		this.haltCode = haltCode;
+		this.instructionProvider = instructionProvider;
+	}
 
-    public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
-        List<Integer> memory = AdventOfCodeUtils.cloneList(inputCodes);
-        int curInstructionIdx = startIndex;
-        int curInstructionCode = memory.get(curInstructionIdx);
+	public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
+		List<Integer> memory = AdventOfCodeUtils.cloneList(inputCodes);
+		int curInstructionIdx = startIndex;
+		int curInstructionCode = memory.get(curInstructionIdx);
 
-        do {
+		do {
 
-            IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByCode(curInstructionCode);
-            List<Integer> instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
-                    curInstruction);
+			IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByCode(curInstructionCode);
+			List<Integer> instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
+					curInstruction);
 
-            int outputValue = curInstruction.apply(instructionInput);
-            int outputIndex = IntCodeComputerUtils.extractOutputIndexForInstruction(memory, curInstructionIdx,
-                    curInstruction);
+			int outputValue = curInstruction.apply(instructionInput);
+			int outputIndex = IntCodeComputerUtils.extractOutputIndexForInstruction(memory, curInstructionIdx,
+					curInstruction);
 
-            memory.set(outputIndex, outputValue);
+			memory.set(outputIndex, outputValue);
 
-            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstruction);
-            curInstructionCode = memory.get(curInstructionIdx);
-        } while (!this.codeIsHaltCode(curInstructionCode));
+			curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstruction);
+			curInstructionCode = memory.get(curInstructionIdx);
+		} while (!this.codeIsHaltCode(curInstructionCode));
 
-        return memory;
-    }
+		return memory;
+	}
 
-    private boolean codeIsHaltCode(int code) {
-        return code == this.haltCode;
-    }
+	private boolean codeIsHaltCode(int code) {
+		return code == this.haltCode;
+	}
 
 }

@@ -10,22 +10,22 @@ import org.junit.jupiter.api.Test;
 
 public class AdventOfCodeUtilsTest {
 
-    @Test
-    void readClasspathFileLines_NonExistentFileTest() {
-        List<String> expected = Collections.emptyList();
+	@Test
+	void readClasspathFileLines_NonExistentFileTest() {
+		List<String> expected = Collections.emptyList();
 
-        String nameOfNonexistentFile = "myTestFilename.txt";
-        List<String> actual = AdventOfCodeUtils.readClasspathFileLines(AdventOfCodeUtils.class, nameOfNonexistentFile);
+		String nameOfNonexistentFile = "myTestFilename.txt";
+		List<String> actual = AdventOfCodeUtils.readClasspathFileLines(AdventOfCodeUtils.class, nameOfNonexistentFile);
 
-        assertEquals(expected, actual, "Calling the function with a non-existent file should return an empty list!");
-    }
+		assertEquals(expected, actual, "Calling the function with a non-existent file should return an empty list!");
+	}
 
-    @Test
-    void reactClasspathFileLines_ExistentFile_HelloWorldTxtTest() {
-        List<String> expected = Arrays.asList("Hello", "World", "txt");
-        String fileName = "input.txt";
-        List<String> actual = AdventOfCodeUtils.readClasspathFileLines(AdventOfCodeUtils.class, fileName);
-        assertEquals(expected, actual, "File contents do not match expectations!");
-    }
+	@Test
+	void reactClasspathFileLines_ExistentFile_HelloWorldTxtTest() {
+		List<String> expected = Arrays.asList("Hello", "World", "txt");
+		String fileName = "input.txt";
+		List<String> actual = AdventOfCodeUtils.readClasspathFileLines(AdventOfCodeUtils.class, fileName);
+		assertEquals(expected, actual, "File contents do not match expectations!");
+	}
 
 }

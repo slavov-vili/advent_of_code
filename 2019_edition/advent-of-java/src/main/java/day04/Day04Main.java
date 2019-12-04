@@ -1,38 +1,29 @@
 package day04;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import utils.AdventOfCodeUtils;
 
 public class Day04Main {
 
-    public static void main(String[] args) {
-        System.out.println("Solution A: " + solveA());
-        
-        System.out.println("Solution B: " + solveB());
+	public static void main(String[] args) {
+		System.out.println("Solution A: " + solveA());
 
-    }
-    
-    public static int solveA() {
-        return getRange().stream()
-                .filter(value -> PasswordUtils.checkPartA(value))
-                .toArray()
-                .length;
-    }
-    
-    public static int solveB() {
-        return getRange().stream()
-                .filter(value -> PasswordUtils.checkForDay04PartB(value))
-                .toArray()
-                .length;
-    }
+		System.out.println("Solution B: " + solveB());
 
-    private static List<Integer> getRange() {
-        String input = AdventOfCodeUtils.readClasspathFileLines(Day04Main.class, "input.txt").get(0);
-        String[] inputSplit = input.split("-");
-        return AdventOfCodeUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1]));
-    }
+	}
+
+	public static int solveA() {
+		return getRange().stream().filter(value -> PasswordUtils.checkPartA(value)).toArray().length;
+	}
+
+	public static int solveB() {
+		return getRange().stream().filter(value -> PasswordUtils.checkForDay04PartB(value)).toArray().length;
+	}
+
+	private static List<Integer> getRange() {
+		String input = AdventOfCodeUtils.readClasspathFileLines(Day04Main.class, "input.txt").get(0);
+		String[] inputSplit = input.split("-");
+		return AdventOfCodeUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1]));
+	}
 }

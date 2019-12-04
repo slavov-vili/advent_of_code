@@ -1,9 +1,6 @@
 package day04;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import utils.AdventOfCodeUtils;
 
@@ -15,7 +12,8 @@ public class PasswordUtils {
 	private static final String consecutiveDigitsPattern = "(\\d)\\1+";
 
 	public static boolean checkPartA(Integer password) {
-		return checkBaseRequirementsDay04(password) && hasSequenceOfSameDigits(password) && isAlwaysIncreasing(password);
+		return checkBaseRequirementsDay04(password) && hasSequenceOfSameDigits(password)
+				&& isAlwaysIncreasing(password);
 	}
 
 	public static boolean checkForDay04PartB(Integer password) {
@@ -25,7 +23,7 @@ public class PasswordUtils {
 
 	public static boolean checkBaseRequirementsDay04(Integer password) {
 		return AdventOfCodeUtils.checkIntegerLength(password, PASSWORD_LENGTH)
-		&& AdventOfCodeUtils.checkIfIntegerWithinRange(password, RANGE_START, RANGE_END + 1);
+				&& AdventOfCodeUtils.checkIfIntegerWithinRange(password, RANGE_START, RANGE_END + 1);
 	}
 
 	public static boolean hasSequenceOfSameDigits(Integer password) {
