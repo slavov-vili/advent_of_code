@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AdventOfCodeUtils {
@@ -106,6 +108,26 @@ public class AdventOfCodeUtils {
         		return -1;
         	else
         		return 0;
+    }
+    
+    
+    
+    public static boolean checkIntegerLength(Integer integerToCheck, int lengthToCheck) {
+        return String.valueOf(integerToCheck).length() == lengthToCheck;
+    }
+    
+    public static boolean checkIfIntegerWithinRange(Integer integerToCheck, Integer rangeStart, Integer rangeEnd) {
+        return (rangeStart <= integerToCheck) && (integerToCheck < rangeEnd);
+    }
+    
+    
+    
+    public static List<String> getAllMatches(String inputString, String regex) {
+    	List<String> matches = new ArrayList();
+        Matcher matcher = Pattern.compile(regex).matcher(inputString);
+        while(matcher.find())
+        	matches.add(matcher.group());
+        return matches;
     }
     
     

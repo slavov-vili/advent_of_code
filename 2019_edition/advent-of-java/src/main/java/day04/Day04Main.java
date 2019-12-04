@@ -10,9 +10,6 @@ import utils.AdventOfCodeUtils;
 public class Day04Main {
 
     public static void main(String[] args) {
-        //Integer valueToCheck = 1111122;
-        //System.out.println("Checking: " + valueToCheck + " - " + PasswordChecker.checkPartA(valueToCheck));
-        
         System.out.println("Solution A: " + solveA());
         
         System.out.println("Solution B: " + solveB());
@@ -21,14 +18,14 @@ public class Day04Main {
     
     public static int solveA() {
         return getRange().stream()
-                .filter(value -> PasswordChecker.checkPartA(value))
+                .filter(value -> PasswordUtils.checkPartA(value))
                 .toArray()
                 .length;
     }
     
     public static int solveB() {
         return getRange().stream()
-                .filter(value -> PasswordChecker.checkPartB(value))
+                .filter(value -> PasswordUtils.checkForDay04PartB(value))
                 .toArray()
                 .length;
     }
