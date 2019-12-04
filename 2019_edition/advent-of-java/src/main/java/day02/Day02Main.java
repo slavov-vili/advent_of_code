@@ -77,6 +77,6 @@ public class Day02Main {
 
 	protected static List<Integer> getInput() {
 		String intCodesString = AdventOfCodeUtils.readClasspathFileLines(Day02Main.class, "input.txt").get(0);
-		return AdventOfCodeUtils.parseAllStringsToInt(Arrays.asList(intCodesString.split(",")));
+		return AdventOfCodeUtils.parseStringsToIntegers(Arrays.asList(intCodesString.split(",")));
 	}
 }

@@ -11,7 +11,11 @@ public class PasswordUtils {
 	private static final int CONSECUTIVE_DIGIT_COUNT = 2;
 	private static final String consecutiveDigitsPattern = "(\\d)\\1+";
 
-	public static boolean checkPartA(Integer password) {
+	
+	
+	// TODO: Change names to "checkForPartX"
+	// TODO: Split everything into separate util classes
+	public static boolean checkForDay04PartA(Integer password) {
 		return checkBaseRequirementsDay04(password) && hasSequenceOfSameDigits(password)
 				&& isAlwaysIncreasing(password);
 	}
@@ -26,6 +30,8 @@ public class PasswordUtils {
 				&& AdventOfCodeUtils.checkIfIntegerWithinRange(password, RANGE_START, RANGE_END + 1);
 	}
 
+	
+	
 	public static boolean hasSequenceOfSameDigits(Integer password) {
 		return hasSequenceOfSameChars(String.valueOf(password), consecutiveDigitsPattern);
 
@@ -45,6 +51,8 @@ public class PasswordUtils {
 		return sequencesOfSameChars.stream().anyMatch(seq -> seq.length() == sequenceLength);
 	}
 
+	
+	
 	public static boolean isAlwaysIncreasing(Integer password) {
 		return isAlwaysIncreasing(String.valueOf(password));
 	}

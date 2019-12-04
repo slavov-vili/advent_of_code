@@ -7,18 +7,19 @@ import utils.AdventOfCodeUtils;
 public class Day04Main {
 
 	public static void main(String[] args) {
-		System.out.println("Solution A: " + solveA());
+		List<Integer> range = getRange();
+		
+		System.out.println("Solution A: " + solveA(range));
 
-		System.out.println("Solution B: " + solveB());
-
+		System.out.println("Solution B: " + solveB(range));
 	}
 
-	public static int solveA() {
-		return getRange().stream().filter(value -> PasswordUtils.checkPartA(value)).toArray().length;
+	public static int solveA(List<Integer> range) {
+		return range.stream().filter(value -> PasswordUtils.checkForDay04PartA(value)).toArray().length;
 	}
 
-	public static int solveB() {
-		return getRange().stream().filter(value -> PasswordUtils.checkForDay04PartB(value)).toArray().length;
+	public static int solveB(List<Integer> range) {
+		return range.stream().filter(value -> PasswordUtils.checkForDay04PartB(value)).toArray().length;
 	}
 
 	private static List<Integer> getRange() {

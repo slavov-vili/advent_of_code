@@ -45,6 +45,8 @@ public class AdventOfCodeUtils {
 		return Files.readAllLines(fileToRead.toPath());
 	}
 
+	
+	
 	/*
 	 * Generates a list of all points which exist within the area of the square that
 	 * is formed after connecting the given arguments.
@@ -53,8 +55,8 @@ public class AdventOfCodeUtils {
 	 */
 	public static List<Point> generatePointsInArea(Point a, Point b) {
 		List<Point> pointsInArea = new ArrayList();
-		List<Integer> rangeX = generateRange(a.x, b.x);
-		List<Integer> rangeY = generateRange(a.y, b.y);
+		List<Integer> rangeX = generateRange(a.x, b.x+1);
+		List<Integer> rangeY = generateRange(a.y, b.y+1);
 
 		for (Integer x : rangeX)
 			for (Integer y : rangeY)
@@ -71,17 +73,15 @@ public class AdventOfCodeUtils {
 		return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 	}
 
-	/*
-	 * Generates a range of the numbers given the beginning and end values. The
-	 * range is INCLUSIVE.
-	 */
-	public static List<Integer> generateRange(int firstValue, int lastValue) {
+	
+	// TODO: change everything where there is logic to streams
+	// and everything where data is stored - to collections
+	public static List<Integer> generateRange(int startInclusive, int endExclusive) {
 		List<Integer> range = new ArrayList();
-		int stepCount = Math.abs(firstValue - lastValue);
-		int increment = -compareInts(firstValue, lastValue);
-		int lastValueIncremented = lastValue + increment;
+		int increment = -compareInts(startInclusive, endExclusive);
+		int lastValueIncremented = endExclusive + increment;
 
-		int curValue = firstValue;
+		int curValue = startInclusive;
 		do {
 			range.add(curValue);
 			curValue += increment;
@@ -91,8 +91,8 @@ public class AdventOfCodeUtils {
 	}
 
 	/*
-	 * Compares two integers and returns: 1 - if the first integer is bigger -1 - if
-	 * the first integer is smaller 0 - if the two integers are equal
+	 * Compares two integers and returns: 1 if the first integer is bigger; -1 if
+	 * the first integer is smaller; 0 if the two integers are equal
 	 */
 	public static int compareInts(int a, int b) {
 		if (a > b)
@@ -107,10 +107,12 @@ public class AdventOfCodeUtils {
 		return String.valueOf(integerToCheck).length() == lengthToCheck;
 	}
 
-	public static boolean checkIfIntegerWithinRange(Integer integerToCheck, Integer rangeStart, Integer rangeEnd) {
-		return (rangeStart <= integerToCheck) && (integerToCheck < rangeEnd);
+	public static boolean checkIfIntegerWithinRange(Integer integerToCheck, Integer rangeStartInclusive, Integer rangeEndExclusive) {
+		return (rangeStartInclusive <= integerToCheck) && (integerToCheck < rangeEndExclusive);
 	}
 
+	
+	
 	public static List<String> getAllMatches(String inputString, String regex) {
 		List<String> matches = new ArrayList();
 		Matcher matcher = Pattern.compile(regex).matcher(inputString);
@@ -119,11 +121,18 @@ public class AdventOfCodeUtils {
 		return matches;
 	}
 
+	
+	
+	/*
+	 * Applies the given function to each element of the list and sums the results.
+	 * 
+	 * Since the end result is a sum, the function HAS TO return an Integer!
+	 */
 	public static <T> int mapAndSumList(List<T> inputList, Function<? super T, Integer> functionToApply) {
 		return inputList.stream().map(functionToApply).reduce(0, (a, b) -> a + b);
 	}
 
-	public static List<Integer> parseAllStringsToInt(List<String> valuesString) {
+	public static List<Integer> parseStringsToIntegers(List<String> valuesString) {
 		return valuesString.stream().map(Integer::parseInt).collect(Collectors.toList());
 	}
 
@@ -131,11 +140,9 @@ public class AdventOfCodeUtils {
 		return new ArrayList(listToClone);
 	}
 
-	public static <T> List<T> getElementsAt(List<T> inputList, List<Integer> indices) {
-		List<T> outputList = new ArrayList();
-
-		indices.forEach(idx -> outputList.add(inputList.get(idx)));
-
-		return outputList;
+	public static <T> List<T> getListElementsAt(List<T> inputList, List<Integer> indices) {
+		return indices.stream()
+				.map(idx -> inputList.get(idx))
+				.collect(Collectors.toList());
 	}
 }

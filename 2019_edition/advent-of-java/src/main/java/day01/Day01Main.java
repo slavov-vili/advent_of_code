@@ -18,7 +18,7 @@ public class Day01Main {
 
 	protected static List<Integer> getInput() {
 		List<String> massesString = AdventOfCodeUtils.readClasspathFileLines(Day01Main.class, "input.txt");
-		return AdventOfCodeUtils.parseAllStringsToInt(massesString);
+		return AdventOfCodeUtils.parseStringsToIntegers(massesString);
 	}
 
 }

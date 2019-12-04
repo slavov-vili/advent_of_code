@@ -20,7 +20,7 @@ public class IntCodeComputerUtils {
 			IntCodeInstruction curInstruction) {
 		List<Integer> inputIndices = memory.subList(curInstructionIdx + 1,
 				calcIndexOfOutputIndexForInstruction(curInstructionIdx, curInstruction));
-		return AdventOfCodeUtils.getElementsAt(memory, inputIndices);
+		return AdventOfCodeUtils.getListElementsAt(memory, inputIndices);
 	}
 
 	protected static int extractOutputIndexForInstruction(List<Integer> memory, int curInstructionIdx,
