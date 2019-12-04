@@ -1,30 +1,31 @@
 package day04;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import utils.AdventOfCodeUtils;
 
 public class Day04Main {
 
-	public static void main(String[] args) {
-		List<Integer> range = getRange();
-		
-		System.out.println("Solution A: " + solveA(range));
+    public static void main(String[] args) {
 
-		System.out.println("Solution B: " + solveB(range));
-	}
+        System.out.println("Solution A: " + solveA(getRangeAsStream()));
 
-	public static int solveA(List<Integer> range) {
-		return range.stream().filter(value -> PasswordUtils.checkForDay04PartA(value)).toArray().length;
-	}
+        System.out.println("Solution B: " + solveB(getRangeAsStream()));
 
-	public static int solveB(List<Integer> range) {
-		return range.stream().filter(value -> PasswordUtils.checkForDay04PartB(value)).toArray().length;
-	}
+    }
 
-	private static List<Integer> getRange() {
-		String input = AdventOfCodeUtils.readClasspathFileLines(Day04Main.class, "input.txt").get(0);
-		String[] inputSplit = input.split("-");
-		return AdventOfCodeUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1]));
-	}
+    public static int solveA(Stream<Integer> range) {
+        return PasswordUtils.filterForPartA(range).toArray().length;
+    }
+
+    public static int solveB(Stream<Integer> range) {
+        return PasswordUtils.filterForPartB(range).toArray().length;
+    }
+
+    private static Stream<Integer> getRangeAsStream() {
+        String input = AdventOfCodeUtils.readClasspathFileLines(Day04Main.class, "input.txt").get(0);
+        String[] inputSplit = input.split("-");
+        return AdventOfCodeUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1]))
+                .stream();
+    }
 }

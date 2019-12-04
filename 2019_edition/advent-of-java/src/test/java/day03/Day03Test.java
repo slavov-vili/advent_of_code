@@ -11,18 +11,18 @@ import utils.AdventOfCodeUtils;
 
 public class Day03Test {
 
-	@Test
-	void calcStepsToPreviousPosition_BasicTest() {
-		int expected = 40;
-		Wire wireA = new Wire(AdventOfCodeUtils.getOriginPoint());
-		Wire wireB = new Wire(AdventOfCodeUtils.getOriginPoint());
-		wireA.moveAlongPath(Arrays.asList("R8", "U5", "L5", "D3"));
-		wireB.moveAlongPath(Arrays.asList("U7", "R6", "D4", "L4"));
+    @Test
+    void calcStepsToPreviousPosition_BasicTest() {
+        int expected = 40;
+        Wire wireA = new Wire(AdventOfCodeUtils.getOriginPoint());
+        Wire wireB = new Wire(AdventOfCodeUtils.getOriginPoint());
+        wireA.moveAlongPath(Arrays.asList("R8", "U5", "L5", "D3"));
+        wireB.moveAlongPath(Arrays.asList("U7", "R6", "D4", "L4"));
 
-		Point goal = new Point(3, 3);
+        Point goal = new Point(3, 3);
 
-		int actual = WireUtils.calcCombinedDistance(goal, wireA, wireB);
+        int actual = WireUtils.calcCombinedDistance(goal, wireA, wireB);
 
-		assertEquals(expected, actual);
-	}
+        assertEquals(expected, actual);
+    }
 }

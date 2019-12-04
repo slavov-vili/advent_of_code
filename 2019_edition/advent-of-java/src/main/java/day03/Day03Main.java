@@ -12,47 +12,47 @@ import utils.AdventOfCodeUtils;
 
 public class Day03Main {
 
-	public static void main(String[] args) {
-		List<List<String>> wireInputs = getInputs();
-		List<Wire> wires = getWires(wireInputs);
-		Set<Point> intersections = WireUtils.intersectWires(wires.get(0), wires.get(1));
+    public static void main(String[] args) {
+        List<List<String>> wireInputs = getInputs();
+        List<Wire> wires = getWires(wireInputs);
+        Set<Point> intersections = WireUtils.intersectWires(wires.get(0), wires.get(1));
 
-		System.out.println("Solution A: " + solveA(intersections));
+        System.out.println("Solution A: " + solveA(intersections));
 
-		System.out.println("Solution B: " + solveB(intersections, wires));
-	}
+        System.out.println("Solution B: " + solveB(intersections, wires));
+    }
 
-	protected static int solveA(Set<Point> intersections) {
-		Point closestPoint = intersections.stream()
-				.min(Comparator.comparing(
-						point -> AdventOfCodeUtils.calcManhattanDistance(point, AdventOfCodeUtils.getOriginPoint())))
-				.get();
+    protected static int solveA(Set<Point> intersections) {
+        Point closestPoint = intersections.stream()
+                .min(Comparator.comparing(
+                        point -> AdventOfCodeUtils.calcManhattanDistance(point, AdventOfCodeUtils.getOriginPoint())))
+                .get();
 
-		return AdventOfCodeUtils.calcManhattanDistance(closestPoint, AdventOfCodeUtils.getOriginPoint());
-	}
+        return AdventOfCodeUtils.calcManhattanDistance(closestPoint, AdventOfCodeUtils.getOriginPoint());
+    }
 
-	protected static int solveB(Set<Point> intersections, List<Wire> wires) {
-		Point closestPoint = intersections.stream()
-				.min(Comparator.comparing(point -> WireUtils.calcCombinedDistance(point, wires.get(0), wires.get(1))))
-				.get();
+    protected static int solveB(Set<Point> intersections, List<Wire> wires) {
+        Point closestPoint = intersections.stream()
+                .min(Comparator.comparing(point -> WireUtils.calcCombinedDistance(point, wires.get(0), wires.get(1))))
+                .get();
 
-		return WireUtils.calcCombinedDistance(closestPoint, wires.get(0), wires.get(1));
-	}
+        return WireUtils.calcCombinedDistance(closestPoint, wires.get(0), wires.get(1));
+    }
 
-	protected static List<Wire> getWires(List<List<String>> wireInputLists) {
-		List<Wire> wires = new ArrayList();
+    protected static List<Wire> getWires(List<List<String>> wireInputLists) {
+        List<Wire> wires = new ArrayList();
 
-		for (List<String> curWireInput : wireInputLists) {
-			Wire newWire = new Wire(AdventOfCodeUtils.getOriginPoint());
-			newWire.moveAlongPath(curWireInput);
-			wires.add(newWire);
-		}
+        for (List<String> curWireInput : wireInputLists) {
+            Wire newWire = new Wire(AdventOfCodeUtils.getOriginPoint());
+            newWire.moveAlongPath(curWireInput);
+            wires.add(newWire);
+        }
 
-		return wires;
-	}
+        return wires;
+    }
 
-	protected static List<List<String>> getInputs() {
-		List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day03Main.class, "input.txt");
-		return inputLines.stream().map(line -> Arrays.asList(line.split(","))).collect(Collectors.toList());
-	}
+    protected static List<List<String>> getInputs() {
+        List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day03Main.class, "input.txt");
+        return inputLines.stream().map(line -> Arrays.asList(line.split(","))).collect(Collectors.toList());
+    }
 }

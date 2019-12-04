@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface IntCodeInstruction {
 
-	public int apply(List<Integer> inputValues);
+    public int apply(List<Integer> inputValues);
 
-	public int getCode();
+    public int getCode();
 
-	public int getInputSize();
+    public int getInputSize();
 }
