@@ -7,15 +7,15 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
-import utils.AdventOfCodeUtils;
+import utils.PointUtils;
 
 public class Day03Test {
 
     @Test
     void calcStepsToPreviousPosition_BasicTest() {
         int expected = 40;
-        Wire wireA = new Wire(AdventOfCodeUtils.getOriginPoint());
-        Wire wireB = new Wire(AdventOfCodeUtils.getOriginPoint());
+        Wire wireA = new Wire(PointUtils.ORIGIN_POINT);
+        Wire wireB = new Wire(PointUtils.ORIGIN_POINT);
         wireA.moveAlongPath(Arrays.asList("R8", "U5", "L5", "D3"));
         wireB.moveAlongPath(Arrays.asList("U7", "R6", "D4", "L4"));
 

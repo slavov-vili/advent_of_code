@@ -1,8 +1,6 @@
 package day02.instructions;
 
-import java.util.List;
-
-import exceptions.InvalidArgumentCountException;
+import java.util.stream.IntStream;
 
 public class IntCodeInstructionMultiplication implements IntCodeInstruction {
 
@@ -14,14 +12,8 @@ public class IntCodeInstructionMultiplication implements IntCodeInstruction {
         this.inputSize = inputSize;
     }
 
-    public int apply(List<Integer> inputValues) {
-        if (inputValues.size() != this.inputSize)
-            throw new InvalidArgumentCountException(this.inputSize + " arguments expected");
-
-        int sum = 1;
-        for (Integer value : inputValues)
-            sum *= value;
-        return sum;
+    public int apply(IntStream inputValues) {
+        return inputValues.reduce(1, (a, b) -> a * b);
     }
 
     public int getCode() {

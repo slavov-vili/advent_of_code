@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import utils.AdventOfCodeUtils;
+import utils.PointUtils;
 
 public class Wire {
 
@@ -15,7 +15,7 @@ public class Wire {
     public Wire(Point initialPosition) {
         this.initialPosition = initialPosition;
         this.curPosition = initialPosition;
-        this.positionHistory = new ArrayList();
+        this.positionHistory = new ArrayList<>();
         this.positionHistory.add(initialPosition);
     }
 
@@ -38,10 +38,12 @@ public class Wire {
     }
 
     private List<Point> generatePositionsToGoal(Point goal) {
-        List<Point> pointsInAreaBetweenPositionAndGoal = AdventOfCodeUtils.generatePointsInArea(this.curPosition, goal);
-        return new ArrayList(pointsInAreaBetweenPositionAndGoal.subList(1, pointsInAreaBetweenPositionAndGoal.size()));
+        List<Point> pointsInAreaBetweenPositionAndGoal = PointUtils.generatePointsInArea(this.curPosition, goal);
+        return new ArrayList<>(
+                pointsInAreaBetweenPositionAndGoal.subList(1, pointsInAreaBetweenPositionAndGoal.size()));
     }
 
+    // TODO: finish the DirectionChars class and take this stuff out of here
     private Point createGoalFromStep(String step) {
         Point goal = new Point(this.curPosition);
         char stepDirection = step.charAt(0);
@@ -82,7 +84,7 @@ public class Wire {
     }
 
     public List<Point> getPositionHistory() {
-        return new ArrayList(this.positionHistory);
+        return new ArrayList<>(this.positionHistory);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package day02;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import day02.instructions.IntCodeInstruction;
 import exceptions.InvalidIntCodeException;
-import utils.AdventOfCodeUtils;
+import utils.ListUtils;
 
 public class IntCodeComputer {
     private int haltCode;
@@ -16,13 +17,13 @@ public class IntCodeComputer {
     }
 
     public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
-        List<Integer> memory = AdventOfCodeUtils.cloneList(inputCodes);
+        List<Integer> memory = ListUtils.cloneList(inputCodes);
         int curInstructionIdx = startIndex;
         int curInstructionCode = memory.get(curInstructionIdx);
 
         do {
             IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByCode(curInstructionCode);
-            List<Integer> instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
+            IntStream instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
                     curInstruction);
 
             int outputValue = curInstruction.apply(instructionInput);

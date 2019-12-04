@@ -1,9 +1,10 @@
 package day02;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import day02.instructions.IntCodeInstruction;
-import utils.AdventOfCodeUtils;
+import utils.ListUtils;
 
 public class IntCodeComputerUtils {
 
@@ -16,11 +17,11 @@ public class IntCodeComputerUtils {
         return calcIndexOfOutputIndexForInstruction(curInstructionIdx, curInstruction) + 1;
     }
 
-    protected static List<Integer> extractInputForInstruction(List<Integer> memory, int curInstructionIdx,
+    protected static IntStream extractInputForInstruction(List<Integer> memory, int curInstructionIdx,
             IntCodeInstruction curInstruction) {
         List<Integer> inputIndices = memory.subList(curInstructionIdx + 1,
                 calcIndexOfOutputIndexForInstruction(curInstructionIdx, curInstruction));
-        return AdventOfCodeUtils.getListElementsAt(memory, inputIndices);
+        return ListUtils.getListElementsAt(memory, inputIndices).mapToInt(val -> val);
     }
 
     protected static int extractOutputIndexForInstruction(List<Integer> memory, int curInstructionIdx,

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import utils.AdventOfCodeUtils;
+import utils.PointUtils;
 
 public class Day03Main {
 
@@ -24,11 +25,10 @@ public class Day03Main {
 
     protected static int solveA(Set<Point> intersections) {
         Point closestPoint = intersections.stream()
-                .min(Comparator.comparing(
-                        point -> AdventOfCodeUtils.calcManhattanDistance(point, AdventOfCodeUtils.getOriginPoint())))
+                .min(Comparator.comparing(point -> PointUtils.calcManhattanDistance(point, PointUtils.ORIGIN_POINT)))
                 .get();
 
-        return AdventOfCodeUtils.calcManhattanDistance(closestPoint, AdventOfCodeUtils.getOriginPoint());
+        return PointUtils.calcManhattanDistance(closestPoint, PointUtils.ORIGIN_POINT);
     }
 
     protected static int solveB(Set<Point> intersections, List<Wire> wires) {
@@ -40,10 +40,10 @@ public class Day03Main {
     }
 
     protected static List<Wire> getWires(List<List<String>> wireInputLists) {
-        List<Wire> wires = new ArrayList();
+        List<Wire> wires = new ArrayList<>();
 
         for (List<String> curWireInput : wireInputLists) {
-            Wire newWire = new Wire(AdventOfCodeUtils.getOriginPoint());
+            Wire newWire = new Wire(PointUtils.ORIGIN_POINT);
             newWire.moveAlongPath(curWireInput);
             wires.add(newWire);
         }

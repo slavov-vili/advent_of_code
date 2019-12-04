@@ -3,6 +3,7 @@ package day04;
 import java.util.stream.Stream;
 
 import utils.AdventOfCodeUtils;
+import utils.ListUtils;
 
 public class Day04Main {
 
@@ -25,7 +26,6 @@ public class Day04Main {
     private static Stream<Integer> getRangeAsStream() {
         String input = AdventOfCodeUtils.readClasspathFileLines(Day04Main.class, "input.txt").get(0);
         String[] inputSplit = input.split("-");
-        return AdventOfCodeUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1]))
-                .stream();
+        return ListUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1])).stream();
     }
 }
