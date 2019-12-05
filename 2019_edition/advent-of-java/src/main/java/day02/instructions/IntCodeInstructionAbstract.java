@@ -23,8 +23,10 @@ public abstract class IntCodeInstructionAbstract implements IntCodeInstruction {
         Map<Integer, ParamMode> paramIndexToMode = new HashMap<>();
         List<Integer> knownModesInt = IntegerUtils.reverse(instructionCode / 100);
         List<Integer> allModesInt = ListUtils.addPaddingTo(knownModesInt, paramCount-knownModesInt.size(), 0);
-        for (int i = 0; i < allModesInt.size(); i++)
+        int outputParamIndex = paramCount-1; 
+        for (int i = 0; i <= outputParamIndex; i++)
             paramIndexToMode.put(i, getParamModeFromInt(allModesInt.get(i)));
+        paramIndexToMode.put(outputParamIndex, ParamMode.IMMEDIATE);
         return paramIndexToMode;
     }
     

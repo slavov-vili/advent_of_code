@@ -28,6 +28,7 @@ public class IntCodeComputerTest {
 
     @Test
     void BasicInput1Test() {
+    	System.out.println("Test 1");
         List<Integer> expected = Arrays.asList(2, 0, 0, 0, 99);
         List<Integer> inputList = Arrays.asList(1, 0, 0, 0, 99);
         List<Integer> actual;

@@ -9,8 +9,8 @@ public class IntCodeInstructionAddition extends IntCodeInstructionAbstract {
     }
     
     @Override
-    public int apply(IntStream inputValues) {
-        return inputValues.sum();
+    public int apply(IntStream valuesIncludingOutput) {
+        return valuesIncludingOutput.limit(this.getParamCount()-1).sum();
     }
 
 }

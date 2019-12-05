@@ -8,7 +8,7 @@ public interface IntCodeInstruction {
         POSITION, IMMEDIATE
     }
 
-    public int apply(IntStream inputValues);
+    public int apply(IntStream valuesIncludingOutput);
     
     public ParamMode getModeOfParam(int paramIndex);
     
