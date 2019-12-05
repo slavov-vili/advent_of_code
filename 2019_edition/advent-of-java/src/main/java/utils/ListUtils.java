@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,6 +18,12 @@ public class ListUtils {
         } while (curValue != endExclusive);
 
         return range;
+    }
+    
+    public static <T> List<T> addPaddingTo(List<T> inputList, int paddingSize, T paddingValue) {
+        List<T> outputList = new ArrayList<>(inputList);
+        outputList.addAll(Collections.nCopies(paddingSize, paddingValue));
+        return outputList;
     }
 
     public static <T> List<T> cloneList(List<T> listToClone) {

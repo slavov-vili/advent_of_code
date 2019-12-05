@@ -1,5 +1,8 @@
 package utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class IntegerUtils {
     private static final String consecutiveDigitsPattern = "(\\d)\\1+";
 
@@ -14,6 +17,16 @@ public class IntegerUtils {
             return -1;
         else
             return 0;
+    }
+    
+    public static List<Integer> reverse(int valueToReverse) {
+        String[] valueDigitsString = String.valueOf(valueToReverse).split("");
+        int valueLength = valueDigitsString.length;
+        Integer[] valueDigitsReverse = new Integer[valueLength];
+        for (int i = 0; i < valueLength; i++)
+            valueDigitsReverse[valueLength-i-1] = Integer.parseInt(valueDigitsString[i]);   
+
+        return Arrays.asList(valueDigitsReverse);
     }
 
     public static boolean checkIntegerLength(Integer value, int expectedLength) {

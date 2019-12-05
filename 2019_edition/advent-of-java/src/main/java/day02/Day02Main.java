@@ -43,8 +43,11 @@ public class Day02Main {
                         solutionVerb = valueVerb;
                         break;
                     }
-                } catch (Exception e) {
+                } catch (InvalidIntCodeException e) {
                     continue;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
                 }
             }
 
@@ -54,8 +57,8 @@ public class Day02Main {
     protected static IntCodeComputer getComputerDay02() {
         IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
         try {
-            instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 2));
-            instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 2));
+            instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
+            instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
