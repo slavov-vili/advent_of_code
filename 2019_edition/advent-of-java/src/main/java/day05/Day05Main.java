@@ -14,10 +14,8 @@ import utils.AdventOfCodeUtils;
 
 public class Day05Main {
     public static void main(String[] args) {
-        IntCodeComputer computer = getComputer();
-
         try {
-            solveA(computer);
+            solveA(getComputerA());
             System.out.println("Solution to A is below HALT!");
 
         } catch (Exception e) {
@@ -31,7 +29,7 @@ public class Day05Main {
         return;
     }
     
-    protected static IntCodeComputer getComputer() {
+    protected static IntCodeComputer getComputerA() {
         IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
         try {
             instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));

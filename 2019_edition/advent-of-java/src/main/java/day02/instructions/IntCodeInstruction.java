@@ -1,6 +1,6 @@
 package day02.instructions;
 
-import java.util.stream.IntStream;
+import java.util.List;
 
 public interface IntCodeInstruction {
 
@@ -8,7 +8,7 @@ public interface IntCodeInstruction {
         POSITION, IMMEDIATE
     }
 
-    public int apply(IntStream valuesIncludingOutput);
+    public IntCodeInstructionResult apply(List<Integer> valuesIncludingOutput);
 
     public int getCode();
 

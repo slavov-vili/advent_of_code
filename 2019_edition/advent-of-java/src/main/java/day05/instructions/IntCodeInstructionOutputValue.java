@@ -1,5 +1,6 @@
 package day05.instructions;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class IntCodeInstructionOutputValue extends IntCodeInstructionWithOutput {
@@ -9,8 +10,8 @@ public class IntCodeInstructionOutputValue extends IntCodeInstructionWithOutput 
 	}
 	
 	@Override
-	protected int applyBeforeOutput(IntStream valuesIncludingOutput) {
-		return valuesIncludingOutput.findFirst().getAsInt();
+	protected int applyBeforeOutput(List<Integer> valuesIncludingOutput) {
+		return valuesIncludingOutput.get(0);
 	}
 
 }

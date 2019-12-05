@@ -3,6 +3,7 @@ package day02;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import day02.instructions.IntCodeInstruction;
@@ -20,16 +21,18 @@ public class IntCodeComputerUtils {
         return calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount) + 1;
     }
 
-    protected static IntStream extractInputForInstruction(List<Integer> memory, int curInstructionIdx,
+    protected static List<Integer> extractInputForInstruction(List<Integer> memory, int curInstructionIdx,
             int curInstructionCode, int curInstructionParamCount) {
         List<Integer> valuesInMemory = memory.subList(curInstructionIdx + 1,
                 calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount) + 1);
         Map<Integer, ParamMode> paramIndexToMode = IntCodeInstructionUtils.mapParamIndexToMode(curInstructionCode,
                 curInstructionParamCount);
 
-        return IntStream.range(0, valuesInMemory.size())
-                .map(valueIdx -> convertMemoryValueToInstructionValue(memory, valuesInMemory.get(valueIdx),
-                        paramIndexToMode.get(valueIdx)));
+        List<Integer> instructionInputs = new ArrayList<>();
+        for (int i=0; i< valuesInMemory.size(); i++)
+            instructionInputs.add(convertMemoryValueToInstructionValue(memory, valuesInMemory.get(i),
+                    paramIndexToMode.get(i)));
+        return instructionInputs;
     }
 
     protected static Integer convertMemoryValueToInstructionValue(List<Integer> memory, Integer paramValue,

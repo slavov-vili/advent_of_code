@@ -1,5 +1,6 @@
 package day05.instructions;
 
+import java.util.List;
 import java.util.stream.IntStream;
 
 import day02.instructions.IntCodeInstructionAbstract;
@@ -11,7 +12,7 @@ public class IntCodeInstructionStoreUserInput extends IntCodeInstructionWithInpu
 	}
 	
 	@Override
-	protected int applyWithUserInput(IntStream valuesIncludingOutput, String userInput) {
+	protected int applyWithUserInput(List<Integer> valuesIncludingOutput, String userInput) {
 		return Integer.parseInt(userInput);
 	}
 

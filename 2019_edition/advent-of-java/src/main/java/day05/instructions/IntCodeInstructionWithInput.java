@@ -1,10 +1,12 @@
 package day05.instructions;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
 import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstructionAbstract;
+import day02.instructions.IntCodeInstructionResult;
 
 public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbstract {
 	
@@ -13,8 +15,10 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbst
 	}
 
 	@Override
-	public int apply(IntStream valuesIncludingOutput) {
-		return this.applyWithUserInput(valuesIncludingOutput, this.getUserInput());
+	public IntCodeInstructionResult apply(List<Integer> valuesIncludingOutput) {
+	    int outputValue = this.applyWithUserInput(valuesIncludingOutput, this.getUserInput());
+        int instructionJumpSize = valuesIncludingOutput.size();
+        return new IntCodeInstructionResult(outputValue, instructionJumpSize);
 	}
 	
 	protected String getUserInput() {
@@ -25,6 +29,6 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbst
 		return userInput;
 	}
 
-	protected abstract int applyWithUserInput(IntStream valuesIncludingOutput, String userInput);
+	protected abstract int applyWithUserInput(List<Integer> valuesIncludingOutput, String userInput);
 
 }
