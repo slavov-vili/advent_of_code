@@ -40,15 +40,15 @@ public abstract class IntCodeInstructionAbstract implements IntCodeInstruction {
             break;
         }
         default:
-            //TODO: Throw exception
-            throw new
+            throw new UnknownParameterModeException("The integer value " + modeIntValue + " does not represent any known Parameter Modes!");
         }
         return modeValue;
     }
     
-    // TODO: Throw custom exception
     @Override
     public ParamMode getModeOfParam(int paramIndex) {
+    	if (!this.paramIndexToMode.containsKey(paramIndex))
+    		throw new NoSuchParameterException("A parameter with index " + paramIndex + " does not exist!");
         return this.paramIndexToMode.get(paramIndex);
     }
     

@@ -1,5 +1,6 @@
 package day02;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -21,9 +22,11 @@ public class IntCodeComputerUtils {
             IntCodeInstruction curInstruction) {
         List<Integer> valuesInMemory = memory.subList(curInstructionIdx + 1,
                 calcParamsEndIndexForInstruction(curInstructionIdx, curInstruction));
-        // TODO: call below method for each value and return a stream of them
-        return convertMemoryValuesToInstructionInputs(memory, valuesInMemory, curInstruction).stream()
-                .mapToInt(val -> val);
+        List<Integer> instructionInputs = new ArrayList<>();
+        for (int i = 0; i < valuesInMemory.size(); i++)
+        	instructionInputs.add(convertMemoryValueToInstructionInput(memory, valuesInMemory.get(i), i, curInstruction));
+        return instructionInputs.stream()
+        		.mapToInt(val -> val);
     }
 
     protected static Integer convertMemoryValueToInstructionInput(List<Integer> memory, Integer memoryValue, int memoryValueIndexForInstruction,
@@ -31,12 +34,8 @@ public class IntCodeComputerUtils {
         if (curInstruction.paramModeIs(memoryValueIndexForInstruction, ParamMode.POSITION))
             return memory.get(memoryValue);
         
-        if (curInstruction.paramModeIs(memoryValueIndexForInstruction, ParamMode.IMMEDIATE))
-            return memoryValue;
-        
-        // TODO: Throw new exception, that the parameter index is wrong
         else
-            throw new 
+            return memoryValue;
     }
 
     protected static int extractOutputIndexForInstruction(List<Integer> memory, int curInstructionIdx,

@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,8 +9,11 @@ import java.util.stream.Stream;
 
 public class StringUtils {
     public static Stream<String> getAllMatches(String inputString, String regex) {
+    	List<String> results = new ArrayList<>();
         Matcher matcher = Pattern.compile(regex).matcher(inputString);
-        return matcher.results().map(MatchResult::group);
+        while(matcher.find())
+        	results.add(matcher.group());
+        return results.stream();
     }
 
     public static boolean hasSequenceOfSameChars(String stringToCheck, String sequenceOfSameCharsPattern) {
