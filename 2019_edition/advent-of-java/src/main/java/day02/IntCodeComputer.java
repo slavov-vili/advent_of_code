@@ -22,20 +22,23 @@ public class IntCodeComputer {
         int curInstructionCode = memory.get(curInstructionIdx);
 
         do {
-            IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByCode(curInstructionCode);
+            int curInstructionOpCode = curInstructionCode % 100;
+            IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByOpCode(curInstructionOpCode);
+            int curInstructionParamCount = curInstruction.getParamCount();
             IntStream instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
-                    curInstruction);
+                    curInstructionCode, curInstructionParamCount);
 
             int outputValue = curInstruction.apply(instructionInput);
-            int outputIndex = IntCodeComputerUtils.extractOutputIndexForInstruction(memory, curInstructionIdx,
-                    curInstruction);
+            int outputIndex = memory.get(IntCodeComputerUtils.calcLastParamIndexForInstruction(curInstructionIdx,
+                    curInstructionParamCount));
 
             memory.set(outputIndex, outputValue);
 
-            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstruction);
+            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstructionParamCount);
             curInstructionCode = memory.get(curInstructionIdx);
         } while (!this.codeIsHaltCode(curInstructionCode));
 
+        System.out.println("HALT!");
         return memory;
     }
 

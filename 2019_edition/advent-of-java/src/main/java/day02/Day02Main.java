@@ -12,13 +12,13 @@ import utils.AdventOfCodeUtils;
 public class Day02Main {
 
     public static void main(String[] args) {
-        IntCodeComputer computer = getComputerDay02();
+        IntCodeComputer computer = getComputer();
 
         try {
             int solutionA = solveA(computer);
-            System.out.println("Solution A: " + solutionA);
-
             int solutionB = solveB(computer, 19690720);
+
+            System.out.println("Solution A: " + solutionA);
             System.out.println("Solution B: " + solutionB);
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +54,7 @@ public class Day02Main {
         return (100 * solutionNoun) + solutionVerb;
     }
 
-    protected static IntCodeComputer getComputerDay02() {
+    protected static IntCodeComputer getComputer() {
         IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
         try {
             instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));

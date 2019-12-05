@@ -50,7 +50,7 @@ public class IntCodeInstructionProviderTest {
         IntCodeInstructionProvider provider = new IntCodeInstructionProvider();
 
         try {
-            provider.getInstructionByCode(codeOfInstructionToGet);
+            provider.getInstructionByOpCode(codeOfInstructionToGet);
             fail("An exception should be thrown, since the provider is empty!");
         } catch (InvalidIntCodeException e) {
             return;
@@ -71,7 +71,7 @@ public class IntCodeInstructionProviderTest {
         }
 
         try {
-            provider.getInstructionByCode(codeOfInstructionToGet);
+            provider.getInstructionByOpCode(codeOfInstructionToGet);
             fail("An exception should be thrown, since the instruction code is unknown!");
         } catch (InvalidIntCodeException e) {
             return;

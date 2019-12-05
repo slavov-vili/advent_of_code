@@ -12,10 +12,10 @@ public class IntCodeInstructionProvider {
     private Map<Integer, IntCodeInstruction> instructionCodeToInstruction;
 
     public IntCodeInstructionProvider() {
-        this.instructionCodeToInstruction = new HashMap();
+        this.instructionCodeToInstruction = new HashMap<>();
     }
 
-    public IntCodeInstruction getInstructionByCode(Integer instructionCode) throws InvalidIntCodeException {
+    public IntCodeInstruction getInstructionByOpCode(Integer instructionCode) throws InvalidIntCodeException {
         if (!this.instructionCodeToInstruction.containsKey(instructionCode))
             throw new InvalidIntCodeException("Instruction code " + instructionCode + " is unknown!");
 

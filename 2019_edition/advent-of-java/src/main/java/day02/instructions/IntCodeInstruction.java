@@ -9,10 +9,6 @@ public interface IntCodeInstruction {
     }
 
     public int apply(IntStream valuesIncludingOutput);
-    
-    public ParamMode getModeOfParam(int paramIndex);
-    
-    public boolean paramModeIs(int paramIndex, ParamMode paramModeToCheck);
 
     public int getCode();
 
