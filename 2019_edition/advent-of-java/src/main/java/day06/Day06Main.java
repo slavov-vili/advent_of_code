@@ -17,10 +17,17 @@ public class Day06Main {
 
 	public static void main(String[] args) {
 		Map<String, Set<String>> orbiteeToOrbiters = getInput();
+		
+		// Part A
 		int mapSize = 0;
 		for (String orbitee : orbiteeToOrbiters.keySet())
 			mapSize += getAllOrbitersOf(orbitee, orbiteeToOrbiters).size();
 		System.out.println(mapSize);
+		
+		// Part B
+		// TODO: Find greatest common orbitee
+		// TODO: Find distance from ^ to me and Santa
+		// TODO: Return total distance - 2
 	}
 	
 	protected static Set<String> getAllOrbitersOf(String orbitee, Map<String, Set<String>> orbiteeToOrbiters) {
@@ -32,6 +39,10 @@ public class Day06Main {
 		for (String orbiter : directOrbiters)
 			allOrbiters.addAll(getAllOrbitersOf(orbiter, orbiteeToOrbiters));
 		return allOrbiters;
+	}
+	
+	protected static Set<String> GetPathBetween(String startObject, String endObject, Map<String, Set<String>> orbiteeToOrbiters) {
+		
 	}
 
     protected static Map<String, Set<String>> getInput() {
