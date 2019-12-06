@@ -18,13 +18,13 @@ public class IntegerUtils {
         else
             return 0;
     }
-    
+
     public static List<Integer> reverse(int valueToReverse) {
         String[] valueDigitsString = String.valueOf(valueToReverse).split("");
         int valueLength = valueDigitsString.length;
         Integer[] valueDigitsReverse = new Integer[valueLength];
         for (int i = 0; i < valueLength; i++)
-            valueDigitsReverse[valueLength-i-1] = Integer.parseInt(valueDigitsString[i]);   
+            valueDigitsReverse[valueLength - i - 1] = Integer.parseInt(valueDigitsString[i]);
 
         return Arrays.asList(valueDigitsReverse);
     }

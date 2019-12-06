@@ -1,10 +1,11 @@
 package day02;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 import day02.instructions.IntCodeInstruction;
+import day02.instructions.IntCodeInstruction.ParamMode;
 import day02.instructions.IntCodeInstructionResult;
+import day02.instructions.IntCodeInstructionUtils;
 import exceptions.InvalidIntCodeException;
 import utils.ListUtils;
 
@@ -21,25 +22,30 @@ public class IntCodeComputer {
         List<Integer> memory = ListUtils.cloneList(inputCodes);
         int curInstructionIdx = startIndex;
         int curInstructionCode = memory.get(curInstructionIdx);
+        // TODO: move this to utils
+        int curInstructionOpCode = curInstructionCode % 100;
 
         do {
-            int curInstructionOpCode = curInstructionCode % 100;
             IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByOpCode(curInstructionOpCode);
             int curInstructionParamCount = curInstruction.getParamCount();
-            List<Integer> instructionInput = IntCodeComputerUtils.extractInputForInstruction(memory, curInstructionIdx,
-                    curInstructionCode, curInstructionParamCount);
+            List<Integer> curInstructionInputIndices = IntCodeComputerUtils
+                    .findInstructionParamIndices(curInstructionIdx, curInstructionParamCount);
+            List<ParamMode> curInstructionParamModesInOrder = IntCodeInstructionUtils
+                    .generateParameterModesInOrder(curInstructionCode, curInstructionParamCount);
 
-            IntCodeInstructionResult instructionResult = curInstruction.apply(instructionInput);
-            int outputIndex = memory.get(IntCodeComputerUtils.calcLastParamIndexForInstruction(curInstructionIdx,
-                    curInstructionParamCount));
+            IntCodeInstructionResult instructionResult = curInstruction.apply(memory, curInstructionInputIndices,
+                    curInstructionParamModesInOrder);
+            int outputIndex = instructionResult.outputIndex;
 
             memory.set(outputIndex, instructionResult.outputValue);
 
-            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, instructionResult.instructionJumpSize);
+            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, instructionResult,
+                    curInstructionParamCount);
             curInstructionCode = memory.get(curInstructionIdx);
-        } while (!this.codeIsHaltCode(curInstructionCode));
+            curInstructionOpCode = curInstructionCode % 100;
+        } while (!this.codeIsHaltCode(curInstructionOpCode));
 
-        System.out.println("HALT!");
+        // System.out.println("HALT!");
         return memory;
     }
 

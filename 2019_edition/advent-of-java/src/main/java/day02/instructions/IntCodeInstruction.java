@@ -8,7 +8,8 @@ public interface IntCodeInstruction {
         POSITION, IMMEDIATE
     }
 
-    public IntCodeInstructionResult apply(List<Integer> valuesIncludingOutput);
+    public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndices,
+            List<ParamMode> parameterModes);
 
     public int getCode();
 

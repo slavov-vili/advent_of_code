@@ -1,14 +1,9 @@
 package day02;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstruction.ParamMode;
-import day02.instructions.IntCodeInstructionUtils;
+import day02.instructions.IntCodeInstructionResult;
 import utils.ListUtils;
 
 public class IntCodeComputerUtils {
@@ -17,29 +12,38 @@ public class IntCodeComputerUtils {
         return curInstructionIdx + curInstructionParamCount;
     }
 
-    protected static int calcNextInstructionIndex(int curInstructionIdx, int curInstructionParamCount) {
+    protected static int calcNextInstructionIndex(int curInstructionIdx, IntCodeInstructionResult curInstructionResult,
+            int curInstructionParamCount) {
+        if (curInstructionResult.nextInstructionIndex.isPresent())
+            return curInstructionResult.nextInstructionIndex.get();
+
         return calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount) + 1;
     }
 
-    protected static List<Integer> extractInputForInstruction(List<Integer> memory, int curInstructionIdx,
-            int curInstructionCode, int curInstructionParamCount) {
-        List<Integer> valuesInMemory = memory.subList(curInstructionIdx + 1,
-                calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount) + 1);
-        Map<Integer, ParamMode> paramIndexToMode = IntCodeInstructionUtils.mapParamIndexToMode(curInstructionCode,
-                curInstructionParamCount);
+    protected static List<Integer> findInstructionParamIndices(int curInstructionIdx, int curInstructionParamCount) {
+        List<Integer> paramIndices = ListUtils.generateRange(curInstructionIdx + 1,
+                calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount));
 
-        List<Integer> instructionInputs = new ArrayList<>();
-        for (int i=0; i< valuesInMemory.size(); i++)
-            instructionInputs.add(convertMemoryValueToInstructionValue(memory, valuesInMemory.get(i),
-                    paramIndexToMode.get(i)));
-        return instructionInputs;
+        return paramIndices;
     }
 
-    protected static Integer convertMemoryValueToInstructionValue(List<Integer> memory, Integer paramValue,
+    public static Integer convertParameterValueToInputValue(List<Integer> memory, Integer paramValue,
             ParamMode paramMode) {
         if (paramMode == ParamMode.POSITION)
             return memory.get(paramValue);
         else
             return paramValue;
+    }
+
+    public static Integer convertParameterValueToWriteIndex(int writeParameterIndexInMemory, int writeParameterValue,
+            ParamMode writeParameterMode) {
+        if (writeParameterMode == ParamMode.POSITION)
+            return writeParameterValue;
+        else
+            return writeParameterIndexInMemory;
+    }
+
+    protected static int calcOutputIndexForInstruction(int curInstructionIdx, int indexOfOutputParameter) {
+        return curInstructionIdx + indexOfOutputParameter + 1;
     }
 }

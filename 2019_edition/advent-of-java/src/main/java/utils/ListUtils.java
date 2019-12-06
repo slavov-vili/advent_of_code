@@ -3,7 +3,6 @@ package utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class ListUtils {
     public static List<Integer> generateRange(int startInclusive, int endInclusive) {
@@ -19,7 +18,7 @@ public class ListUtils {
 
         return range;
     }
-    
+
     public static <T> List<T> addPaddingTo(List<T> inputList, int paddingSize, T paddingValue) {
         List<T> outputList = new ArrayList<>(inputList);
         outputList.addAll(Collections.nCopies(paddingSize, paddingValue));
@@ -30,7 +29,10 @@ public class ListUtils {
         return new ArrayList<>(listToClone);
     }
 
-    public static <T> Stream<T> getListElementsAt(List<T> inputList, List<Integer> indices) {
-        return indices.stream().map(idx -> inputList.get(idx));
+    public static <T> List<T> getListElementsAt(List<T> inputList, List<Integer> indices) {
+        List<T> outputList = new ArrayList<>(inputList.size());
+        for (int idx : indices)
+            outputList.add(inputList.get(idx));
+        return outputList;
     }
 }
