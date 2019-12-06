@@ -20,6 +20,7 @@ import utils.AdventOfCodeUtils;
 public class Day05Main {
     public static void main(String[] args) {
         try {
+            // TODO: figure out how to take input multiple times
             // solve(getComputerA());
             // System.out.println("Solved A!");
             solve(getComputerB());
