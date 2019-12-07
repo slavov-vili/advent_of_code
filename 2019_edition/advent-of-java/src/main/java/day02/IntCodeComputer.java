@@ -1,6 +1,10 @@
 package day02;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
+import java.util.Scanner;
 
 import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstruction.ParamMode;
@@ -18,7 +22,9 @@ public class IntCodeComputer {
         this.instructionProvider = instructionProvider;
     }
 
-    public List<Integer> processInput(List<Integer> inputCodes, int startIndex) throws InvalidIntCodeException {
+    public List<Integer> processCodes(List<Integer> inputCodes, int startIndex, Reader inputReader, Writer outputWriter)
+            throws InvalidIntCodeException, IOException {
+        Scanner inputScanner = new Scanner(inputReader);
         List<Integer> memory = ListUtils.cloneList(inputCodes);
         int curInstructionIdx = startIndex;
         int curInstructionCode = memory.get(curInstructionIdx);
@@ -34,7 +40,7 @@ public class IntCodeComputer {
                     .generateParameterModesInOrder(curInstructionCode, curInstructionParamCount);
 
             IntCodeInstructionResult instructionResult = curInstruction.apply(memory, curInstructionInputIndices,
-                    curInstructionParamModesInOrder);
+                    curInstructionParamModesInOrder, inputScanner, outputWriter);
             int outputIndex = instructionResult.outputIndex;
 
             memory.set(outputIndex, instructionResult.outputValue);

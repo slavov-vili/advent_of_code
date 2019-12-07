@@ -1,7 +1,9 @@
 package day05.instructions.part2;
 
+import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import day02.IntCodeComputerUtils;
 import day02.instructions.IntCodeInstructionAbstract;
@@ -16,7 +18,7 @@ public class IntCodeInstructionJumpIfTrue extends IntCodeInstructionAbstract {
 
     @Override
     public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndicesInMemory,
-            List<ParamMode> parameterModes) {
+            List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) {
         List<Integer> parameters = ListUtils.getListElementsAt(memory, parameterIndicesInMemory);
         int param1Value = IntCodeComputerUtils.convertParameterValueToInputValue(memory, parameters.get(0),
                 parameterModes.get(0));

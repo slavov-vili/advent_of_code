@@ -1,7 +1,10 @@
 package day05.instructions.part1;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import day02.IntCodeComputerUtils;
 import day02.instructions.IntCodeInstructionAbstract;
@@ -16,10 +19,11 @@ public abstract class IntCodeInstructionWithOutput extends IntCodeInstructionAbs
 
     @Override
     public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndicesInMemory,
-            List<ParamMode> parameterModes) {
+            List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) throws IOException {
         List<Integer> parameters = ListUtils.getListElementsAt(memory, parameterIndicesInMemory);
         int outputValue = this.applyBeforeOutput(memory, parameters, parameterModes);
-        System.out.println("Instruction " + this.getClass().toString() + " output: " + outputValue);
+        outputWriter.append(outputValue + "\n");
+        outputWriter.flush();
         int writeParameterIndex = 0;
         int writeIndex = IntCodeComputerUtils.convertParameterValueToWriteIndex(
                 parameterIndicesInMemory.get(writeParameterIndex), parameters.get(writeParameterIndex),

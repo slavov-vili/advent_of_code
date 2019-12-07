@@ -1,7 +1,9 @@
 package day02.instructions;
 
+import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
 import day02.IntCodeComputerUtils;
@@ -15,7 +17,7 @@ public class IntCodeInstructionAddition extends IntCodeInstructionAbstract {
 
     @Override
     public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndicesInMemory,
-            List<ParamMode> parameterModes) {
+            List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) {
         List<Integer> parameters = ListUtils.getListElementsAt(memory, parameterIndicesInMemory);
         int outputValue = IntStream.range(0, parameterIndicesInMemory.size()).limit(parameterIndicesInMemory.size() - 1)
                 .map(paramIdx -> IntCodeComputerUtils.convertParameterValueToInputValue(memory,

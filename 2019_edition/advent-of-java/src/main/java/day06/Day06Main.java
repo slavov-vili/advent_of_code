@@ -30,16 +30,16 @@ public class Day06Main {
         Entry<String, Set<String>> leastCommonOrbitee = orbiteeToAllOrbiters.entrySet().stream()
                 .filter(entry -> entry.getValue().containsAll(meAndSanta))
                 .min(Comparator.comparing(entry -> entry.getValue().size())).get();
-        int distanceFromSanta = meAndSanta.stream()
-                .mapToInt(
-                        meOrSanta -> getPathToOrbiter(leastCommonOrbitee.getKey(), meOrSanta, orbiteeToDirectOrbiters).size() - 2)
+        int distanceFromSanta = meAndSanta.stream().mapToInt(
+                meOrSanta -> getPathToOrbiter(leastCommonOrbitee.getKey(), meOrSanta, orbiteeToDirectOrbiters).size()
+                        - 2)
                 .sum();
         System.out.println(distanceFromSanta);
     }
 
     protected static Map<String, Set<String>> mapOrbiteeToAllOrbiters(String orbitee,
             Map<String, Set<String>> orbiteeToDirectOrbiters, Map<String, Set<String>> orbiteeToAllOrbitersOld) {
-       Map<String, Set<String>> orbiteeToAllOrbitersNew = new HashMap<>(orbiteeToAllOrbitersOld);
+        Map<String, Set<String>> orbiteeToAllOrbitersNew = new HashMap<>(orbiteeToAllOrbitersOld);
         if (!orbiteeToDirectOrbiters.containsKey(orbitee)) {
             orbiteeToAllOrbitersNew.put(orbitee, new HashSet<>());
             return orbiteeToAllOrbitersNew;

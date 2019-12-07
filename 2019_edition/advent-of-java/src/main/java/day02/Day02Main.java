@@ -1,5 +1,6 @@
 package day02;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,8 +27,8 @@ public class Day02Main {
         }
     }
 
-    protected static int solveA(IntCodeComputer computer) throws InvalidIntCodeException {
-        return computer.processInput(getInputA(), 0).get(0);
+    protected static int solveA(IntCodeComputer computer) throws InvalidIntCodeException, IOException {
+        return computer.processCodes(getInputA(), 0, null, null).get(0);
     }
 
     protected static int solveB(IntCodeComputer computer, int valueToFind) {
@@ -37,7 +38,7 @@ public class Day02Main {
         for (int valueNoun = 0; valueNoun < 100; valueNoun++)
             for (int valueVerb = 0; valueVerb < 100; valueVerb++) {
                 try {
-                    int curSolution = computer.processInput(getInputFor(valueNoun, valueVerb), 0).get(0);
+                    int curSolution = computer.processCodes(getInputFor(valueNoun, valueVerb), 0, null, null).get(0);
                     if (curSolution == valueToFind) {
                         solutionNoun = valueNoun;
                         solutionVerb = valueVerb;

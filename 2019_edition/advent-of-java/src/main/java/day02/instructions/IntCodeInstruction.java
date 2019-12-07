@@ -1,6 +1,9 @@
 package day02.instructions;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
+import java.util.Scanner;
 
 public interface IntCodeInstruction {
 
@@ -9,7 +12,7 @@ public interface IntCodeInstruction {
     }
 
     public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndices,
-            List<ParamMode> parameterModes);
+            List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) throws IOException;
 
     public int getCode();
 

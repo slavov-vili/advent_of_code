@@ -2,9 +2,9 @@ package day05.instructions.part1;
 
 import java.util.List;
 
-public class IntCodeInstructionStoreUserInput extends IntCodeInstructionWithInput {
+public class IntCodeInstructionStoreInput extends IntCodeInstructionWithInput {
 
-    public IntCodeInstructionStoreUserInput(int instructionCode, int paramCount) {
+    public IntCodeInstructionStoreInput(int instructionCode, int paramCount) {
         super(instructionCode, paramCount);
     }
 

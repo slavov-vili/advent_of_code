@@ -1,5 +1,6 @@
 package day05.instructions.part1;
 
+import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -17,9 +18,9 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbst
 
     @Override
     public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndicesInMemory,
-            List<ParamMode> parameterModes) {
+            List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) {
         List<Integer> parameters = ListUtils.getListElementsAt(memory, parameterIndicesInMemory);
-        int outputValue = this.applyWithUserInput(memory, parameters, parameterModes, this.getUserInput());
+        int outputValue = this.applyWithUserInput(memory, parameters, parameterModes, this.getNextInput(inputScanner));
         int writeParameterIndex = 0;
         int writeIndex = IntCodeComputerUtils.convertParameterValueToWriteIndex(
                 parameterIndicesInMemory.get(writeParameterIndex), parameters.get(writeParameterIndex),
@@ -27,12 +28,11 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbst
         return new IntCodeInstructionResult(outputValue, writeIndex, Optional.empty());
     }
 
-    protected String getUserInput() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Instruction " + this.getClass().toString() + " requires input: ");
-        String userInput = scanner.next();
-        scanner.close();
-        return userInput;
+    protected String getNextInput(Scanner inputScanner) {
+        System.out.println("Instruction " + this.getClass().toString() + " requires input: ");
+        String nextInput = inputScanner.next();
+        System.out.println("Instruction " + this.getClass().toString() + " received input: " + nextInput);
+        return nextInput;
     }
 
     protected abstract int applyWithUserInput(List<Integer> memory, List<Integer> parameters,
