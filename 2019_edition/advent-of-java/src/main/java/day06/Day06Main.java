@@ -10,16 +10,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import exceptions.NoPathBetweenObjectsException;
 import utils.AdventOfCodeUtils;
 
 public class Day06Main {
 
     public static void main(String[] args) {
         Map<String, Set<String>> orbiteeToDirectOrbiters = getInput();
-        Map<String, Set<String>> orbiteeToAllOrbiters = new HashMap<>();
-        for (String orbitee : orbiteeToDirectOrbiters.keySet())
-            orbiteeToAllOrbiters.put(orbitee, getAllOrbitersOf(orbitee, orbiteeToDirectOrbiters));
+        Map<String, Set<String>> orbiteeToAllOrbiters = mapOrbiteeToAllOrbiters("COM", orbiteeToDirectOrbiters,
+                new HashMap<>());
 
         // Part A
         int mapSize = 0;
@@ -32,45 +30,56 @@ public class Day06Main {
         Entry<String, Set<String>> leastCommonOrbitee = orbiteeToAllOrbiters.entrySet().stream()
                 .filter(entry -> entry.getValue().containsAll(meAndSanta))
                 .min(Comparator.comparing(entry -> entry.getValue().size())).get();
-        int distanceFromSanta = meAndSanta.stream().mapToInt(name -> getPathToOrbiter(leastCommonOrbitee.getKey(), name,
-                orbiteeToDirectOrbiters, orbiteeToAllOrbiters).size()).sum();
+        int distanceFromSanta = meAndSanta.stream()
+                .mapToInt(
+                        meOrSanta -> getPathToOrbiter(leastCommonOrbitee.getKey(), meOrSanta, orbiteeToDirectOrbiters).size() - 2)
+                .sum();
         System.out.println(distanceFromSanta);
     }
 
-    protected static Set<String> getAllOrbitersOf(String orbitee, Map<String, Set<String>> orbiteeToDirectOrbiters) {
-        if (!orbiteeToDirectOrbiters.containsKey(orbitee))
-            return new HashSet<>();
+    protected static Map<String, Set<String>> mapOrbiteeToAllOrbiters(String orbitee,
+            Map<String, Set<String>> orbiteeToDirectOrbiters, Map<String, Set<String>> orbiteeToAllOrbitersOld) {
+       Map<String, Set<String>> orbiteeToAllOrbitersNew = new HashMap<>(orbiteeToAllOrbitersOld);
+        if (!orbiteeToDirectOrbiters.containsKey(orbitee)) {
+            orbiteeToAllOrbitersNew.put(orbitee, new HashSet<>());
+            return orbiteeToAllOrbitersNew;
+        }
 
         Set<String> directOrbiters = orbiteeToDirectOrbiters.get(orbitee);
         Set<String> allOrbiters = new HashSet<>(directOrbiters);
-        for (String orbiter : directOrbiters)
-            allOrbiters.addAll(getAllOrbitersOf(orbiter, orbiteeToDirectOrbiters));
-        return allOrbiters;
+        for (String directOrbiter : directOrbiters) {
+            if (!orbiteeToAllOrbitersNew.containsKey(directOrbiter))
+                orbiteeToAllOrbitersNew = mapOrbiteeToAllOrbiters(directOrbiter, orbiteeToDirectOrbiters,
+                        orbiteeToAllOrbitersNew);
+
+            allOrbiters.addAll(orbiteeToAllOrbitersNew.get(directOrbiter));
+        }
+        orbiteeToAllOrbitersNew.put(orbitee, allOrbiters);
+
+        return orbiteeToAllOrbitersNew;
     }
 
-    protected static LinkedList<String> getPathToOrbiter(String startObject, String orbiter,
-            Map<String, Set<String>> orbiteeToDirectOrbiters, Map<String, Set<String>> orbiteeToAllOrbiters) {
+    protected static LinkedList<String> getPathToOrbiter(String startObject, String endOrbiter,
+            Map<String, Set<String>> orbiteeToDirectOrbiters) {
+        if (startObject.equals(endOrbiter))
+            return new LinkedList<>(Arrays.asList(endOrbiter));
+
         if (!orbiteeToDirectOrbiters.containsKey(startObject))
             return new LinkedList<>();
 
         Set<String> directOrbiters = orbiteeToDirectOrbiters.get(startObject);
-        if (directOrbiters.contains(orbiter))
-            return new LinkedList<>();
-
-        String nextStepToEndObject = "";
-        for (String directOrbiter : directOrbiters)
-            if (orbiteeToAllOrbiters.getOrDefault(directOrbiter, new HashSet<>()).contains(orbiter)) {
-                nextStepToEndObject = directOrbiter;
+        LinkedList<String> pathToEndOrbiter = new LinkedList<>();
+        for (String directOrbiter : directOrbiters) {
+            LinkedList<String> curOrbiterToEndOrbiter = getPathToOrbiter(directOrbiter, endOrbiter,
+                    orbiteeToDirectOrbiters);
+            if (!curOrbiterToEndOrbiter.isEmpty()) {
+                pathToEndOrbiter = curOrbiterToEndOrbiter;
+                pathToEndOrbiter.addFirst(directOrbiter);
                 break;
             }
+        }
 
-        if (nextStepToEndObject.isEmpty())
-            throw new NoPathBetweenObjectsException(orbiter + " cannot be reached by any path from " + startObject);
-
-        LinkedList<String> pathToEndObject = getPathToOrbiter(nextStepToEndObject, orbiter, orbiteeToDirectOrbiters,
-                orbiteeToAllOrbiters);
-        pathToEndObject.addFirst(nextStepToEndObject);
-        return pathToEndObject;
+        return pathToEndOrbiter;
     }
 
     protected static Map<String, Set<String>> getInput() {
