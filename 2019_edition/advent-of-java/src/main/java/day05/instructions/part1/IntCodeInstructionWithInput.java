@@ -23,7 +23,7 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbst
             List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) {
         System.out.println("Instruction " + this.getClass().toString() + " requires input: ");
         if (!inputScanner.hasNext())
-            return new IntCodeInstructionResult(Optional.empty(), Optional.empty(), ExecutionCode.REQUIRE_INPUT);
+            return new IntCodeInstructionResult(Optional.empty(), Optional.of(parameterIndicesInMemory.get(0)-1), ExecutionCode.REQUIRE_INPUT);
 
         String input = this.getNextInput(inputScanner);
         List<Integer> parameters = ListUtils.getListElementsAt(memory, parameterIndicesInMemory);
