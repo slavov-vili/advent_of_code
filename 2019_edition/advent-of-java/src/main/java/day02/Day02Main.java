@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import day02.IntCodeComputerState.ExecutionCode;
 import day02.instructions.IntCodeInstructionAddition;
+import day02.instructions.IntCodeInstructionHalt;
 import day02.instructions.IntCodeInstructionMultiplication;
 import exceptions.InvalidIntCodeException;
 import utils.AdventOfCodeUtils;
@@ -13,11 +15,9 @@ import utils.AdventOfCodeUtils;
 public class Day02Main {
 
     public static void main(String[] args) {
-        IntCodeComputer computer = getComputer();
-
         try {
-            int solutionA = solveA(computer);
-            int solutionB = solveB(computer, 19690720);
+            int solutionA = solveA();
+            int solutionB = solveB(19690720);
 
             System.out.println("Solution A: " + solutionA);
             System.out.println("Solution B: " + solutionB);
@@ -27,18 +27,21 @@ public class Day02Main {
         }
     }
 
-    protected static int solveA(IntCodeComputer computer) throws InvalidIntCodeException, IOException {
-        return computer.processCodes(getInputA(), 0, null, null).get(0);
+    protected static int solveA() throws InvalidIntCodeException, IOException {
+        IntCodeComputer computer = getComputer(getInitialComputerState(getInputA()));
+        return computer.run().getMemory().get(0);
     }
 
-    protected static int solveB(IntCodeComputer computer, int valueToFind) {
+    protected static int solveB(int valueToFind) {
         int solutionNoun = 0;
         int solutionVerb = 0;
+        IntCodeComputer computer = getComputer(getInitialComputerState(getInputFor(solutionNoun, solutionVerb)));
 
         for (int valueNoun = 0; valueNoun < 100; valueNoun++)
             for (int valueVerb = 0; valueVerb < 100; valueVerb++) {
                 try {
-                    int curSolution = computer.processCodes(getInputFor(valueNoun, valueVerb), 0, null, null).get(0);
+                    computer.resetState(getInitialComputerState(getInputFor(valueNoun, valueVerb)));
+                    int curSolution = computer.run().getMemory().get(0);
                     if (curSolution == valueToFind) {
                         solutionNoun = valueNoun;
                         solutionVerb = valueVerb;
@@ -55,8 +58,8 @@ public class Day02Main {
         return (100 * solutionNoun) + solutionVerb;
     }
 
-    protected static IntCodeComputer getComputer() {
-        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
+    protected static IntCodeComputer getComputer(IntCodeComputerState initialState) {
+        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
         try {
             instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
             instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
@@ -65,7 +68,11 @@ public class Day02Main {
             System.exit(1);
         }
 
-        return new IntCodeComputer(99, instructionProvider);
+        return new IntCodeComputer(initialState, instructionProvider);
+    }
+
+    protected static IntCodeComputerState getInitialComputerState(List<Integer> initialMemory) {
+        return new IntCodeComputerState(initialMemory, 0, ExecutionCode.READY_FOR_NEXT);
     }
 
     protected static List<Integer> getInputA() {

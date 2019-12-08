@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import day02.IntCodeComputer;
+import day02.IntCodeComputerState;
+import day02.IntCodeComputerState.ExecutionCode;
 import day05.Day05Main;
 import utils.AdventOfCodeUtils;
 import utils.ListUtils;
@@ -16,6 +17,9 @@ public class Day07Main {
         int solutionA = solveA(0, 4);
         System.out.println("Solution A: " + solutionA);
 
+        // TODO: PART 2 (int computer: make curInstructionIdx a member variable)
+        // TODO: processInput command returns the end state => pass it back in the next
+        // call
     }
 
     protected static int solveA(int minSettingValue, int maxSettingValue) {
@@ -27,13 +31,18 @@ public class Day07Main {
     protected static int runAmplifierChain(int initialInput, List<Integer> amplifierSettings) {
         List<IntCodeAmplifier> amplifiers = new ArrayList<>();
         for (Integer setting : amplifierSettings)
-            amplifiers.add(new IntCodeAmplifier(setting, Day05Main.getComputerB(), getInput()));
+            amplifiers
+                    .add(new IntCodeAmplifier(setting, Day05Main.getComputerB(getInitialComputerState()), getInput()));
 
         int result = initialInput;
         for (IntCodeAmplifier amplifier : amplifiers)
-            result = amplifier.amplifyInput(result);
+            result = amplifier.amplifySignal(result);
 
         return result;
+    }
+
+    public static IntCodeComputerState getInitialComputerState() {
+        return new IntCodeComputerState(getInput(), 0, ExecutionCode.READY_FOR_NEXT);
     }
 
     protected static List<Integer> getInput() {

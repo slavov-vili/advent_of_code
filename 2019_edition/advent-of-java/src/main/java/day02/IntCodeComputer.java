@@ -1,62 +1,125 @@
 package day02;
 
+import java.awt.Point;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import day02.IntCodeComputerState.ExecutionCode;
 import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstruction.ParamMode;
 import day02.instructions.IntCodeInstructionResult;
 import day02.instructions.IntCodeInstructionUtils;
 import exceptions.InvalidIntCodeException;
-import utils.ListUtils;
 
 public class IntCodeComputer {
-    private int haltCode;
     private IntCodeInstructionProvider instructionProvider;
+    private List<Integer> memory;
+    private int curInstructionIdx;
+    private ExecutionCode executionCode;
 
-    public IntCodeComputer(int haltCode, IntCodeInstructionProvider instructionProvider) {
-        this.haltCode = haltCode;
+    public IntCodeComputer(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider) {
+        this.memory = initialState.getMemory();
+        this.curInstructionIdx = initialState.getCurInstructionIdx();
+        this.executionCode = initialState.getExecutionCode();
         this.instructionProvider = instructionProvider;
     }
 
-    public List<Integer> processCodes(List<Integer> inputCodes, int startIndex, Reader inputReader, Writer outputWriter)
-            throws InvalidIntCodeException, IOException {
-        Scanner inputScanner = new Scanner(inputReader);
-        List<Integer> memory = ListUtils.cloneList(inputCodes);
-        int curInstructionIdx = startIndex;
-        int curInstructionCode = memory.get(curInstructionIdx);
-        // TODO: move this to utils
-        int curInstructionOpCode = curInstructionCode % 100;
-
-        do {
-            IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByOpCode(curInstructionOpCode);
-            int curInstructionParamCount = curInstruction.getParamCount();
-            List<Integer> curInstructionInputIndices = IntCodeComputerUtils
-                    .findInstructionParamIndices(curInstructionIdx, curInstructionParamCount);
-            List<ParamMode> curInstructionParamModesInOrder = IntCodeInstructionUtils
-                    .generateParameterModesInOrder(curInstructionCode, curInstructionParamCount);
-
-            IntCodeInstructionResult instructionResult = curInstruction.apply(memory, curInstructionInputIndices,
-                    curInstructionParamModesInOrder, inputScanner, outputWriter);
-            int outputIndex = instructionResult.outputIndex;
-
-            memory.set(outputIndex, instructionResult.outputValue);
-
-            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, instructionResult,
-                    curInstructionParamCount);
-            curInstructionCode = memory.get(curInstructionIdx);
-            curInstructionOpCode = curInstructionCode % 100;
-        } while (!this.codeIsHaltCode(curInstructionOpCode));
-
-        // System.out.println("HALT!");
-        return memory;
+    public IntCodeComputerState run() throws InvalidIntCodeException, IOException {
+        return this.run(new InputStreamReader(System.in), new OutputStreamWriter(System.out));
     }
 
-    private boolean codeIsHaltCode(int code) {
-        return code == this.haltCode;
+    public IntCodeComputerState run(Reader inputReader, Writer outputWriter)
+            throws InvalidIntCodeException, IOException {
+        Scanner inputScanner = new Scanner(inputReader);
+        int curInstructionCode;
+        int curInstructionOpCode;
+        IntCodeInstructionResult curInstructionResult;
+
+        // TODO: change this to return a state (halt, waiting for input)
+        do {
+            curInstructionCode = getInstructionCode(curInstructionIdx);
+            curInstructionOpCode = getInstructionOpCode(curInstructionIdx);
+            IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByOpCode(curInstructionOpCode);
+            List<Integer> curInstructionInputIndices = IntCodeComputerUtils
+                    .findInstructionParamIndices(curInstructionIdx, curInstruction);
+            List<ParamMode> curInstructionParamModesInOrder = IntCodeInstructionUtils
+                    .generateParameterModesInOrder(curInstructionCode, curInstruction);
+
+            curInstructionResult = curInstruction.apply(this.memory, curInstructionInputIndices,
+                    curInstructionParamModesInOrder, inputScanner, outputWriter);
+
+            this.resetExecutionCode(curInstructionResult.executionCode);
+            if (curInstructionResult.idxToNewValue.isPresent())
+                this.updateMemory(curInstructionResult.idxToNewValue.get());
+
+            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstructionResult,
+                    curInstruction);
+        } while (this.shouldContinue(curInstructionResult));
+
+        return this.getCurrentState();
+    }
+
+    private Integer updateMemory(Point idxToNewValue) {
+        return this.memory.set(idxToNewValue.x, idxToNewValue.y);
+
+    }
+
+    private boolean shouldContinue(IntCodeInstructionResult instructionResult) {
+        return instructionResult.executionCode.equals(ExecutionCode.READY_FOR_NEXT);
+    }
+
+    public IntCodeComputerState resetState(IntCodeComputerState newState) {
+        return new IntCodeComputerState(this.resetMemory(newState.getMemory()),
+                this.resetCurInstructionIdx(newState.getCurInstructionIdx()),
+                this.resetExecutionCode(newState.getExecutionCode()));
+    }
+
+    private List<Integer> resetMemory(List<Integer> newMemory) {
+        List<Integer> oldMemory = this.getMemory();
+        this.memory = new ArrayList<>(newMemory);
+        return oldMemory;
+    }
+
+    private int resetCurInstructionIdx(int newCurInstructionIdx) {
+        int oldCurInstructionIdx = this.getCurInstructionIdx();
+        this.curInstructionIdx = newCurInstructionIdx;
+        return oldCurInstructionIdx;
+    }
+
+    private ExecutionCode resetExecutionCode(ExecutionCode newExecutionCode) {
+        ExecutionCode oldExecutionCode = this.getExecutionCode();
+        this.executionCode = newExecutionCode;
+        return oldExecutionCode;
+    }
+
+    public IntCodeComputerState getCurrentState() {
+        return new IntCodeComputerState(this.getMemory(), this.getCurInstructionIdx(), this.getExecutionCode());
+    }
+
+    private List<Integer> getMemory() {
+        return new ArrayList<>(this.memory);
+    }
+
+    private int getCurInstructionIdx() {
+        return this.curInstructionIdx;
+    }
+
+    private ExecutionCode getExecutionCode() {
+        return this.executionCode;
+    }
+
+    private int getInstructionCode(int instructionIdx) {
+        return this.memory.get(instructionIdx);
+    }
+
+    private int getInstructionOpCode(int instructionIdx) {
+        return this.getInstructionCode(instructionIdx) % 100;
     }
 
 }

@@ -2,6 +2,7 @@ package day02;
 
 import java.util.List;
 
+import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstruction.ParamMode;
 import day02.instructions.IntCodeInstructionResult;
 import utils.ListUtils;
@@ -13,16 +14,17 @@ public class IntCodeComputerUtils {
     }
 
     protected static int calcNextInstructionIndex(int curInstructionIdx, IntCodeInstructionResult curInstructionResult,
-            int curInstructionParamCount) {
+            IntCodeInstruction curInstruction) {
         if (curInstructionResult.nextInstructionIndex.isPresent())
             return curInstructionResult.nextInstructionIndex.get();
 
-        return calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount) + 1;
+        return calcLastParamIndexForInstruction(curInstructionIdx, curInstruction.getParamCount()) + 1;
     }
 
-    protected static List<Integer> findInstructionParamIndices(int curInstructionIdx, int curInstructionParamCount) {
+    protected static List<Integer> findInstructionParamIndices(int curInstructionIdx,
+            IntCodeInstruction curInstruction) {
         List<Integer> paramIndices = ListUtils.generateRange(curInstructionIdx + 1,
-                calcLastParamIndexForInstruction(curInstructionIdx, curInstructionParamCount));
+                calcLastParamIndexForInstruction(curInstructionIdx, curInstruction.getParamCount()));
 
         return paramIndices;
     }

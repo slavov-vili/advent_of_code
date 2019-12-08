@@ -9,10 +9,14 @@ import utils.ListUtils;
 
 public class IntCodeInstructionUtils {
 
-    public static List<ParamMode> generateParameterModesInOrder(int instructionCode, int parameterCount) {
+    public static List<ParamMode> generateParameterModesInOrder(int instructionCode, IntCodeInstruction instruction) {
         List<ParamMode> parameterModesInOrder = new ArrayList<>();
+        if (instruction.getParamCount() <= 0)
+            return parameterModesInOrder;
+
         List<Integer> knownModesInt = IntegerUtils.reverse(instructionCode / 100);
-        List<Integer> allModesInt = ListUtils.addPaddingTo(knownModesInt, parameterCount - knownModesInt.size(), 0);
+        List<Integer> allModesInt = ListUtils.addPaddingTo(knownModesInt,
+                instruction.getParamCount() - knownModesInt.size(), 0);
         for (int modeInt : allModesInt)
             parameterModesInOrder.add(getParamModeFromInt(modeInt));
         return parameterModesInOrder;

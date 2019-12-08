@@ -10,8 +10,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import day02.IntCodeComputer;
+import day02.IntCodeComputerState;
+import day02.IntCodeComputerState.ExecutionCode;
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstructionAddition;
+import day02.instructions.IntCodeInstructionHalt;
 import day02.instructions.IntCodeInstructionMultiplication;
 import day05.instructions.part1.IntCodeInstructionOutputValue;
 import day05.instructions.part1.IntCodeInstructionStoreInput;
@@ -27,9 +30,9 @@ public class Day05Main {
         try {
             Reader userInputReader = new InputStreamReader(System.in);
             Writer stdOutputWriter = new OutputStreamWriter(System.out);
-            solve(getComputerA(), userInputReader, stdOutputWriter);
+            solve(getComputerA(getInitialComputerState()), userInputReader, stdOutputWriter);
             // System.out.println("Solved A!");
-            solve(getComputerB(), userInputReader, stdOutputWriter);
+            solve(getComputerB(getInitialComputerState()), userInputReader, stdOutputWriter);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -39,12 +42,12 @@ public class Day05Main {
 
     protected static void solve(IntCodeComputer computer, Reader userInputReader, Writer stdOutputWriter)
             throws InvalidIntCodeException, IOException {
-        computer.processCodes(getInput(), 0, userInputReader, stdOutputWriter);
+        computer.run(userInputReader, stdOutputWriter);
         return;
     }
 
-    public static IntCodeComputer getComputerA() {
-        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
+    public static IntCodeComputer getComputerA(IntCodeComputerState initialState) {
+        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
         try {
             instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
             instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
@@ -55,11 +58,11 @@ public class Day05Main {
             System.exit(1);
         }
 
-        return new IntCodeComputer(99, instructionProvider);
+        return new IntCodeComputer(initialState, instructionProvider);
     }
 
-    public static IntCodeComputer getComputerB() {
-        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider();
+    public static IntCodeComputer getComputerB(IntCodeComputerState initialState) {
+        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
         try {
             instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
             instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
@@ -74,7 +77,11 @@ public class Day05Main {
             System.exit(1);
         }
 
-        return new IntCodeComputer(99, instructionProvider);
+        return new IntCodeComputer(initialState, instructionProvider);
+    }
+
+    public static IntCodeComputerState getInitialComputerState() {
+        return new IntCodeComputerState(getInput(), 0, ExecutionCode.READY_FOR_NEXT);
     }
 
     protected static List<Integer> getInput() {

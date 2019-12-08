@@ -1,11 +1,8 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ListUtils {
     public static List<Integer> generateRange(int startInclusive, int endInclusive) {
@@ -28,22 +25,22 @@ public class ListUtils {
      * The method follows Heap's algorithm (aka recursively finds the permutations
      * of the first k-1 elements).
      */
-    public static <T> List<List<T>> findPermutations(int permutationEndExclusive, List<T> curPermutation,
+    public static <T> List<List<T>> findPermutations(int permutationSize, List<T> curPermutation,
             List<List<T>> curPermutationsList) {
         List<List<T>> newPermutationsList = new ArrayList<>(curPermutationsList);
-        if (permutationEndExclusive == 1) {
+        if (permutationSize == 1) {
             newPermutationsList.add(curPermutation);
             return newPermutationsList;
         }
 
         // Adds all permutations where the last element is untouched
-        newPermutationsList = findPermutations(permutationEndExclusive-1, curPermutation, curPermutationsList);
+        newPermutationsList = findPermutations(permutationSize - 1, curPermutation, curPermutationsList);
 
         List<T> nextPermutation = curPermutation;
 
-        for (int i = 0; i < permutationEndExclusive - 1; i++) { 
-            nextPermutation = swap(nextPermutation, i, permutationEndExclusive - 1);
-            newPermutationsList = findPermutations(permutationEndExclusive - 1, nextPermutation, newPermutationsList);
+        for (int i = 0; i < permutationSize - 1; i++) {
+            nextPermutation = swap(nextPermutation, i, permutationSize - 1);
+            newPermutationsList = findPermutations(permutationSize - 1, nextPermutation, newPermutationsList);
         }
 
         return newPermutationsList;

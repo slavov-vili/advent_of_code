@@ -19,13 +19,13 @@ public class IntCodeAmplifier {
         this.computerInput = computerInput;
     }
 
-    public int amplifyInput(int amplifierInput) {
-        String instructionInputs = this.phaseSetting + " " + amplifierInput;
+    public int amplifySignal(int inputSignal) {
+        String instructionInputs = this.phaseSetting + " " + inputSignal;
         // TODO: try with resource and close the reader / writer
         Reader inputReader = new StringReader(instructionInputs);
         StringWriter outputWriter = new StringWriter();
         try {
-            this.computer.processCodes(this.computerInput, 0, inputReader, outputWriter);
+            this.computer.run(inputReader, outputWriter);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

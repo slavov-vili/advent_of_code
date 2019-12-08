@@ -9,9 +9,9 @@ public class IntCodeInstructionStoreInput extends IntCodeInstructionWithInput {
     }
 
     @Override
-    protected int applyWithUserInput(List<Integer> memory, List<Integer> parameters, List<ParamMode> parameterModes,
-            String userInput) {
-        return Integer.parseInt(userInput);
+    protected int applyWithInput(List<Integer> memory, List<Integer> parameters, List<ParamMode> parameterModes,
+            String input) {
+        return Integer.parseInt(input);
     }
 
 }

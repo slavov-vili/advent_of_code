@@ -1,11 +1,13 @@
 package day02.instructions;
 
+import java.awt.Point;
 import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 
+import day02.IntCodeComputerState.ExecutionCode;
 import day02.IntCodeComputerUtils;
 import utils.ListUtils;
 
@@ -27,7 +29,8 @@ public class IntCodeInstructionMultiplication extends IntCodeInstructionAbstract
         int writeIndex = IntCodeComputerUtils.convertParameterValueToWriteIndex(
                 parameterIndicesInMemory.get(writeParameterIndex), parameters.get(writeParameterIndex),
                 parameterModes.get(writeParameterIndex));
-        return new IntCodeInstructionResult(outputValue, writeIndex, Optional.empty());
+        return new IntCodeInstructionResult(Optional.of(new Point(writeIndex, outputValue)), Optional.empty(),
+                ExecutionCode.READY_FOR_NEXT);
     }
 
 }

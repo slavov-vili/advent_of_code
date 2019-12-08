@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstructionAddition;
+import day02.instructions.IntCodeInstructionHalt;
 import day02.instructions.IntCodeInstructionMultiplication;
 import exceptions.InvalidArgumentException;
 import exceptions.InvalidIntCodeException;
@@ -15,7 +16,7 @@ public class IntCodeInstructionProviderTest {
     @Test
     void addInstructionToEmptyProviderTest() {
         IntCodeInstruction instructionToAdd = new IntCodeInstructionAddition(1, 2);
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider();
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
             provider.addNewInstruction(instructionToAdd);
@@ -27,7 +28,7 @@ public class IntCodeInstructionProviderTest {
     @Test
     void addInstructionWithExistingCodeTest() {
         IntCodeInstruction existingInstruction = new IntCodeInstructionAddition(1, 2);
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider();
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
             provider.addNewInstruction(existingInstruction);
@@ -47,7 +48,7 @@ public class IntCodeInstructionProviderTest {
     @Test
     void getInstructionFromEmptyProviderTest() {
         int codeOfInstructionToGet = 1;
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider();
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
             provider.getInstructionByOpCode(codeOfInstructionToGet);
@@ -62,7 +63,7 @@ public class IntCodeInstructionProviderTest {
     @Test
     void getInstructionByInvalidTest() {
         int codeOfInstructionToGet = 11;
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider();
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
             provider.addNewInstruction(new IntCodeInstructionAddition(1, 2));

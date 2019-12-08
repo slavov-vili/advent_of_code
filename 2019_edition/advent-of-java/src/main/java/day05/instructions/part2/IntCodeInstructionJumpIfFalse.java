@@ -1,10 +1,12 @@
 package day05.instructions.part2;
 
+import java.awt.Point;
 import java.io.Writer;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import day02.IntCodeComputerState.ExecutionCode;
 import day02.IntCodeComputerUtils;
 import day02.instructions.IntCodeInstructionAbstract;
 import day02.instructions.IntCodeInstructionResult;
@@ -30,7 +32,8 @@ public class IntCodeInstructionJumpIfFalse extends IntCodeInstructionAbstract {
         int writeIndex = IntCodeComputerUtils.convertParameterValueToWriteIndex(
                 parameterIndicesInMemory.get(writeParameterIndex), parameters.get(writeParameterIndex),
                 parameterModes.get(writeParameterIndex));
-        return new IntCodeInstructionResult(outputValue, writeIndex, nextInstructionIndex);
+        return new IntCodeInstructionResult(Optional.of(new Point(writeIndex, outputValue)), nextInstructionIndex,
+                ExecutionCode.READY_FOR_NEXT);
     }
 
 }

@@ -1,15 +1,19 @@
 package day02.instructions;
 
+import java.awt.Point;
 import java.util.Optional;
 
-public class IntCodeInstructionResult {
-    public int outputValue;
-    public int outputIndex;
-    public Optional<Integer> nextInstructionIndex;
+import day02.IntCodeComputerState.ExecutionCode;
 
-    public IntCodeInstructionResult(int outputValue, int outputIndex, Optional<Integer> nextInstructionIndex) {
-        this.outputValue = outputValue;
-        this.outputIndex = outputIndex;
+public class IntCodeInstructionResult {
+    public Optional<Point> idxToNewValue;
+    public Optional<Integer> nextInstructionIndex;
+    public ExecutionCode executionCode;
+
+    public IntCodeInstructionResult(Optional<Point> idxToNewValue, Optional<Integer> nextInstructionIndex,
+            ExecutionCode executionCode) {
+        this.idxToNewValue = idxToNewValue;
         this.nextInstructionIndex = nextInstructionIndex;
+        this.executionCode = executionCode;
     }
 }
