@@ -1,16 +1,12 @@
 package day07;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.util.List;
 import java.util.Optional;
 
 import day02.IntCodeComputer;
 import day02.IntCodeComputerState;
-import exceptions.InvalidIntCodeException;
 
 public class IntCodeAmplifier {
 
@@ -43,10 +39,14 @@ public class IntCodeAmplifier {
         return this.computer.resetState(newState);
     }
 
+    public IntCodeComputerState getComputerState() {
+        return this.computer.getCurrentState();
+    }
+
     public int getPhaseSetting() {
         return this.phaseSetting;
     }
-    
+
     public Optional<Integer> getOutput() {
         return this.output;
     }

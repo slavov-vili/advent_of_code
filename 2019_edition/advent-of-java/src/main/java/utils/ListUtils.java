@@ -70,4 +70,8 @@ public class ListUtils {
             outputList.add(inputList.get(idx));
         return outputList;
     }
+
+    public static <T> T getLastElement(List<T> inputList) {
+        return inputList.get(inputList.size() - 1);
+    }
 }
