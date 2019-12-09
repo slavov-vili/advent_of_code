@@ -23,6 +23,7 @@ public class IntCodeComputer {
     private int curInstructionIdx;
     private ExecutionCode executionCode;
 
+    // TODO: Make this a type class which takes a number type and uses it for the computations (it must take instructions of the same type!)
     public IntCodeComputer(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider) {
         this.memory = initialState.getMemory();
         this.curInstructionIdx = initialState.getCurInstructionIdx();
@@ -41,13 +42,13 @@ public class IntCodeComputer {
         int curInstructionOpCode;
         IntCodeInstructionResult curInstructionResult;
 
-        // TODO: change this to return a state (halt, waiting for input)
         do {
             curInstructionCode = getInstructionCode(curInstructionIdx);
             curInstructionOpCode = getInstructionOpCode(curInstructionIdx);
             IntCodeInstruction curInstruction = this.instructionProvider.getInstructionByOpCode(curInstructionOpCode);
             List<Integer> curInstructionInputIndices = IntCodeComputerUtils
                     .findInstructionParamIndices(curInstructionIdx, curInstruction);
+            // TODO: switch this to map to access modes more easily
             List<ParamMode> curInstructionParamModesInOrder = IntCodeInstructionUtils
                     .generateParameterModesInOrder(curInstructionCode, curInstruction);
 
