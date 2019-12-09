@@ -53,16 +53,6 @@ public class ListUtils {
         swappedList.set(secondIndex, temp);
         return swappedList;
     }
-    
-    public static <T> int countInMatrix(List<List<T>> matrix, T valueToCount) {
-        int count = 0;
-        for (List<T> row : matrix)
-            for (T curValue : row)
-                if (curValue.equals(valueToCount))
-                    count++;
-        
-        return count;
-    }
 
     public static <T> List<T> addPaddingTo(List<T> inputList, int paddingSize, T paddingValue) {
         List<T> outputList = new ArrayList<>(inputList);
