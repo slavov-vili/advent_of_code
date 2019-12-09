@@ -13,12 +13,14 @@ public class Day08Main {
 
     public static void main(String[] args) {
         List<Integer> input = getInput();
-        // TODO: switch from map to list? list idx = layer id anyway
         List<List<Integer>> layers = reassembleImage(input, 25, 6);
 
         int solutionA = solveA(layers);
         System.out.println("Solution A: " + solutionA);
 
+        List<Integer> solutionB = solveB(layers);
+        System.out.println("Solution B: ");
+        convertLayerToImage(solutionB, 25, 6).forEach(row -> System.out.println(row));
     }
 
     public static int solveA(List<List<Integer>> layers) {
@@ -32,6 +34,21 @@ public class Day08Main {
         return Collections.frequency(layers.get(minCount0LayerId), 1)
                 * Collections.frequency(layers.get(minCount0LayerId), 2);
     }
+    
+    public static List<Integer> solveB(List<List<Integer>> layers) {
+        List<Integer> decryptedImage = new ArrayList<>();
+        for (int pixelIdx = 0; pixelIdx < layers.get(0).size(); pixelIdx++) {
+            int curPixelValue = 2;
+            for (List<Integer> layer : layers) {
+                if (layer.get(pixelIdx) != 2) {
+                    curPixelValue = layer.get(pixelIdx);
+                    break;   
+                }
+            }
+            decryptedImage.add(curPixelValue);
+        }
+        return decryptedImage;
+    }
 
     protected static List<List<Integer>> reassembleImage(List<Integer> pixels, int imageWidth, int imageHeight) {
         List<Integer> pixelsCopy = new ArrayList<>(pixels);
@@ -44,6 +61,18 @@ public class Day08Main {
             curLayerStartIdxInclusive = curLayerEndIdxExclusive;
         }
         return layerToPixelMatrix;
+    }
+    
+    protected static List<List<Integer>> convertLayerToImage(List<Integer> layer, int imageWidth, int imageHeight) {
+        List<Integer> layerCopy = new ArrayList<>(layer);
+        List<List<Integer>> image = new ArrayList<>(imageHeight);
+        int curLayerStartIdxInclusive = 0;
+        while (curLayerStartIdxInclusive < layerCopy.size()) {
+            int curLayerEndIdxExclusive = curLayerStartIdxInclusive + imageWidth;
+            image.add(layerCopy.subList(curLayerStartIdxInclusive, curLayerEndIdxExclusive));
+            curLayerStartIdxInclusive = curLayerEndIdxExclusive;
+        }
+        return image;
     }
 
     protected static List<Integer> getInput() {
