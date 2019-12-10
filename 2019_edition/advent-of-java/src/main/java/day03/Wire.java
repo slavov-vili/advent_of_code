@@ -38,7 +38,7 @@ public class Wire {
     }
 
     private List<Point> generatePositionsToGoal(Point goal) {
-        List<Point> pointsInAreaBetweenPositionAndGoal = PointUtils.generatePointsInArea(this.curPosition, goal);
+        List<Point> pointsInAreaBetweenPositionAndGoal = PointUtils.generatePointsInAreaInclusive(this.curPosition, goal);
         return new ArrayList<>(
                 pointsInAreaBetweenPositionAndGoal.subList(1, pointsInAreaBetweenPositionAndGoal.size()));
     }
