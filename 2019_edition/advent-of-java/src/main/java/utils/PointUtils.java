@@ -23,17 +23,34 @@ public class PointUtils {
                 points.add(new Point(x, y));
         return points;
     }
-
-    public static Optional<Double> calcSlopeOf(Point startPoint, Point endPoint) {
-        if (endPoint.equals(startPoint))
-            return Optional.empty();
-
-        if (endPoint.x == startPoint.x)
-            return Optional.of(Double.POSITIVE_INFINITY);
-
-        return Optional.of((double) (endPoint.y - startPoint.y) / (double) (endPoint.x - startPoint.x));
+    
+    public static Double calcAngleOfLine(Point startPoint, Point endPoint) {
+        double xRelativeToRoot = endPoint.x - startPoint.x;
+        double yRelativeToRoot = startPoint.y - endPoint.y;
+        double possiblyNegativeDegrees = Math.toDegrees(Math.atan2(xRelativeToRoot, yRelativeToRoot));
+        return (possiblyNegativeDegrees >= 0) ? possiblyNegativeDegrees : 360 + possiblyNegativeDegrees;
     }
 
+    public static Double calcSlopeOfLine(Point startPoint, Point endPoint) {
+        if (endPoint.equals(startPoint))
+            return Double.NEGATIVE_INFINITY;
+
+        if (endPoint.x == startPoint.x)
+            return Double.POSITIVE_INFINITY;
+
+        double deltaX = calcDeltaX(startPoint, endPoint);
+        double deltaY = calcDeltaY(startPoint, endPoint);
+        return deltaY / deltaX;
+    }
+    
+    public static Double calcDeltaX(Point startPoint, Point endPoint) {
+        return Double.valueOf(endPoint.x - startPoint.x);
+    }
+
+    public static Double calcDeltaY(Point startPoint, Point endPoint) {
+        return Double.valueOf(endPoint.y - startPoint.y);
+    }
+    
     public static int calcManhattanDistance(Point a, Point b) {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }
