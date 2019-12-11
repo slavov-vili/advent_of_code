@@ -34,7 +34,7 @@ public class Day08Main {
         return Collections.frequency(layers.get(minCount0LayerId), 1)
                 * Collections.frequency(layers.get(minCount0LayerId), 2);
     }
-    
+
     public static List<Integer> solveB(List<List<Integer>> layers) {
         List<Integer> decryptedImage = new ArrayList<>();
         for (int pixelIdx = 0; pixelIdx < layers.get(0).size(); pixelIdx++) {
@@ -42,7 +42,7 @@ public class Day08Main {
             for (List<Integer> layer : layers) {
                 if (layer.get(pixelIdx) != 2) {
                     curPixelValue = layer.get(pixelIdx);
-                    break;   
+                    break;
                 }
             }
             decryptedImage.add(curPixelValue);
@@ -62,7 +62,7 @@ public class Day08Main {
         }
         return layerToPixelMatrix;
     }
-    
+
     protected static List<List<Integer>> convertLayerToImage(List<Integer> layer, int imageWidth, int imageHeight) {
         List<Integer> layerCopy = new ArrayList<>(layer);
         List<List<Integer>> image = new ArrayList<>(imageHeight);

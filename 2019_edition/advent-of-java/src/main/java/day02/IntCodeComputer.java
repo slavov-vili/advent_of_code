@@ -23,7 +23,8 @@ public class IntCodeComputer {
     private int curInstructionIdx;
     private ExecutionCode executionCode;
 
-    // TODO: Make this a type class which takes a number type and uses it for the computations (it must take instructions of the same type!)
+    // TODO: Make this a type class which takes a number type and uses it for the
+    // computations (it must take instructions of the same type!)
     public IntCodeComputer(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider) {
         this.memory = initialState.getMemory();
         this.curInstructionIdx = initialState.getCurInstructionIdx();
