@@ -15,7 +15,7 @@ import utils.PointUtils;
 public class Day10Main {
 
     public static void main(String[] args) {
-        Set<Point> asteroids = getAsteroids(getInput());
+        Set<Point> asteroids = getInput();
         Point bestAsteroid = asteroids.stream()
                 .max(Comparator.comparingInt(curAsteroid -> findVisibleAsteroidsOf(curAsteroid, asteroids).size()))
                 .get();
@@ -74,18 +74,15 @@ public class Day10Main {
         return killedAsteroids;
     }
 
-    protected static Set<Point> getAsteroids(List<String> asteroidsMapRows) {
+    protected static Set<Point> getInput() {
+        List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day10Main.class, "input.txt");
         Set<Point> asteroids = new HashSet<>();
-        for (int i = 0; i < asteroidsMapRows.size(); i++) {
-            String[] charsInRow = asteroidsMapRows.get(i).split("");
+        for (int i = 0; i < inputLines.size(); i++) {
+            String[] charsInRow = inputLines.get(i).split("");
             for (int y = 0; y < charsInRow.length; y++)
                 if (charsInRow[y].charAt(0) == '#')
                     asteroids.add(new Point(y, i));
         }
         return asteroids;
-    }
-
-    protected static List<String> getInput() {
-        return AdventOfCodeUtils.readClasspathFileLines(Day10Main.class, "input.txt");
     }
 }
