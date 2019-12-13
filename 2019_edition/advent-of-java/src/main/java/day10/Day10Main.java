@@ -59,18 +59,19 @@ public class Day10Main {
     private static List<Point> killAsteroids(Point killerAsteroid, int asteroidsToKill, Set<Point> asteroidsMap) {
         List<Point> killedAsteroids = new ArrayList<>();
         Set<Point> curAsteroidsMap = new HashSet<>(asteroidsMap);
-        TreeSet<Point> curVisibleAsteroidsInOrder = new TreeSet<>(Comparator.comparing(curAsteroid -> PointUtils.calcAngleOfLine(killerAsteroid, curAsteroid)));
+        TreeSet<Point> curVisibleAsteroidsInOrder = new TreeSet<>(
+                Comparator.comparing(curAsteroid -> PointUtils.calcAngleOfLine(killerAsteroid, curAsteroid)));
         while (killedAsteroids.size() < asteroidsToKill) {
             Point curAsteroid = curVisibleAsteroidsInOrder.pollFirst();
             if (curAsteroid == null) {
                 curVisibleAsteroidsInOrder.addAll(findVisibleAsteroidsOf(killerAsteroid, curAsteroidsMap));
                 continue;
             }
-            
+
             killedAsteroids.add(curAsteroid);
             curAsteroidsMap.remove(curAsteroid);
         }
-        
+
         return killedAsteroids;
     }
 

@@ -3,10 +3,13 @@ package utils;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class PointUtils {
     public static final Point ORIGIN_POINT = new Point(0, 0);
+
+    public static int calcAbsoluteSum(ThreeDPoint point) {
+        return Math.abs(point.x) + Math.abs(point.y) + Math.abs(point.z);
+    }
 
     /*
      * Generates a list of all points which exist within the area of the square that
@@ -23,7 +26,7 @@ public class PointUtils {
                 points.add(new Point(x, y));
         return points;
     }
-    
+
     public static Double calcAngleOfLine(Point startPoint, Point endPoint) {
         double xRelativeToRoot = endPoint.x - startPoint.x;
         double yRelativeToRoot = startPoint.y - endPoint.y;
@@ -42,7 +45,7 @@ public class PointUtils {
         double deltaY = calcDeltaY(startPoint, endPoint);
         return deltaY / deltaX;
     }
-    
+
     public static Double calcDeltaX(Point startPoint, Point endPoint) {
         return Double.valueOf(endPoint.x - startPoint.x);
     }
@@ -50,7 +53,7 @@ public class PointUtils {
     public static Double calcDeltaY(Point startPoint, Point endPoint) {
         return Double.valueOf(endPoint.y - startPoint.y);
     }
-    
+
     public static int calcManhattanDistance(Point a, Point b) {
         return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
     }

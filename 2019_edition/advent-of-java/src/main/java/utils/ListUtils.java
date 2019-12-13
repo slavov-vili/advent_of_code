@@ -1,8 +1,11 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ListUtils {
     public static List<Integer> generateRange(int startInclusive, int endInclusive) {
@@ -17,6 +20,17 @@ public class ListUtils {
         } while (curValue != endExclusive);
 
         return range;
+    }
+
+    public static <T> int countWhere(Collection<T> collection, Predicate<T> predicate) {
+        int count = 0;
+        Iterator<T> iterator = collection.iterator();
+        while (iterator.hasNext()) {
+            T curElement = iterator.next();
+            if (predicate.test(curElement))
+                count++;
+        }
+        return count;
     }
 
     /*
