@@ -1,78 +1,51 @@
 package day12;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import utils.AdventOfCodeUtils;
-import utils.ListUtils;
-import utils.PointUtils;
 import utils.ThreeDPoint;
 
 public class Day12Main {
 
     public static void main(String[] args) {
-        Set<ThreeDPoint> moons = getInput();
-        Map<ThreeDPoint, ThreeDPoint> moonToVelocity = new HashMap<>();
-        for (ThreeDPoint moon : moons)
-            moonToVelocity.put(moon, new ThreeDPoint(0, 0, 0));
+        List<Moon> moons = getMoons();
 
-        int solutionA = solveA(1000, moonToVelocity);
+        int solutionA = solveA(1000, moons);
         System.out.println("Solution A: " + solutionA);
     }
 
-    protected static int solveA(int timeStepCount, Map<ThreeDPoint, ThreeDPoint> moonToVelocityInitial) {
-        Map<ThreeDPoint, ThreeDPoint> moonToVelocityNew = new HashMap<>(moonToVelocityInitial);
+    protected static int solveA(int timeStepCount, List<Moon> moonsInitial) {
+        List<Moon> moonsNew = new ArrayList<>(moonsInitial);
         for (int i = 0; i < timeStepCount; i++)
-            moonToVelocityNew = performTimeStep(moonToVelocityNew);
-        return calcTotalEnergy(moonToVelocityNew);
+            moonsNew = performTimeStep(moonsNew);
+        return calcTotalEnergy(moonsNew);
     }
 
-    protected static Map<ThreeDPoint, ThreeDPoint> performTimeStep(Map<ThreeDPoint, ThreeDPoint> moonToVelocityOld) {
-        Map<ThreeDPoint, ThreeDPoint> moonToVelocityNew = new HashMap<>();
-        for (Map.Entry<ThreeDPoint, ThreeDPoint> curMoonToVelocity : moonToVelocityOld.entrySet()) {
-            ThreeDPoint newVelocity = calcVelocity(curMoonToVelocity.getKey(), moonToVelocityOld);
-            ThreeDPoint newPosition = curMoonToVelocity.getKey().translate(newVelocity);
-            moonToVelocityNew.put(newPosition, newVelocity);
+    protected static List<Moon> performTimeStep(List<Moon> moonsOld) {
+        List<Moon> moonsNew = new ArrayList<>();
+        for (Moon curMoon : moonsOld) {
+            ThreeDPoint newVelocity = curMoon.calcNewVelocity(moonsOld);
+            ThreeDPoint newPosition = curMoon.calcNewPosition(newVelocity);
+            moonsNew.add(new Moon(newPosition, newVelocity));
         }
-        return moonToVelocityNew;
+        return moonsNew;
     }
 
-    protected static int calcTotalEnergy(Map<ThreeDPoint, ThreeDPoint> moonToVelocity) {
-        return moonToVelocity.keySet().stream().mapToInt(moon -> calcTotalEnergyOfMoon(moon, moonToVelocity.get(moon)))
+    protected static int calcTotalEnergy(List<Moon> moons) {
+        return moons.stream()
+                .mapToInt(moon -> moon.calcTotalEnergy())
                 .sum();
     }
 
-    protected static int calcTotalEnergyOfMoon(ThreeDPoint moon, ThreeDPoint velocity) {
-        int potentialEnergy = PointUtils.calcAbsoluteSum(moon);
-        int kineticEnergy = PointUtils.calcAbsoluteSum(velocity);
-        return potentialEnergy * kineticEnergy;
-    }
-
-    protected static ThreeDPoint calcVelocity(ThreeDPoint curMoon, Map<ThreeDPoint, ThreeDPoint> moonToVelocity) {
-        int countBiggerX = ListUtils.countWhere(moonToVelocity.keySet(), (moon -> moon.x > curMoon.x));
-        int countLowerX = ListUtils.countWhere(moonToVelocity.keySet(), (moon -> moon.x < curMoon.x));
-        int countBiggerY = ListUtils.countWhere(moonToVelocity.keySet(), (moon -> moon.y > curMoon.y));
-        int countLowerY = ListUtils.countWhere(moonToVelocity.keySet(), (moon -> moon.y < curMoon.y));
-        int countBiggerZ = ListUtils.countWhere(moonToVelocity.keySet(), (moon -> moon.z > curMoon.z));
-        int countLowerZ = ListUtils.countWhere(moonToVelocity.keySet(), (moon -> moon.z < curMoon.z));
-
-        return new ThreeDPoint(moonToVelocity.get(curMoon).x + countBiggerX - countLowerX,
-                moonToVelocity.get(curMoon).y + countBiggerY - countLowerY,
-                moonToVelocity.get(curMoon).z + countBiggerZ - countLowerZ);
-    }
-
-    protected static Set<ThreeDPoint> getInput() {
+    protected static List<Moon> getMoons() {
         List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day12Main.class, "input.txt");
-        Set<ThreeDPoint> moons = new HashSet<>();
-        for (String line : inputLines)
-            moons.add(extractPointFromInputLine(line));
-
-        return moons;
+        return inputLines.stream()
+                .map(line -> new Moon(extractPointFromInputLine(line), new ThreeDPoint(0, 0, 0)))
+                .collect(Collectors.toList());
     }
 
     protected static ThreeDPoint extractPointFromInputLine(String inputLine) {

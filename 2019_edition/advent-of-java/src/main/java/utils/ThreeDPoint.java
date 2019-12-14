@@ -7,11 +7,17 @@ public class ThreeDPoint {
     public int x;
     public int y;
     public int z;
-
+    
     public ThreeDPoint(int x, int y, int z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public ThreeDPoint(ThreeDPoint otherPoint) {
+        this.x = otherPoint.x;
+        this.y = otherPoint.y;
+        this.z = otherPoint.z;
     }
 
     public ThreeDPoint translate(ThreeDPoint otherPoint) {
