@@ -3,7 +3,7 @@ package utils;
 import java.util.Objects;
 
 public class ThreeDPoint {
-
+    
     public int x;
     public int y;
     public int z;

@@ -1,5 +1,6 @@
 package day12;
 
+import java.awt.Point;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +40,18 @@ public class Moon {
     public ThreeDPoint calcNewPosition(ThreeDPoint newVelocity) {
         return this.getPosition().translate(newVelocity);
     }
+    
+    public static Point getStateX(Moon moon) {
+        return new Point(moon.getPosition().x, moon.getVelocity().x);
+    }
+    
+    public static Point getStateY(Moon moon) {
+        return new Point(moon.getPosition().y, moon.getVelocity().y);
+    }
+    
+    public static Point getStateZ(Moon moon) {
+        return new Point(moon.getPosition().z, moon.getVelocity().z);
+    }
 
     public ThreeDPoint getPosition() {
         return position;
@@ -63,7 +76,7 @@ public class Moon {
         if (!(obj instanceof Moon))
             return false;
         Moon objMoon = (Moon) obj;
-        return this.getVelocity().equals(objMoon.getVelocity()) &&
+        return this.getPosition().equals(objMoon.getPosition()) &&
                 this.getVelocity().equals(objMoon.getVelocity());
     }
     

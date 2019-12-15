@@ -28,6 +28,26 @@ public class IntegerUtils {
 
         return Arrays.asList(valueDigitsReverse);
     }
+    
+    public static long findLCM(long a, long b) {
+        long gcd = findGCD(a, b);
+        if (gcd == 0)
+            return 0;
+        
+        return Math.abs((long)a * (long)b) / (long)gcd;
+    }
+    
+    public static long findGCD(long a, long b) {
+        if (a == b)
+            return a;
+        
+        if ((a == 0) || (b == 0))
+            return (a == 0) ? b : a;
+        
+        long bigger = (a > b) ? a : b;
+        long smaller = (bigger == a) ? b : a;
+        return findGCD(smaller, bigger % smaller);
+    }
 
     public static boolean checkIntegerLength(Integer value, int expectedLength) {
         return String.valueOf(value).length() == expectedLength;
