@@ -1,16 +1,22 @@
-package day02;
+package day02_old;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IntCodeComputerState {
 
+    public enum ExecutionCode {
+        READY_FOR_NEXT, REQUIRE_INPUT, HALT
+    }
+
     private List<Integer> memory;
     private int curInstructionIdx;
+    private ExecutionCode executionCode;
 
-    public IntCodeComputerState(List<Integer> memory, int curInstructionIdx) {
+    public IntCodeComputerState(List<Integer> memory, int curInstructionIdx, ExecutionCode executionCode) {
         this.memory = memory;
         this.curInstructionIdx = curInstructionIdx;
+        this.executionCode = executionCode;
     }
 
     public List<Integer> getMemory() {
@@ -19,6 +25,10 @@ public class IntCodeComputerState {
 
     public int getCurInstructionIdx() {
         return this.curInstructionIdx;
+    }
+
+    public ExecutionCode getExecutionCode() {
+        return this.executionCode;
     }
 
 }

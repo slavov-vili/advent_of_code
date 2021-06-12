@@ -1,18 +1,12 @@
 package day02.instructions;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
-import java.util.Scanner;
+import java.util.Optional;
 
 public interface IntCodeInstruction {
-
-    public enum ParamMode {
-        POSITION, IMMEDIATE
-    }
-
-    public IntCodeInstructionResult apply(List<Integer> memory, List<Integer> parameterIndices,
-            List<ParamMode> parameterModes, Scanner inputScanner, Writer outputWriter) throws IOException;
+	
+	// TODO: Returns the index of the next instruction (in case of jumps, etc)
+    public Optional<Integer> apply(List<Integer> memory, List<Integer> parameters);
 
     public int getCode();
 

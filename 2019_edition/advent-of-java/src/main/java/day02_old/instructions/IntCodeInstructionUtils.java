@@ -1,4 +1,4 @@
-package day02.instructions;
+package day02_old.instructions;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,51 +1,36 @@
 package day02;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import day02.instructions.IntCodeInstruction;
-import day02.instructions.IntCodeInstruction.ParamMode;
-import day02.instructions.IntCodeInstructionResult;
 import utils.ListUtils;
 
 public class IntCodeComputerUtils {
 
-    protected static int calcLastParamIndexForInstruction(int curInstructionIdx, int curInstructionParamCount) {
-        return curInstructionIdx + curInstructionParamCount;
-    }
-
-    protected static int calcNextInstructionIndex(int curInstructionIdx, IntCodeInstructionResult curInstructionResult,
-            IntCodeInstruction curInstruction) {
-        if (curInstructionResult.nextInstructionIndex.isPresent())
-            return curInstructionResult.nextInstructionIndex.get();
-
-        return calcLastParamIndexForInstruction(curInstructionIdx, curInstruction.getParamCount()) + 1;
-    }
-
+	protected static List<Integer> findInstructionParameters(List<Integer> memory,
+			int curInstructionIdx, IntCodeInstruction curInstruction) {
+		return findInstructionParamIndices(curInstructionIdx, curInstruction).stream()
+				.map(memory::get)
+				.collect(Collectors.toList());
+	}
+	
     protected static List<Integer> findInstructionParamIndices(int curInstructionIdx,
             IntCodeInstruction curInstruction) {
-        List<Integer> paramIndices = ListUtils.generateRange(curInstructionIdx + 1,
-                calcLastParamIndexForInstruction(curInstructionIdx, curInstruction.getParamCount()));
-
-        return paramIndices;
+    	int paramCount = curInstruction.getParamCount();
+    	if (paramCount == 0)
+    		return List.of();
+    	else
+    		return ListUtils.generateRange(curInstructionIdx + 1,
+                calcEndIdxOfInstruction(curInstructionIdx, curInstruction.getParamCount()));
+    }
+	
+    protected static int calcNextInstructionIndex(int curInstructionIdx, IntCodeInstruction curInstruction) {
+        return calcEndIdxOfInstruction(curInstructionIdx, curInstruction.getParamCount()) + 1;
+    }
+	
+    protected static int calcEndIdxOfInstruction(int instructionIdx, int instructionParamCount) {
+        return instructionIdx + instructionParamCount;
     }
 
-    public static Integer convertParameterValueToInputValue(List<Integer> memory, Integer paramValue,
-            ParamMode paramMode) {
-        if (paramMode == ParamMode.POSITION)
-            return memory.get(paramValue);
-        else
-            return paramValue;
-    }
-
-    public static Integer convertParameterValueToWriteIndex(int writeParameterIndexInMemory, int writeParameterValue,
-            ParamMode writeParameterMode) {
-        if (writeParameterMode == ParamMode.POSITION)
-            return writeParameterValue;
-        else
-            return writeParameterIndexInMemory;
-    }
-
-    protected static int calcOutputIndexForInstruction(int curInstructionIdx, int indexOfOutputParameter) {
-        return curInstructionIdx + indexOfOutputParameter + 1;
-    }
 }

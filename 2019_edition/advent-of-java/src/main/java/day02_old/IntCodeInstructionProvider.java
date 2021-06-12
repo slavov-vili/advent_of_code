@@ -1,4 +1,4 @@
-package day02;
+package day02_old;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,31 +10,25 @@ import exceptions.InvalidIntCodeException;
 
 public class IntCodeInstructionProvider {
 
-    private Map<Integer, IntCodeInstruction> instructionCodeMap;
-	private Integer haltInstructionOpcode;
+    private Map<Integer, IntCodeInstruction> instructionCodeToInstruction;
 
     public IntCodeInstructionProvider(IntCodeInstructionHalt haltInstruction) {
-        this.instructionCodeMap = new HashMap<>();
-        this.haltInstructionOpcode = haltInstruction.getCode();
-        this.instructionCodeMap.put(this.haltInstructionOpcode, haltInstruction);
+        this.instructionCodeToInstruction = new HashMap<>();
+        this.instructionCodeToInstruction.put(haltInstruction.getCode(), haltInstruction);
     }
 
     public IntCodeInstruction getInstructionByOpCode(Integer instructionCode) throws InvalidIntCodeException {
-        if (!this.instructionCodeMap.containsKey(instructionCode))
+        if (!this.instructionCodeToInstruction.containsKey(instructionCode))
             throw new InvalidIntCodeException("Instruction code " + instructionCode + " is unknown!");
 
-        return this.instructionCodeMap.get(instructionCode);
+        return this.instructionCodeToInstruction.get(instructionCode);
     }
 
     public IntCodeInstruction addNewInstruction(IntCodeInstruction instruction) throws InvalidArgumentException {
         int instructionCode = instruction.getCode();
-        if (this.instructionCodeMap.containsKey(instructionCode))
+        if (this.instructionCodeToInstruction.containsKey(instructionCode))
             throw new InvalidArgumentException("Instruction code " + instructionCode + " already exists!");
 
-        return this.instructionCodeMap.put(instructionCode, instruction);
-    }
-    
-    public Integer getHaltInstructionOpCode() {
-    	return this.haltInstructionOpcode;
+        return this.instructionCodeToInstruction.put(instructionCode, instruction);
     }
 }
