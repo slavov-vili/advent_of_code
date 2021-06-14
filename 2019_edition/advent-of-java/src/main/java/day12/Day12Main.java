@@ -79,7 +79,7 @@ public class Day12Main {
     }
 
     protected static List<Moon> getMoons() {
-        List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day12Main.class, "input.txt");
+        List<String> inputLines = AdventOfCodeUtils.readInputLines(Day12Main.class);
         return inputLines.stream().map(line -> new Moon(extractPointFromInputLine(line), new ThreeDPoint(0, 0, 0)))
                 .collect(Collectors.toList());
     }

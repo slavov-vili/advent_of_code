@@ -14,7 +14,7 @@ public class IntCodeInstructionUtils {
         if (instruction.getParamCount() <= 0)
             return parameterModesInOrder;
 
-        List<Integer> knownModesInt = IntegerUtils.reverse(instructionCode / 100);
+        List<Integer> knownModesInt = IntegerUtils.reverseAsList(instructionCode / 100);
         List<Integer> allModesInt = ListUtils.addPaddingTo(knownModesInt,
                 instruction.getParamCount() - knownModesInt.size(), 0);
         for (int modeInt : allModesInt)

@@ -16,7 +16,7 @@ public class Day01Main {
     }
 
     protected static Stream<Integer> getInputAsStream() {
-        return AdventOfCodeUtils.readClasspathFileLines(Day01Main.class, "input.txt").stream().map(Integer::parseInt);
+        return AdventOfCodeUtils.readInputLines(Day01Main.class).stream().map(Integer::parseInt);
     }
 
 }

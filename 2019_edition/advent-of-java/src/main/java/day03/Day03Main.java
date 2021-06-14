@@ -52,7 +52,7 @@ public class Day03Main {
     }
 
     protected static List<List<String>> getInputs() {
-        List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day03Main.class, "input.txt");
+        List<String> inputLines = AdventOfCodeUtils.readInputLines(Day03Main.class);
         return inputLines.stream().map(line -> Arrays.asList(line.split(","))).collect(Collectors.toList());
     }
 }

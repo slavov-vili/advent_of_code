@@ -89,7 +89,7 @@ public class Day07Main {
     }
 
     protected static List<Integer> getInput() {
-        String intCodesString = AdventOfCodeUtils.readClasspathFileLines(Day07Main.class, "input.txt").get(0);
+        String intCodesString = AdventOfCodeUtils.readInputLines(Day07Main.class).get(0);
         return Arrays.asList(intCodesString.split(",")).stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 }

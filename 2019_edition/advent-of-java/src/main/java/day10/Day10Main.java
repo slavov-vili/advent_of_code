@@ -76,7 +76,7 @@ public class Day10Main {
     }
 
     protected static Set<Point> getInput() {
-        List<String> inputLines = AdventOfCodeUtils.readClasspathFileLines(Day10Main.class, "input.txt");
+        List<String> inputLines = AdventOfCodeUtils.readInputLines(Day10Main.class);
         Set<Point> asteroids = new HashSet<>();
         for (int i = 0; i < inputLines.size(); i++) {
             String[] charsInRow = inputLines.get(i).split("");

@@ -76,7 +76,7 @@ public class Day08Main {
     }
 
     protected static List<Integer> getInput() {
-        String[] pixelsString = AdventOfCodeUtils.readClasspathFileLines(Day08Main.class, "input.txt").get(0).split("");
+        String[] pixelsString = AdventOfCodeUtils.readInputLines(Day08Main.class).get(0).split("");
         List<Integer> pixelsInt = new ArrayList<>(pixelsString.length);
         for (String pixelString : pixelsString)
             pixelsInt.add(Integer.parseInt(pixelString));

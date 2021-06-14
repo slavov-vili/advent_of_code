@@ -24,7 +24,7 @@ public class Day04Main {
     }
 
     private static Stream<Integer> getRangeAsStream() {
-        String input = AdventOfCodeUtils.readClasspathFileLines(Day04Main.class, "input.txt").get(0);
+        String input = AdventOfCodeUtils.readInputLines(Day04Main.class).get(0);
         String[] inputSplit = input.split("-");
         return ListUtils.generateRange(Integer.parseInt(inputSplit[0]), Integer.parseInt(inputSplit[1])).stream();
     }

@@ -84,7 +84,7 @@ public class Day06Main {
 
     protected static Map<String, Set<String>> getInput() {
         Map<String, Set<String>> orbiteeToOrbiters = new HashMap<>();
-        List<String> lines = AdventOfCodeUtils.readClasspathFileLines(Day06Main.class, "input.txt");
+        List<String> lines = AdventOfCodeUtils.readInputLines(Day06Main.class);
         for (String line : lines) {
             String[] parts = line.split("\\)");
             String orbitee = parts[0];
