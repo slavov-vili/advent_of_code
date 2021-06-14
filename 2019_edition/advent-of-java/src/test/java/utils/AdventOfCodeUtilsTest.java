@@ -15,7 +15,7 @@ public class AdventOfCodeUtilsTest {
         List<String> expected = Collections.emptyList();
 
         String nameOfNonexistentFile = "myTestFilename.txt";
-        List<String> actual = AdventOfCodeUtils.readClasspathFileLines(AdventOfCodeUtils.class, nameOfNonexistentFile);
+        List<String> actual = AdventOfCodeUtils.readInputLines(AdventOfCodeUtils.class);
 
         assertEquals(expected, actual, "Calling the function with a non-existent file should return an empty list!");
     }
@@ -24,7 +24,7 @@ public class AdventOfCodeUtilsTest {
     void reactClasspathFileLines_ExistentFile_HelloWorldTxtTest() {
         List<String> expected = Arrays.asList("Hello", "World", "txt");
         String fileName = "input.txt";
-        List<String> actual = AdventOfCodeUtils.readClasspathFileLines(AdventOfCodeUtils.class, fileName);
+        List<String> actual = AdventOfCodeUtils.readInputLines(AdventOfCodeUtils.class);
         assertEquals(expected, actual, "File contents do not match expectations!");
     }
 

@@ -2,6 +2,8 @@ package day02;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import day02.instructions.IntCodeInstruction;
 import exceptions.InvalidIntCodeException;
 
@@ -9,6 +11,7 @@ public class IntCodeComputer {
     private IntCodeInstructionProvider instructionProvider;
     private List<Integer> memory;
     private int curInstructionIdx;
+	private Optional<String> haltMessage;
 
     // TODO: Make this a type class which takes a number type and uses it for the
     // computations (it must take instructions of the same type!)
@@ -16,29 +19,46 @@ public class IntCodeComputer {
         this.memory = initialState.getMemory();
         this.curInstructionIdx = initialState.getCurInstructionIdx();
         this.instructionProvider = instructionProvider;
+        this.haltMessage = Optional.empty();
     }
 
     public IntCodeComputerState run()
             throws InvalidIntCodeException {
     	while (this.shouldContinue()) {
 
-            IntCodeInstruction curInstruction = this.instructionProvider
-            		.getInstructionByOpCode(this.getCurInstructionOpCode());
-            
+            IntCodeInstruction curInstruction = getCurInstruction();
+
             List<Integer> curInstructionParameters = IntCodeComputerUtils
-                    .findInstructionParameters(this.memory, curInstructionIdx, curInstruction);
-
-            curInstruction.apply(this.memory, curInstructionParameters);
-
-            curInstructionIdx = IntCodeComputerUtils.calcNextInstructionIndex(curInstructionIdx, curInstruction);
-        };
+                    .findInstructionParameters(this.memory, this.curInstructionIdx, curInstruction);
+            handleCurrentInstruction(curInstruction, curInstructionParameters);
+            
+            curInstructionIdx = calcNextInstructionIndex(curInstruction);
+        }
+    	
+    	if (this.haltMessage.isPresent())
+    		System.out.println(this.haltMessage.get());
 
         return this.getCurrentState();
     }
 
-    private boolean shouldContinue() {
-        return !instructionProvider.getHaltInstructionOpCode()
-        		.equals(this.getCurInstructionOpCode());
+    protected boolean shouldContinue() {
+        return this.haltMessage.isEmpty();
+    }
+    
+	public void requestHalt(String message) {
+		this.haltMessage = Optional.of(message);
+	}
+    
+    public void handleCurrentInstruction(IntCodeInstruction curInstruction,
+    		List<Integer> curInstructionParameters) {
+    	List<Integer> parameterValues = IntCodeComputerUtils
+    			.findInstructionParameterValues(this.memory, curInstructionParameters);
+        curInstruction.apply(this, parameterValues);
+    }
+    
+    public int calcNextInstructionIndex(IntCodeInstruction curInstruction) {
+        return IntCodeComputerUtils
+        		.calcEndIdxOfInstruction(this.curInstructionIdx, curInstruction) + 1;
     }
 
     public IntCodeComputerState resetState(IntCodeComputerState newState) {
@@ -63,20 +83,30 @@ public class IntCodeComputer {
         return new IntCodeComputerState(this.getMemory(), this.getCurInstructionIdx());
     }
 
-    private List<Integer> getMemory() {
-        return new ArrayList<>(this.memory);
-    }
-
-    private int getCurInstructionIdx() {
-        return this.curInstructionIdx;
+    public List<Integer> getMemory() {
+        return this.memory;
     }
     
-    private int getCurInstructionOpCode() {
-    	return getInstructionOpCode(this.getCurInstructionIdx());
+    public IntCodeInstructionProvider getInstructionProvider() {
+    	return this.instructionProvider;
+    }
+    
+    protected IntCodeInstruction getCurInstruction() throws InvalidIntCodeException {
+    	IntCodeInstruction curInstruction = this.instructionProvider
+			.getInstructionByOpCode(this.getCurInstructionCode());
+    	return curInstruction;
+    }
+    
+    protected int getCurInstructionCode() {
+    	return getInstructionCode(this.getCurInstructionIdx());
     }
 
-    private int getInstructionOpCode(int instructionIdx) {
+    protected int getInstructionCode(int instructionIdx) {
         return this.memory.get(instructionIdx);
+    }
+
+    protected int getCurInstructionIdx() {
+        return this.curInstructionIdx;
     }
 
 }

@@ -1,7 +1,8 @@
 package day02.instructions;
 
 import java.util.List;
-import java.util.Optional;
+
+import day02.IntCodeComputer;
 
 public class IntCodeInstructionHalt extends IntCodeInstructionAbstract {
 
@@ -10,8 +11,8 @@ public class IntCodeInstructionHalt extends IntCodeInstructionAbstract {
     }
 
     @Override
-    public Optional<Integer> apply(List<Integer> memory, List<Integer> parameters) {
-        return Optional.empty();
+    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+        computer.requestHalt("Program execution complete");
     }
 
 }

@@ -13,13 +13,13 @@ public class AdventOfCodeUtils {
 
     /*
      * Returns an immutable list of the lines of a given file. If the file does not
-     * exists, it returns an empty list and prints an exception.
+     * exist, it returns an empty list and prints an exception.
      */
-    public static List<String> readClasspathFileLines(Class sourceClass, String fileName) {
+    public static List<String> readInputLines(Class sourceClass) {
         List<String> fileLines = Collections.emptyList();
 
         try {
-            fileLines = getLinesFromClasspathFile(sourceClass, fileName);
+            fileLines = getLinesFromClasspathFile(sourceClass, "input.txt");
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

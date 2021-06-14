@@ -27,19 +27,19 @@ public class Day02Main {
     }
 
     protected static int solveA() throws InvalidArgumentException, InvalidIntCodeException {
-        IntCodeComputer computer = getComputer(initializeComputerState(getInputA()));
+        IntCodeComputer computer = getDefaultComputer(createInitialComputerState(getInputA()));
         return computer.run().getMemory().get(0);
     }
     
     protected static int solveB(int valueToFind) throws InvalidArgumentException, InvalidIntCodeException {
         int solutionNoun = 0;
         int solutionVerb = 0;
-        IntCodeComputer computer = getComputer(initializeComputerState(getInputFor(solutionNoun, solutionVerb)));
+        IntCodeComputer computer = getDefaultComputer(createInitialComputerState(getInputFor(solutionNoun, solutionVerb)));
 
         for (int valueNoun = 0; valueNoun < 100; valueNoun++)
             for (int valueVerb = 0; valueVerb < 100; valueVerb++) {
                 try {
-                    computer.resetState(initializeComputerState(getInputFor(valueNoun, valueVerb)));
+                    computer.resetState(createInitialComputerState(getInputFor(valueNoun, valueVerb)));
                     int curSolution = computer.run().getMemory().get(0);
                     if (curSolution == valueToFind) {
                         solutionNoun = valueNoun;
@@ -54,19 +54,22 @@ public class Day02Main {
         return (100 * solutionNoun) + solutionVerb;
     }
 
-    protected static IntCodeComputer getComputer(IntCodeComputerState initialState) throws InvalidArgumentException {
-        IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
-            instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
-            instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
-
-        return new IntCodeComputer(initialState, instructionProvider);
+    protected static IntCodeComputer getDefaultComputer(IntCodeComputerState initialState) throws InvalidArgumentException {
+        return new IntCodeComputer(initialState, getDefaultInstructionProvider());
+    }
+    
+    public static IntCodeInstructionProvider getDefaultInstructionProvider() throws InvalidArgumentException{
+    	IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
+        instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
+        instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
+        return instructionProvider;
     }
 
-    protected static IntCodeComputerState initializeComputerState(List<Integer> initialMemory) {
+    public static IntCodeComputerState createInitialComputerState(List<Integer> initialMemory) {
         return new IntCodeComputerState(initialMemory, 0);
     }
 
-    protected static List<Integer> getInputA() {
+    public static List<Integer> getInputA() {
         return getInputFor(12, 2);
     }
     
@@ -78,8 +81,12 @@ public class Day02Main {
         return inputCodes;
     }
 
-    protected static List<Integer> getInput() {
-        String intCodesString = AdventOfCodeUtils.readClasspathFileLines(Day02Main.class, "input.txt").get(0);
+    public static List<Integer> getInput() {
+        return getInput(Day02Main.class);
+    }
+    
+    public static List<Integer> getInput(Class sourceClass) {
+    	String intCodesString = AdventOfCodeUtils.readInputLines(sourceClass).get(0);
         return Arrays.asList(intCodesString.split(",")).stream()
         		.map(Integer::parseInt)
         		.collect(Collectors.toList());

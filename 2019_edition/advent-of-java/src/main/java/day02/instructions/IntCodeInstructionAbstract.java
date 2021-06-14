@@ -20,4 +20,17 @@ public abstract class IntCodeInstructionAbstract implements IntCodeInstruction {
         return this.paramCount;
     }
 
+    @Override
+    public int setCode(int newCode) {
+    	int oldCode = this.opCode;
+    	this.opCode = newCode;
+        return oldCode;
+    }
+
+    @Override
+    public int setParamCount(int newParamCount) {
+    	int oldCount = this.paramCount;
+    	this.paramCount = newParamCount;
+        return oldCount;
+    }
 }
