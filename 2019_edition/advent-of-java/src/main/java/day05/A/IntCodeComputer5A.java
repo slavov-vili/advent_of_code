@@ -23,8 +23,8 @@ import exceptions.InvalidIntCodeException;
 public class IntCodeComputer5A extends IntCodeComputer {
 
 	private IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler;
-	private Scanner inputScanner;
-	private Writer outputWriter;
+	protected Scanner inputScanner;
+	protected Writer outputWriter;
 
 	public IntCodeComputer5A(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
@@ -34,15 +34,15 @@ public class IntCodeComputer5A extends IntCodeComputer {
 		this.outputWriter = new OutputStreamWriter(System.out);
 	}
 	
-	public IntCodeComputerState run(Reader inputReader, Writer outputWriter) throws InvalidIntCodeException {
+	public void run(Reader inputReader, Writer outputWriter) throws InvalidIntCodeException {
 		this.inputScanner = new Scanner(inputReader);
 		this.outputWriter = outputWriter;
 		
-		return this.run();
+		super.run();
 	}
 	
 	@Override
-    protected IntCodeInstruction getCurInstruction() throws InvalidIntCodeException {
+    public IntCodeInstruction getCurInstruction() throws InvalidIntCodeException {
     	int instructionCode = this.getCurInstructionCode();
     	IntCodeInstruction curInstruction = this.getInstructionProvider()
 			.getInstructionByOpCode(instructionCode % 100);

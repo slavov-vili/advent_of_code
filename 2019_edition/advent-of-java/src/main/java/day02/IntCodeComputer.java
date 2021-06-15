@@ -24,8 +24,7 @@ public class IntCodeComputer {
 
     public IntCodeComputerState run()
             throws InvalidIntCodeException {
-    	while (this.shouldContinue()) {
-
+    	while (!this.shouldStop()) {
             IntCodeInstruction curInstruction = getCurInstruction();
 
             List<Integer> curInstructionParameters = IntCodeComputerUtils
@@ -36,13 +35,13 @@ public class IntCodeComputer {
         }
     	
     	if (this.haltMessage.isPresent())
-    		System.out.println(this.haltMessage.get());
+    		System.out.println("Halt Message: " + this.haltMessage.get());
     	
     	return this.getCurrentState();
     }
 
-    protected boolean shouldContinue() {
-        return this.haltMessage.isEmpty();
+    protected boolean shouldStop() {
+        return this.haltMessage.isPresent();
     }
     
 	public void requestHalt(String message) {
@@ -95,21 +94,21 @@ public class IntCodeComputer {
     	return this.instructionProvider;
     }
     
-    protected IntCodeInstruction getCurInstruction() throws InvalidIntCodeException {
+    public IntCodeInstruction getCurInstruction() throws InvalidIntCodeException {
     	IntCodeInstruction curInstruction = this.instructionProvider
 			.getInstructionByOpCode(this.getCurInstructionCode());
     	return curInstruction;
     }
     
-    protected int getCurInstructionCode() {
+    public int getCurInstructionCode() {
     	return getInstructionCode(this.getCurInstructionIdx());
     }
 
-    protected int getInstructionCode(int instructionIdx) {
+    public int getInstructionCode(int instructionIdx) {
         return this.memory.get(instructionIdx);
     }
 
-    protected int getCurInstructionIdx() {
+    public int getCurInstructionIdx() {
         return this.curInstructionIdx;
     }
 

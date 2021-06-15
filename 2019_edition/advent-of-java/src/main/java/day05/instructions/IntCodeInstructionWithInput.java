@@ -15,10 +15,11 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstruction5AAb
     public void apply(IntCodeComputer5A computer, List<Integer> parameters) {
     	String instructionName = this.getClass().getSimpleName();
 		System.out.printf("Instruction %s requires input: \n", instructionName);
-        String input = computer.getInput();
+		
+		String input = computer.getInput();
         System.out.printf("Instruction %s received input: %s\n", instructionName, input);
         
-        this.applyWithInput(computer, parameters, input);
+        this.applyWithInput(computer, parameters, input);	
     }
 
     protected abstract void applyWithInput(IntCodeComputer5A computer, List<Integer> parameters, String userInput);

@@ -26,12 +26,20 @@ public class IntCodeInstructionProvider {
         return this.instructionCodeMap.get(instructionCode);
     }
 
-    public IntCodeInstruction addNewInstruction(IntCodeInstruction instruction) throws InvalidArgumentException {
-        int instructionCode = instruction.getCode();
+    public IntCodeInstruction addNewInstruction(IntCodeInstruction newInstruction) throws InvalidArgumentException {
+        int instructionCode = newInstruction.getCode();
         if (this.instructionCodeMap.containsKey(instructionCode))
             throw new InvalidArgumentException("Instruction code " + instructionCode + " already exists!");
 
-        return this.instructionCodeMap.put(instructionCode, instruction);
+        return this.instructionCodeMap.put(instructionCode, newInstruction);
+    }
+    
+    public IntCodeInstruction replaceInstruction(IntCodeInstruction newInstruction) {
+        int instructionCode = newInstruction.getCode();
+        IntCodeInstruction oldInstruction = this.instructionCodeMap.get(instructionCode);
+        
+        this.instructionCodeMap.put(instructionCode, newInstruction);
+        return oldInstruction;
     }
     
     public Integer getHaltInstructionOpCode() {
