@@ -13,8 +13,9 @@ public class IntCodeComputer {
     private int curInstructionIdx;
 	private Optional<String> haltMessage;
 
-    // TODO: Make this a type class which takes a number type and uses it for the
-    // computations (it must take instructions of the same type!)
+    // TODO: Make this a type class which takes a number type and uses it for the computations
+	// TODO: Abstract reading and writing to memory/
+	// TODO: Either get rid of state, or add other things to state
     public IntCodeComputer(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider) {
         this.memory = initialState.getMemory();
         this.curInstructionIdx = initialState.getCurInstructionIdx();

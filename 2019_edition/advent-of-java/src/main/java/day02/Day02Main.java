@@ -16,9 +16,9 @@ public class Day02Main {
     public static void main(String[] args) {
         try {
             int solutionA = solveA();
-            System.out.println("Solution A: " + solutionA);
-            
             int solutionB = solveB(19690720);
+            
+            System.out.println("Solution A: " + solutionA);
             System.out.println("Solution B: " + solutionB);
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,12 +34,12 @@ public class Day02Main {
     protected static int solveB(int valueToFind) throws InvalidArgumentException, InvalidIntCodeException {
         int solutionNoun = 0;
         int solutionVerb = 0;
-        IntCodeComputer computer = getDefaultComputer(createInitialComputerState(getInputFor(solutionNoun, solutionVerb)));
 
         for (int valueNoun = 0; valueNoun < 100; valueNoun++)
             for (int valueVerb = 0; valueVerb < 100; valueVerb++) {
                 try {
-                    computer.resetState(createInitialComputerState(getInputFor(valueNoun, valueVerb)));
+                	IntCodeComputer computer = getDefaultComputer(createInitialComputerState(
+                			getInputFor(valueNoun, valueVerb)));
                     int curSolution = computer.run().getMemory().get(0);
                     if (curSolution == valueToFind) {
                         solutionNoun = valueNoun;

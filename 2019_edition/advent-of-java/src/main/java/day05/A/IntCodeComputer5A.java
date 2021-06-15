@@ -12,8 +12,8 @@ import day02.IntCodeComputer;
 import day02.IntCodeComputerState;
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstruction;
-import day02.instructions.IntCodeInstructionWriting;
 import day05.IntCodeInstructionParameterModeHandler;
+import day05.instructions.IntCodeInstructionWriting;
 import exceptions.InvalidIntCodeException;
 
 // An IntCodeComputer with support for:
@@ -66,7 +66,6 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	
 	public void writeOutput(String outputValue) throws IOException {
 		this.outputWriter.append(outputValue + "\n");
-		System.out.println("Wrote output: " + outputValue + "\\n");
         this.outputWriter.flush();
 	}
 

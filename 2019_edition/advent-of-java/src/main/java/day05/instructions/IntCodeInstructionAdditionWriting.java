@@ -1,14 +1,14 @@
-package day02.instructions;
+package day05.instructions;
 
 import java.util.List;
 
 import day02.IntCodeComputer;
 import day02.instructions.IntCodeInstructionAbstract;
 
-public class IntCodeInstructionAddition extends IntCodeInstructionAbstract
-	implements IntCodeInstruction {
+public class IntCodeInstructionAdditionWriting extends IntCodeInstructionAbstract
+	implements IntCodeInstructionWriting {
 
-    public IntCodeInstructionAddition(int instructionCode, int paramCount) {
+    public IntCodeInstructionAdditionWriting(int instructionCode, int paramCount) {
         super(instructionCode, paramCount);
     }
 
@@ -18,5 +18,10 @@ public class IntCodeInstructionAddition extends IntCodeInstructionAbstract
         Integer result = parameters.get(0) + parameters.get(1);
         computer.getMemory().set(writeIndex, result);
     }
+
+	@Override
+	public int getWriteParamIndex() {
+		return 2;
+	}
 
 }

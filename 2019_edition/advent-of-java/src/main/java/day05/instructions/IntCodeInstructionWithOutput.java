@@ -3,24 +3,25 @@ package day05.instructions;
 import java.io.IOException;
 import java.util.List;
 
+import day02.IntCodeComputer;
+import day02.instructions.IntCodeInstructionAbstract;
 import day05.A.IntCodeComputer5A;
-import day05.A.instructions.IntCodeInstruction5AAbstract;
 
-public abstract class IntCodeInstructionWithOutput extends IntCodeInstruction5AAbstract {
+public abstract class IntCodeInstructionWithOutput extends IntCodeInstructionAbstract {
 
     public IntCodeInstructionWithOutput(int instructionCode, int paramCount) {
         super(instructionCode, paramCount);
     }
 
     @Override
-    public void apply(IntCodeComputer5A computer, List<Integer> parameters) {
-        
-        String outputValue = this.applyBeforeOutput(computer, parameters);
+    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+    	IntCodeComputer5A computer5A = (IntCodeComputer5A) computer;
+        String outputValue = this.applyBeforeOutput(computer5A, parameters);
         try {
-        	computer.writeOutput(outputValue);
+        	computer5A.writeOutput(outputValue);
 		} catch (IOException e) {
 			e.printStackTrace();
-			computer.requestHalt(e.getMessage());
+			computer5A.requestHalt(e.getMessage());
 		}
     }
 

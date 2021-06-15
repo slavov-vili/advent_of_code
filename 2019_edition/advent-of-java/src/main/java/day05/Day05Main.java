@@ -17,6 +17,8 @@ import day05.B.instructions.IntCodeInstructionEquals;
 import day05.B.instructions.IntCodeInstructionJumpIfFalse;
 import day05.B.instructions.IntCodeInstructionJumpIfTrue;
 import day05.B.instructions.IntCodeInstructionLessThan;
+import day05.instructions.IntCodeInstructionAdditionWriting;
+import day05.instructions.IntCodeInstructionMultiplicationWriting;
 import exceptions.InvalidArgumentException;
 
 public class Day05Main {
@@ -43,6 +45,8 @@ public class Day05Main {
     
     public static IntCodeInstructionProvider getInstructionProviderA() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day02Main.getDefaultInstructionProvider();
+    	instructionProvider.replaceInstruction(new IntCodeInstructionAdditionWriting(1, 3));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplicationWriting(2, 3));
     	instructionProvider.addNewInstruction(new IntCodeInstructionStoreInput(3, 1));
         instructionProvider.addNewInstruction(new IntCodeInstructionOutputValue(4, 1));
         return instructionProvider;

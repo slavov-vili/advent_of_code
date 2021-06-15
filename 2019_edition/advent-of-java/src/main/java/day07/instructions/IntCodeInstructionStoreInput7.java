@@ -2,7 +2,7 @@ package day07.instructions;
 
 import java.util.List;
 
-import day02.instructions.IntCodeInstructionWriting;
+import day05.instructions.IntCodeInstructionWriting;
 import day07.IntCodeComputer7;
 
 public class IntCodeInstructionStoreInput7 extends IntCodeInstructionWithMissingInput
