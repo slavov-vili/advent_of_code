@@ -7,7 +7,6 @@ import java.io.Writer;
 import java.util.List;
 
 import day02.Day02Main;
-import day02.IntCodeComputerState;
 import day02.IntCodeInstructionProvider;
 import day05.A.IntCodeComputer5A;
 import day05.A.instructions.IntCodeInstructionOutputValue;
@@ -27,10 +26,10 @@ public class Day05Main {
             Reader userInputReader = new InputStreamReader(System.in);
             Writer stdOutputWriter = new OutputStreamWriter(System.out);
             
-            IntCodeComputer5A computerA = getComputerA(getInitialComputerState());
+            IntCodeComputer5A computerA = getComputerA(getInput());
             computerA.run(userInputReader, stdOutputWriter);
 
-            IntCodeComputer5B computerB = getComputerB(getInitialComputerState());
+            IntCodeComputer5B computerB = getComputerB(getInput());
             computerB.run(userInputReader, stdOutputWriter);
             
         } catch (Exception e) {
@@ -39,8 +38,8 @@ public class Day05Main {
         }
     }
 
-    public static IntCodeComputer5A getComputerA(IntCodeComputerState initialState) throws InvalidArgumentException {
-        return new IntCodeComputer5A(initialState, getInstructionProviderA(), getModeHandlerA());
+	public static IntCodeComputer5A getComputerA(List<Integer> initialMemory) throws InvalidArgumentException {
+        return new IntCodeComputer5A(initialMemory, getInstructionProviderA(), getModeHandler());
     }
     
     public static IntCodeInstructionProvider getInstructionProviderA() throws InvalidArgumentException {
@@ -52,8 +51,8 @@ public class Day05Main {
         return instructionProvider;
     }
     
-    public static IntCodeComputer5B getComputerB(IntCodeComputerState initialState) throws InvalidArgumentException {
-        return new IntCodeComputer5B(initialState, getInstructionProviderB(), getModeHandlerA());
+    public static IntCodeComputer5B getComputerB(List<Integer> initialMemory) throws InvalidArgumentException {
+        return new IntCodeComputer5B(initialMemory, getInstructionProviderB(), getModeHandler());
     }
     
     public static IntCodeInstructionProvider getInstructionProviderB() throws InvalidArgumentException {
@@ -65,15 +64,11 @@ public class Day05Main {
         return instructionProvider;
     }
     
-    public static IntCodeInstructionParameterModeHandler<IntCodeComputer5A> getModeHandlerA() {
+    public static IntCodeInstructionParameterModeHandler<IntCodeComputer5A> getModeHandler() {
     	IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler = new IntCodeInstructionParameterModeHandler<>();
     	modeHandler.addModeHandler(0, (computer, parameter) -> computer.getMemory().get(parameter));
     	modeHandler.addModeHandler(1, (computer, parameter) -> parameter);
     	return modeHandler;
-    }
-
-    public static IntCodeComputerState getInitialComputerState() {
-        return Day02Main.createInitialComputerState(getInput());
     }
 
     protected static List<Integer> getInput() {

@@ -27,8 +27,9 @@ public class Day02Main {
     }
 
     protected static int solveA() throws InvalidArgumentException, InvalidIntCodeException {
-        IntCodeComputer computer = getDefaultComputer(createInitialComputerState(getInputA()));
-        return computer.run().getMemory().get(0);
+        IntCodeComputer computer = getDefaultComputer(getInputA());
+        computer.run();
+        return computer.getMemory().get(0);
     }
     
     protected static int solveB(int valueToFind) throws InvalidArgumentException, InvalidIntCodeException {
@@ -38,9 +39,9 @@ public class Day02Main {
         for (int valueNoun = 0; valueNoun < 100; valueNoun++)
             for (int valueVerb = 0; valueVerb < 100; valueVerb++) {
                 try {
-                	IntCodeComputer computer = getDefaultComputer(createInitialComputerState(
-                			getInputFor(valueNoun, valueVerb)));
-                    int curSolution = computer.run().getMemory().get(0);
+                	IntCodeComputer computer = getDefaultComputer(getInputFor(valueNoun, valueVerb));
+                			computer.run();
+                    int curSolution = computer.getMemory().get(0);
                     if (curSolution == valueToFind) {
                         solutionNoun = valueNoun;
                         solutionVerb = valueVerb;
@@ -54,8 +55,8 @@ public class Day02Main {
         return (100 * solutionNoun) + solutionVerb;
     }
 
-    protected static IntCodeComputer getDefaultComputer(IntCodeComputerState initialState) throws InvalidArgumentException {
-        return new IntCodeComputer(initialState, getDefaultInstructionProvider());
+    protected static IntCodeComputer getDefaultComputer(List<Integer> initialMemory) throws InvalidArgumentException {
+        return new IntCodeComputer(initialMemory, getDefaultInstructionProvider());
     }
     
     public static IntCodeInstructionProvider getDefaultInstructionProvider() throws InvalidArgumentException{
@@ -63,10 +64,6 @@ public class Day02Main {
         instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
         instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
         return instructionProvider;
-    }
-
-    public static IntCodeComputerState createInitialComputerState(List<Integer> initialMemory) {
-        return new IntCodeComputerState(initialMemory, 0);
     }
 
     public static List<Integer> getInputA() {

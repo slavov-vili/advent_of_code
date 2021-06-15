@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import day02.Day02Main;
-import day02.IntCodeComputerState;
 import day02.IntCodeInstructionProvider;
 import day05.Day05Main;
 import day07.instructions.IntCodeInstructionStoreInput7;
@@ -94,18 +93,13 @@ public class Day07Main {
     }
     
     public static IntCodeComputer7 getComputer() throws InvalidArgumentException {
-    	return new IntCodeComputer7(getInitialComputerState(),
-    			getInstructionProvider(), Day05Main.getModeHandlerA());
+    	return new IntCodeComputer7(getInput(), getInstructionProvider(), Day05Main.getModeHandler());
     }
     
     public static IntCodeInstructionProvider getInstructionProvider() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day05Main.getInstructionProviderB();
     	instructionProvider.replaceInstruction(new IntCodeInstructionStoreInput7(3, 1));
     	return instructionProvider;
-    }
-
-    public static IntCodeComputerState getInitialComputerState() {
-        return Day02Main.createInitialComputerState(getInput());
     }
 
     protected static List<Integer> getInput() {

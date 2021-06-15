@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Scanner;
 
 import day02.IntCodeComputer;
-import day02.IntCodeComputerState;
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstruction;
 import day05.IntCodeInstructionParameterModeHandler;
@@ -26,9 +25,9 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	protected Scanner inputScanner;
 	protected Writer outputWriter;
 
-	public IntCodeComputer5A(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider,
+	public IntCodeComputer5A(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
-		super(initialState, instructionProvider);
+		super(initialMemory, instructionProvider);
 		this.modeHandler = modeHandler;
 		this.inputScanner = new Scanner(System.in);
 		this.outputWriter = new OutputStreamWriter(System.out);

@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Optional;
 
-import day02.IntCodeComputerState;
 import exceptions.InvalidIntCodeException;
 
 public class IntCodeAmplifier {
@@ -30,14 +29,6 @@ public class IntCodeAmplifier {
         String computerOutput = outputWriter.toString().trim();
         this.output = (computerOutput.isEmpty()) ? Optional.empty() : Optional.of(Integer.parseInt(computerOutput));
         return this.getOutput();
-    }
-
-    public IntCodeComputerState resetComputerState(IntCodeComputerState newState) {
-        return this.computer.resetState(newState);
-    }
-
-    public IntCodeComputerState getComputerState() {
-        return this.computer.getCurrentState();
     }
     
     public boolean computerIsHalted() {

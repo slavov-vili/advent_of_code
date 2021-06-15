@@ -15,16 +15,14 @@ public class IntCodeComputer {
 
     // TODO: Make this a type class which takes a number type and uses it for the computations
 	// TODO: Abstract reading and writing to memory/
-	// TODO: Either get rid of state, or add other things to state
-    public IntCodeComputer(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider) {
-        this.memory = initialState.getMemory();
-        this.curInstructionIdx = initialState.getCurInstructionIdx();
+    public IntCodeComputer(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider) {
+        this.memory = new ArrayList<>(initialMemory);
+        this.curInstructionIdx = 0;
         this.instructionProvider = instructionProvider;
         this.haltMessage = Optional.empty();
     }
 
-    public IntCodeComputerState run()
-            throws InvalidIntCodeException {
+    public void run() throws InvalidIntCodeException {
     	while (!this.shouldStop()) {
             IntCodeInstruction curInstruction = getCurInstruction();
 
@@ -37,8 +35,6 @@ public class IntCodeComputer {
     	
     	if (this.haltMessage.isPresent())
     		System.out.println("Halt Message: " + this.haltMessage.get());
-    	
-    	return this.getCurrentState();
     }
 
     protected boolean shouldStop() {
@@ -63,28 +59,6 @@ public class IntCodeComputer {
     public int calcNextInstructionIndex(IntCodeInstruction curInstruction) {
         return IntCodeComputerUtils
         		.calcEndIdxOfInstruction(this.curInstructionIdx, curInstruction) + 1;
-    }
-
-    public IntCodeComputerState resetState(IntCodeComputerState newState) {
-    	List<Integer> oldMemory = this.resetMemory(newState.getMemory());
-    	int oldCurInstructionIdx = this.resetCurInstructionIdx(newState.getCurInstructionIdx());
-        return new IntCodeComputerState(oldMemory, oldCurInstructionIdx);
-    }
-
-    private List<Integer> resetMemory(List<Integer> newMemory) {
-        List<Integer> oldMemory = this.getMemory();
-        this.memory = new ArrayList<>(newMemory);
-        return oldMemory;
-    }
-
-    private int resetCurInstructionIdx(int newCurInstructionIdx) {
-        int oldCurInstructionIdx = this.getCurInstructionIdx();
-        this.curInstructionIdx = newCurInstructionIdx;
-        return oldCurInstructionIdx;
-    }
-
-    public IntCodeComputerState getCurrentState() {
-        return new IntCodeComputerState(this.getMemory(), this.getCurInstructionIdx());
     }
 
     public List<Integer> getMemory() {

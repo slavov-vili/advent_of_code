@@ -1,8 +1,8 @@
 package day05.B;
 
+import java.util.List;
 import java.util.Optional;
 
-import day02.IntCodeComputerState;
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstruction;
 import day05.IntCodeInstructionParameterModeHandler;
@@ -14,9 +14,9 @@ public class IntCodeComputer5B extends IntCodeComputer5A {
 
 	private Optional<Integer> jumpIndex;
 
-	public IntCodeComputer5B(IntCodeComputerState initialState, IntCodeInstructionProvider instructionProvider,
+	public IntCodeComputer5B(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
-		super(initialState, instructionProvider, modeHandler);
+		super(initialMemory, instructionProvider, modeHandler);
 		this.jumpIndex = Optional.empty();
 	}
 	
