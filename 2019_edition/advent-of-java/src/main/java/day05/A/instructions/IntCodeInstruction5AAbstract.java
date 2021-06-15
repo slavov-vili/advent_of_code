@@ -1,10 +1,10 @@
-package day05.instructions;
+package day05.A.instructions;
 
 import java.util.List;
 
 import day02.IntCodeComputer;
 import day02.instructions.IntCodeInstructionAbstract;
-import day05.IntCodeComputer5A;
+import day05.A.IntCodeComputer5A;
 
 public abstract class IntCodeInstruction5AAbstract extends IntCodeInstructionAbstract {
 

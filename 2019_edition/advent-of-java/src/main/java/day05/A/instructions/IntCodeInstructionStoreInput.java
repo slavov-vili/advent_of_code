@@ -1,9 +1,10 @@
-package day05.instructions;
+package day05.A.instructions;
 
 import java.util.List;
 
 import day02.instructions.IntCodeInstructionWriting;
-import day05.IntCodeComputer5A;
+import day05.A.IntCodeComputer5A;
+import day05.instructions.IntCodeInstructionWithInput;
 
 public class IntCodeInstructionStoreInput extends IntCodeInstructionWithInput
 	implements IntCodeInstructionWriting {

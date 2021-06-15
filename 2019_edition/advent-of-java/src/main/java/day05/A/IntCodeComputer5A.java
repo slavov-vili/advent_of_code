@@ -1,6 +1,7 @@
-package day05;
+package day05.A;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import day02.IntCodeComputerState;
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstruction;
 import day02.instructions.IntCodeInstructionWriting;
+import day05.IntCodeInstructionParameterModeHandler;
 import exceptions.InvalidIntCodeException;
 
 // An IntCodeComputer with support for:
@@ -28,6 +30,8 @@ public class IntCodeComputer5A extends IntCodeComputer {
 			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
 		super(initialState, instructionProvider);
 		this.modeHandler = modeHandler;
+		this.inputScanner = new Scanner(System.in);
+		this.outputWriter = new OutputStreamWriter(System.out);
 	}
 	
 	public IntCodeComputerState run(Reader inputReader, Writer outputWriter) throws InvalidIntCodeException {
@@ -55,14 +59,14 @@ public class IntCodeComputer5A extends IntCodeComputer {
 		curInstruction.apply(this, parameterValues);
 	}
 	
-	public String getInput(String prompt) {
-		System.out.println(prompt);
+	public String getInput() {
         String input = this.inputScanner.next();
         return input;
     }
 	
 	public void writeOutput(String outputValue) throws IOException {
 		this.outputWriter.append(outputValue + "\n");
+		System.out.println("Wrote output: " + outputValue + "\\n");
         this.outputWriter.flush();
 	}
 

@@ -1,8 +1,9 @@
-package day05.instructions;
+package day05.A.instructions;
 
 import java.util.List;
 
-import day05.IntCodeComputer5A;
+import day05.A.IntCodeComputer5A;
+import day05.instructions.IntCodeInstructionWithOutput;
 
 public class IntCodeInstructionOutputValue extends IntCodeInstructionWithOutput {
 

@@ -2,7 +2,9 @@ package day05.instructions;
 
 import java.io.IOException;
 import java.util.List;
-import day05.IntCodeComputer5A;
+
+import day05.A.IntCodeComputer5A;
+import day05.A.instructions.IntCodeInstruction5AAbstract;
 
 public abstract class IntCodeInstructionWithOutput extends IntCodeInstruction5AAbstract {
 

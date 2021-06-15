@@ -37,8 +37,8 @@ public class IntCodeComputer {
     	
     	if (this.haltMessage.isPresent())
     		System.out.println(this.haltMessage.get());
-
-        return this.getCurrentState();
+    	
+    	return this.getCurrentState();
     }
 
     protected boolean shouldContinue() {
@@ -47,6 +47,10 @@ public class IntCodeComputer {
     
 	public void requestHalt(String message) {
 		this.haltMessage = Optional.of(message);
+	}
+	
+	public boolean isHalted() {
+		return this.haltMessage.isPresent();
 	}
     
     public void handleCurrentInstruction(IntCodeInstruction curInstruction,
