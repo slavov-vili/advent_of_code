@@ -27,7 +27,7 @@ public class IntCodeComputer {
             IntCodeInstruction curInstruction = getCurInstruction();
 
             List<Integer> curInstructionParameters = IntCodeComputerUtils
-                    .findInstructionParameters(this.memory, this.curInstructionIdx, curInstruction);
+                    .findInstructionParameters(this, curInstruction);
             handleCurrentInstruction(curInstruction, curInstructionParameters);
             
             curInstructionIdx = calcNextInstructionIndex(curInstruction);
@@ -52,7 +52,7 @@ public class IntCodeComputer {
     public void handleCurrentInstruction(IntCodeInstruction curInstruction,
     		List<Integer> curInstructionParameters) {
     	List<Integer> parameterValues = IntCodeComputerUtils
-    			.findInstructionParameterValues(this.memory, curInstructionParameters);
+    			.findInstructionParameterValues(this, curInstructionParameters);
         curInstruction.apply(this, parameterValues);
     }
     
@@ -61,8 +61,12 @@ public class IntCodeComputer {
         		.calcEndIdxOfInstruction(this.curInstructionIdx, curInstruction) + 1;
     }
 
-    public List<Integer> getMemory() {
-        return this.memory;
+    public Integer readFromMemory(int addressToRead) {
+        return this.memory.get(addressToRead);
+    }
+    
+    public Integer setMemoryAddress(int address, Integer value) {
+        return this.memory.set(address, value);
     }
     
     public IntCodeInstructionProvider getInstructionProvider() {
@@ -80,7 +84,7 @@ public class IntCodeComputer {
     }
 
     public int getInstructionCode(int instructionIdx) {
-        return this.memory.get(instructionIdx);
+        return this.readFromMemory(instructionIdx);
     }
 
     public int getCurInstructionIdx() {

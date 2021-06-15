@@ -66,7 +66,7 @@ public class Day05Main {
     
     public static IntCodeInstructionParameterModeHandler<IntCodeComputer5A> getModeHandler() {
     	IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler = new IntCodeInstructionParameterModeHandler<>();
-    	modeHandler.addModeHandler(0, (computer, parameter) -> computer.getMemory().get(parameter));
+    	modeHandler.addModeHandler(0, (computer, parameter) -> computer.readFromMemory(parameter));
     	modeHandler.addModeHandler(1, (computer, parameter) -> parameter);
     	return modeHandler;
     }

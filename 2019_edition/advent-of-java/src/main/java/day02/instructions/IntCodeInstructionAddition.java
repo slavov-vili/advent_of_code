@@ -16,7 +16,7 @@ public class IntCodeInstructionAddition extends IntCodeInstructionAbstract
     public void apply(IntCodeComputer computer, List<Integer> parameters) {
         Integer writeIndex = parameters.get(2);
         Integer result = parameters.get(0) + parameters.get(1);
-        computer.getMemory().set(writeIndex, result);
+        computer.setMemoryAddress(writeIndex, result);
     }
 
 }

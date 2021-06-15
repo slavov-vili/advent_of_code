@@ -29,7 +29,7 @@ public class Day02Main {
     protected static int solveA() throws InvalidArgumentException, InvalidIntCodeException {
         IntCodeComputer computer = getDefaultComputer(getInputA());
         computer.run();
-        return computer.getMemory().get(0);
+        return computer.readFromMemory(0);
     }
     
     protected static int solveB(int valueToFind) throws InvalidArgumentException, InvalidIntCodeException {
@@ -41,7 +41,7 @@ public class Day02Main {
                 try {
                 	IntCodeComputer computer = getDefaultComputer(getInputFor(valueNoun, valueVerb));
                 			computer.run();
-                    int curSolution = computer.getMemory().get(0);
+                    int curSolution = computer.readFromMemory(0);
                     if (curSolution == valueToFind) {
                         solutionNoun = valueNoun;
                         solutionVerb = valueVerb;

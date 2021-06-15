@@ -14,7 +14,7 @@ public class IntCodeInstructionStoreInput7 extends IntCodeInstructionWithMissing
 
 	@Override
 	protected void applyWithInput(IntCodeComputer7 computer, List<Integer> parameters, String userInput) {
-		computer.getMemory().set(parameters.get(0), Integer.parseInt(userInput));
+		computer.setMemoryAddress(parameters.get(0), Integer.parseInt(userInput));
 	}
 
 	@Override

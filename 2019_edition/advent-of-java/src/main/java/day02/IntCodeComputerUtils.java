@@ -9,18 +9,18 @@ import utils.ListUtils;
 
 public class IntCodeComputerUtils {
 
-	public static List<Integer> findInstructionParameterValues(List<Integer> memory,
+	public static List<Integer> findInstructionParameterValues(IntCodeComputer computer,
 			List<Integer> instructionParameters) {
 		List<Integer> parameterValues = new ArrayList<>(instructionParameters);
 		for (int i=0; i<parameterValues.size()-1; i++)
-			parameterValues.set(i, memory.get(parameterValues.get(i)));
+			parameterValues.set(i, computer.readFromMemory(parameterValues.get(i)));
 		return parameterValues;
 	}
 	
-	public static List<Integer> findInstructionParameters(List<Integer> memory,
-			int curInstructionIdx, IntCodeInstruction curInstruction) {
-		return findInstructionParamIndices(curInstructionIdx, curInstruction).stream()
-				.map(memory::get)
+	public static List<Integer> findInstructionParameters(IntCodeComputer computer,
+			IntCodeInstruction curInstruction) {
+		return findInstructionParamIndices(computer.getCurInstructionIdx(), curInstruction).stream()
+				.map(computer::readFromMemory)
 				.collect(Collectors.toList());
 	}
 	
