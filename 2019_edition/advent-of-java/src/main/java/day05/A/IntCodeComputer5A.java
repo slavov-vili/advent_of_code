@@ -21,12 +21,12 @@ import exceptions.InvalidIntCodeException;
 //  - Output Instructions
 public class IntCodeComputer5A extends IntCodeComputer {
 
-	private IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler;
+	private IntCodeInstructionParameterModeHandler modeHandler;
 	protected Scanner inputScanner;
 	protected Writer outputWriter;
 
 	public IntCodeComputer5A(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
-			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
+			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider);
 		this.modeHandler = modeHandler;
 		this.inputScanner = new Scanner(System.in);

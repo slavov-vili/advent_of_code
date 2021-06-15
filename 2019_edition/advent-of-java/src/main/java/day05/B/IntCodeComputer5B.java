@@ -15,7 +15,7 @@ public class IntCodeComputer5B extends IntCodeComputer5A {
 	private Optional<Integer> jumpIndex;
 
 	public IntCodeComputer5B(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
-			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
+			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider, modeHandler);
 		this.jumpIndex = Optional.empty();
 	}

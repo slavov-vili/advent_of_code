@@ -8,20 +8,23 @@ import day02.instructions.IntCodeInstructionAbstract;
 public class IntCodeInstructionMultiplicationWriting extends IntCodeInstructionAbstract 
 	implements IntCodeInstructionWriting {
 
-    public IntCodeInstructionMultiplicationWriting(int instructionCode, int paramCount) {
-        super(instructionCode, paramCount);
+    private int writeParamIndex;
+
+	public IntCodeInstructionMultiplicationWriting(int instructionCode) {
+        super(instructionCode, 3);
+        this.writeParamIndex = 2;
     }
 
     @Override
     public void apply(IntCodeComputer computer, List<Integer> parameters) {
-        Integer writeIndex = parameters.get(2);
+        Integer writeIndex = parameters.get(this.writeParamIndex);
         Integer result = parameters.get(0) * parameters.get(1);
         computer.setMemoryAddress(writeIndex, result);
     }
 
 	@Override
 	public int getWriteParamIndex() {
-		return 2;
+		return this.writeParamIndex;
 	}
 
 }

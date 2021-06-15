@@ -98,7 +98,7 @@ public class Day07Main {
     
     public static IntCodeInstructionProvider getInstructionProvider() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day05Main.getInstructionProviderB();
-    	instructionProvider.replaceInstruction(new IntCodeInstructionStoreInput7(3, 1));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionStoreInput7(3));
     	return instructionProvider;
     }
 

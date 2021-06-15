@@ -15,7 +15,7 @@ public class IntCodeInstructionProviderTest {
 
     @Test
     void addInstructionToEmptyProviderTest() {
-        IntCodeInstruction instructionToAdd = new IntCodeInstructionAddition(1, 2);
+        IntCodeInstruction instructionToAdd = new IntCodeInstructionAddition(1);
         IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
@@ -27,7 +27,7 @@ public class IntCodeInstructionProviderTest {
 
     @Test
     void addInstructionWithExistingCodeTest() {
-        IntCodeInstruction existingInstruction = new IntCodeInstructionAddition(1, 2);
+        IntCodeInstruction existingInstruction = new IntCodeInstructionAddition(1);
         IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
@@ -66,8 +66,8 @@ public class IntCodeInstructionProviderTest {
         IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
 
         try {
-            provider.addNewInstruction(new IntCodeInstructionAddition(1, 2));
-            provider.addNewInstruction(new IntCodeInstructionMultiplication(2, 2));
+            provider.addNewInstruction(new IntCodeInstructionAddition(1));
+            provider.addNewInstruction(new IntCodeInstructionMultiplication(2));
         } catch (Exception e) {
         }
 

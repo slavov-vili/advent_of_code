@@ -9,8 +9,8 @@ import day05.B.IntCodeComputer5B;
 
 public class IntCodeInstructionJumpIfFalse extends IntCodeInstructionAbstract {
 
-    public IntCodeInstructionJumpIfFalse(int opCode, int paramCount) {
-        super(opCode, paramCount);
+    public IntCodeInstructionJumpIfFalse(int opCode) {
+        super(opCode, 2);
     }
 
     @Override

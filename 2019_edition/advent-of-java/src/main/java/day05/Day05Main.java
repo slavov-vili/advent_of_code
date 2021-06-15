@@ -44,10 +44,10 @@ public class Day05Main {
     
     public static IntCodeInstructionProvider getInstructionProviderA() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day02Main.getDefaultInstructionProvider();
-    	instructionProvider.replaceInstruction(new IntCodeInstructionAdditionWriting(1, 3));
-    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplicationWriting(2, 3));
-    	instructionProvider.addNewInstruction(new IntCodeInstructionStoreInput(3, 1));
-        instructionProvider.addNewInstruction(new IntCodeInstructionOutputValue(4, 1));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionAdditionWriting(1));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplicationWriting(2));
+    	instructionProvider.addNewInstruction(new IntCodeInstructionStoreInput(3));
+        instructionProvider.addNewInstruction(new IntCodeInstructionOutputValue(4));
         return instructionProvider;
     }
     
@@ -57,15 +57,15 @@ public class Day05Main {
     
     public static IntCodeInstructionProvider getInstructionProviderB() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = getInstructionProviderA();
-        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfTrue(5, 2));
-        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfFalse(6, 2));
-        instructionProvider.addNewInstruction(new IntCodeInstructionLessThan(7, 3));
-        instructionProvider.addNewInstruction(new IntCodeInstructionEquals(8, 3));
+        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfTrue(5));
+        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfFalse(6));
+        instructionProvider.addNewInstruction(new IntCodeInstructionLessThan(7));
+        instructionProvider.addNewInstruction(new IntCodeInstructionEquals(8));
         return instructionProvider;
     }
     
-    public static IntCodeInstructionParameterModeHandler<IntCodeComputer5A> getModeHandler() {
-    	IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler = new IntCodeInstructionParameterModeHandler<>();
+    public static IntCodeInstructionParameterModeHandler getModeHandler() {
+    	IntCodeInstructionParameterModeHandler modeHandler = new IntCodeInstructionParameterModeHandler();
     	modeHandler.addModeHandler(0, (computer, parameter) -> computer.readFromMemory(parameter));
     	modeHandler.addModeHandler(1, (computer, parameter) -> parameter);
     	return modeHandler;

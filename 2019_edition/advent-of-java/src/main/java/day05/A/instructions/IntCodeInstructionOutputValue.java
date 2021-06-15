@@ -7,8 +7,8 @@ import day05.instructions.IntCodeInstructionWithOutput;
 
 public class IntCodeInstructionOutputValue extends IntCodeInstructionWithOutput {
 
-    public IntCodeInstructionOutputValue(int instructionCode, int paramCount) {
-        super(instructionCode, paramCount);
+    public IntCodeInstructionOutputValue(int instructionCode) {
+        super(instructionCode, 1);
     }
 
     @Override

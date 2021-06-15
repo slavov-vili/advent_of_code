@@ -6,8 +6,8 @@ import day02.IntCodeComputer;
 
 public class IntCodeInstructionMultiplication extends IntCodeInstructionAbstract {
 
-	public IntCodeInstructionMultiplication(int opCode, int paramCount) {
-		super(opCode, paramCount);
+	public IntCodeInstructionMultiplication(int opCode) {
+		super(opCode, 3);
 	}
 
 	@Override

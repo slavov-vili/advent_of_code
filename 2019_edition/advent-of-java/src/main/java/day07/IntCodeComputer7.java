@@ -6,7 +6,6 @@ import java.util.List;
 
 import day02.IntCodeInstructionProvider;
 import day05.IntCodeInstructionParameterModeHandler;
-import day05.A.IntCodeComputer5A;
 import day05.B.IntCodeComputer5B;
 import exceptions.InvalidIntCodeException;
 
@@ -16,7 +15,7 @@ public class IntCodeComputer7 extends IntCodeComputer5B {
 	private boolean isWaitingForInput;
 	
 	public IntCodeComputer7(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
-			IntCodeInstructionParameterModeHandler<IntCodeComputer5A> modeHandler) {
+			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider, modeHandler);
 		this.isWaitingForInput = false;
 	}

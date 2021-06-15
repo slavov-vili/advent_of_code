@@ -61,8 +61,8 @@ public class Day02Main {
     
     public static IntCodeInstructionProvider getDefaultInstructionProvider() throws InvalidArgumentException{
     	IntCodeInstructionProvider instructionProvider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
-        instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1, 3));
-        instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2, 3));
+        instructionProvider.addNewInstruction(new IntCodeInstructionAddition(1));
+        instructionProvider.addNewInstruction(new IntCodeInstructionMultiplication(2));
         return instructionProvider;
     }
 

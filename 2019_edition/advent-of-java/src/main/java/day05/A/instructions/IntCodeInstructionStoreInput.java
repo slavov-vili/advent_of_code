@@ -9,19 +9,22 @@ import day05.instructions.IntCodeInstructionWriting;
 public class IntCodeInstructionStoreInput extends IntCodeInstructionWithInput
 	implements IntCodeInstructionWriting {
 
-    public IntCodeInstructionStoreInput(int instructionCode, int paramCount) {
-        super(instructionCode, paramCount);
+    private int writeParamIndex;
+
+	public IntCodeInstructionStoreInput(int instructionCode) {
+        super(instructionCode, 1);
+        this.writeParamIndex = 0;
     }
 
     @Override
     protected void applyWithInput(IntCodeComputer5A computer, List<Integer> parameters,
     		String userInput) {
-    	computer.setMemoryAddress(parameters.get(0), Integer.parseInt(userInput));
+    	computer.setMemoryAddress(parameters.get(this.writeParamIndex), Integer.parseInt(userInput));
     }
 
 	@Override
 	public int getWriteParamIndex() {
-		return 0;
+		return this.writeParamIndex;
 	}
 
 }
