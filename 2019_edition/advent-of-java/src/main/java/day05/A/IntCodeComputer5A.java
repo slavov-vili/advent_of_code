@@ -11,7 +11,7 @@ import java.util.Scanner;
 import day02.IntCodeComputer;
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstruction;
-import day05.IntCodeInstructionParameterModeHandler;
+import day05.IntCodeInstructionParameterEvaluator;
 import day05.instructions.IntCodeInstructionWriting;
 import exceptions.InvalidIntCodeException;
 
@@ -21,12 +21,12 @@ import exceptions.InvalidIntCodeException;
 //  - Output Instructions
 public class IntCodeComputer5A extends IntCodeComputer {
 
-	private IntCodeInstructionParameterModeHandler modeHandler;
+	private IntCodeInstructionParameterEvaluator modeHandler;
 	protected Scanner inputScanner;
 	protected Writer outputWriter;
 
 	public IntCodeComputer5A(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
-			IntCodeInstructionParameterModeHandler modeHandler) {
+			IntCodeInstructionParameterEvaluator modeHandler) {
 		super(initialMemory, instructionProvider);
 		this.modeHandler = modeHandler;
 		this.inputScanner = new Scanner(System.in);
@@ -71,7 +71,7 @@ public class IntCodeComputer5A extends IntCodeComputer {
 		this.outputWriter.append(outputValue + "\n");
         this.outputWriter.flush();
 	}
-
+	
 	private List<Long> calcParameterModes(IntCodeInstruction instruction) {
 		int paramCount = instruction.getParamCount();
 		List<Long> parameterModes = new ArrayList<>();
@@ -85,24 +85,23 @@ public class IntCodeComputer5A extends IntCodeComputer {
 		return parameterModes;
 	}
 
-	private List<Long> calcParameterValues(IntCodeInstruction instruction, List<Long> parameters,
+	protected List<Long> calcParameterValues(IntCodeInstruction instruction, List<Long> parameters,
 			List<Long> parameterModes) {
 		List<Long> parameterValues = new ArrayList<>();
 		for (int i=0; i<parameters.size(); i++) {
-			Long paramValue = modeHandler.handleParameter(this,
-					parameters.get(i), parameterModes.get(i));
+			Long paramValue = this.modeHandler.handleParameter(this, parameters.get(i),
+					parameterModes.get(i), isWriteParam(instruction, i));
 			parameterValues.add(paramValue);
 		}
-		fixWriteParam(instruction, parameters, parameterValues);
 		return parameterValues;
 	}
 
-	private void fixWriteParam(IntCodeInstruction instruction, List<Long> parameters,
-			List<Long> parameterValues) {
+	private boolean isWriteParam(IntCodeInstruction instruction, int paramIndex) {
+		boolean result = false;
 		if (instruction instanceof IntCodeInstructionWriting) {
 			IntCodeInstructionWriting writeInstruction = (IntCodeInstructionWriting) instruction;
-			int writeParamIndex = writeInstruction.getWriteParamIndex();
-			parameterValues.set(writeParamIndex, parameters.get(writeParamIndex));
+			result = (writeInstruction.getWriteParamIndex() == paramIndex);
 		}
+		return result;
 	}
 }

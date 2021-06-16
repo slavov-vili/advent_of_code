@@ -1,39 +1,53 @@
 package day09;
 
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.List;
 
 import day02.Day02Main;
 import day02.IntCodeInstructionProvider;
-import day05.Day05Main;
-import day05.IntCodeInstructionParameterModeHandler;
+import day05.IntCodeInstructionParameterEvaluator;
 import day07.Day07Main;
-import day09.instructions.IntCodeInstructionSetRelativeBase;
+import day09.instructions.IntCodeInstructionRelativeBaseOffset;
 import exceptions.InvalidArgumentException;
 
 public class Day09Main {
 
 	public static void main(String[] args) {
+		try {
+			Reader userInputReader = new InputStreamReader(System.in);
+			Writer stdOutputWriter = new OutputStreamWriter(System.out);
 
+			// Input = 1
+			IntCodeComputer9 computer = getComputer();
+			computer.run(userInputReader, stdOutputWriter);
+			
+			// Input = 2
+			computer = getComputer();
+			computer.run(userInputReader, stdOutputWriter);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	public static IntCodeComputer9 getComputer() throws InvalidArgumentException {
-    	return new IntCodeComputer9(getInput(), getInstructionProvider(), getModeHandler());
-    }
-	
-	public static IntCodeInstructionParameterModeHandler getModeHandler() {
-		IntCodeInstructionParameterModeHandler modeHandler = Day05Main.getModeHandler();
-		modeHandler.addModeHandler(2L, (computer, parameter) ->
-			computer.readFromMemory(parameter + ((IntCodeComputer9)computer).getRelativeBase()));
-		return modeHandler;
+		return new IntCodeComputer9(getInput(), getInstructionProvider(), getModeHandler());
 	}
-    
-    public static IntCodeInstructionProvider getInstructionProvider() throws InvalidArgumentException {
-    	IntCodeInstructionProvider instructionProvider = Day07Main.getInstructionProvider();
-    	instructionProvider.addNewInstruction(new IntCodeInstructionSetRelativeBase(9L));
-    	return instructionProvider;
-    }
 
-    protected static List<Long> getInput() {
-        return Day02Main.getInput(Day09Main.class);
-    }
+	public static IntCodeInstructionParameterEvaluator getModeHandler() {
+		return new IntCodeInstructionParameterEvaluator9();
+	}
+
+	public static IntCodeInstructionProvider getInstructionProvider() throws InvalidArgumentException {
+		IntCodeInstructionProvider instructionProvider = Day07Main.getInstructionProvider();
+		instructionProvider.addNewInstruction(new IntCodeInstructionRelativeBaseOffset(9L));
+		return instructionProvider;
+	}
+
+	protected static List<Long> getInput() {
+		return Day02Main.getInput(Day09Main.class);
+	}
 }

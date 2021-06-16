@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import day02.IntCodeInstructionProvider;
 import day02.instructions.IntCodeInstruction;
-import day05.IntCodeInstructionParameterModeHandler;
+import day05.IntCodeInstructionParameterEvaluator;
 import day05.A.IntCodeComputer5A;
 
 //An IntCodeComputer5A with support for:
@@ -15,7 +15,7 @@ public class IntCodeComputer5B extends IntCodeComputer5A {
 	private Optional<Integer> jumpIndex;
 
 	public IntCodeComputer5B(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
-			IntCodeInstructionParameterModeHandler modeHandler) {
+			IntCodeInstructionParameterEvaluator modeHandler) {
 		super(initialMemory, instructionProvider, modeHandler);
 		this.jumpIndex = Optional.empty();
 	}

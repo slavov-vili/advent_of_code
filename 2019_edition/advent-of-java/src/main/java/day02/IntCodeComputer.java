@@ -9,10 +9,10 @@ import day02.instructions.IntCodeInstruction;
 import exceptions.InvalidIntCodeException;
 
 public class IntCodeComputer {
-    private IntCodeInstructionProvider instructionProvider;
-    private Map<Long, Long> memory;
+    protected IntCodeInstructionProvider instructionProvider;
+    protected Map<Long, Long> memory;
     private int curInstructionIdx;
-	private Optional<String> haltMessage;
+    protected Optional<String> haltMessage;
 
     public IntCodeComputer(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider) {
         setMemory(initialMemory);
@@ -77,8 +77,8 @@ public class IntCodeComputer {
         return this.memory.put(address.longValue(), value.longValue());
     }
     
-    private <T extends Number> void checkIndex(T addressToCheck) {
-    	if ((addressToCheck.longValue() < 0) || (addressToCheck.longValue() > Integer.MAX_VALUE))
+    protected <T extends Number> void checkIndex(T addressToCheck) {
+    	if ((addressToCheck.longValue() < 0) || (addressToCheck.longValue() >= this.memory.size()))
     		throw new IndexOutOfBoundsException(String.valueOf(addressToCheck));
     }
     

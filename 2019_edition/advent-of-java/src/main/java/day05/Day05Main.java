@@ -16,8 +16,8 @@ import day05.B.instructions.IntCodeInstructionEquals;
 import day05.B.instructions.IntCodeInstructionJumpIfFalse;
 import day05.B.instructions.IntCodeInstructionJumpIfTrue;
 import day05.B.instructions.IntCodeInstructionLessThan;
-import day05.instructions.IntCodeInstructionAdditionWriting;
-import day05.instructions.IntCodeInstructionMultiplicationWriting;
+import day05.instructions.IntCodeInstructionAddition5;
+import day05.instructions.IntCodeInstructionMultiplication5;
 import exceptions.InvalidArgumentException;
 
 public class Day05Main {
@@ -26,12 +26,13 @@ public class Day05Main {
             Reader userInputReader = new InputStreamReader(System.in);
             Writer stdOutputWriter = new OutputStreamWriter(System.out);
             
+            // Input = 1
             IntCodeComputer5A computerA = getComputerA(getInput());
             computerA.run(userInputReader, stdOutputWriter);
 
+            // Input = 5
             IntCodeComputer5B computerB = getComputerB(getInput());
             computerB.run(userInputReader, stdOutputWriter);
-            
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
@@ -44,8 +45,8 @@ public class Day05Main {
     
     public static IntCodeInstructionProvider getInstructionProviderA() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day02Main.getDefaultInstructionProvider();
-    	instructionProvider.replaceInstruction(new IntCodeInstructionAdditionWriting(1L));
-    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplicationWriting(2L));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionAddition5(1L));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplication5(2L));
     	instructionProvider.addNewInstruction(new IntCodeInstructionStoreInput(3L));
         instructionProvider.addNewInstruction(new IntCodeInstructionOutputValue(4L));
         return instructionProvider;
@@ -64,11 +65,8 @@ public class Day05Main {
         return instructionProvider;
     }
     
-    public static IntCodeInstructionParameterModeHandler getModeHandler() {
-    	IntCodeInstructionParameterModeHandler modeHandler = new IntCodeInstructionParameterModeHandler();
-    	modeHandler.addModeHandler(0L, (computer, parameter) -> computer.readFromMemory(parameter));
-    	modeHandler.addModeHandler(1L, (computer, parameter) -> parameter);
-    	return modeHandler;
+    public static IntCodeInstructionParameterEvaluator getModeHandler() {
+    	return new IntCodeInstructionParameterEvaluator();
     }
 
     protected static List<Long> getInput() {

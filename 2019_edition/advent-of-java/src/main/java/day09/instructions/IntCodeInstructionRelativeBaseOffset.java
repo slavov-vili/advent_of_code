@@ -6,9 +6,9 @@ import day02.IntCodeComputer;
 import day02.instructions.IntCodeInstructionAbstract;
 import day09.IntCodeComputer9;
 
-public class IntCodeInstructionSetRelativeBase extends IntCodeInstructionAbstract {
+public class IntCodeInstructionRelativeBaseOffset extends IntCodeInstructionAbstract {
 
-	public IntCodeInstructionSetRelativeBase(Long opCode) {
+	public IntCodeInstructionRelativeBaseOffset(Long opCode) {
 		super(opCode, 1);
 	}
 

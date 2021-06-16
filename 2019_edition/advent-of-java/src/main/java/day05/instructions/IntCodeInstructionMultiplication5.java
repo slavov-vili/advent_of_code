@@ -5,12 +5,12 @@ import java.util.List;
 import day02.IntCodeComputer;
 import day02.instructions.IntCodeInstructionAbstract;
 
-public class IntCodeInstructionMultiplicationWriting extends IntCodeInstructionAbstract 
+public class IntCodeInstructionMultiplication5 extends IntCodeInstructionAbstract 
 	implements IntCodeInstructionWriting {
 
     private int writeParamIndex;
 
-	public IntCodeInstructionMultiplicationWriting(Long instructionCode) {
+	public IntCodeInstructionMultiplication5(Long instructionCode) {
         super(instructionCode, 3);
         this.writeParamIndex = 2;
     }
