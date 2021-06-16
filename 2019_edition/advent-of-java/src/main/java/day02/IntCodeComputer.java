@@ -64,11 +64,18 @@ public class IntCodeComputer {
     }
 
     public <T extends Number> Long readFromMemory(T addressToRead) {
+    	checkIndex(addressToRead);
         return this.memory.get(addressToRead.intValue());
     }
     
     public <T extends Number> Long setMemoryAddress(T address, T value) {
+    	checkIndex(address);
         return this.memory.set(address.intValue(), value.longValue());
+    }
+    
+    private <T extends Number> void checkIndex(T addressToCheck) {
+    	if ((addressToCheck.longValue() < 0) || (addressToCheck.longValue() > Integer.MAX_VALUE))
+    		throw new IndexOutOfBoundsException(String.valueOf(addressToCheck));
     }
     
     public IntCodeInstructionProvider getInstructionProvider() {

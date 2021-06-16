@@ -11,7 +11,7 @@ public class Day02Test {
 	void partATest() {
 		try {
 			int expected = 2894520;
-			int actual = Day02Main.solveA();
+			Long actual = Day02Main.solveA();
 
 			assertEquals(expected, actual);
 		} catch (Exception e) {
@@ -23,8 +23,8 @@ public class Day02Test {
 	void partB_BasicTest() {
 		try {
 			int expected = 1202;
-			int valueToFind = 2894520;
-			int actual = Day02Main.solveB(valueToFind);
+			Long valueToFind = 2894520L;
+			Long actual = Day02Main.solveB(valueToFind);
 
 			assertEquals(expected, actual);
 		} catch (Exception e) {
@@ -36,8 +36,8 @@ public class Day02Test {
 	void partB_RealTest() {
 		try {
 			int expected = 9342;
-			int valueToFind = 19690720;
-			int actual = Day02Main.solveB(valueToFind);
+			Long valueToFind = 19690720L;
+			Long actual = Day02Main.solveB(valueToFind);
 
 			assertEquals(expected, actual);
 		} catch (Exception e) {

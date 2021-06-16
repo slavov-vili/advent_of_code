@@ -14,8 +14,8 @@ public class IntCodeComputerTest {
 	@Test
 	void InvlidIntCodeTest() {
 		try {
-			int invalidIntCode = 11;
-			List<Integer> inputList = Arrays.asList(invalidIntCode, 0, 0, 0, 99);
+			Long invalidIntCode = 11L;
+			List<Long> inputList = Arrays.asList(invalidIntCode, 0L, 0L, 0L, 99L);
 			IntCodeComputer computer = Day02Main.getDefaultComputer(inputList);
 
 			computer.run();
@@ -30,14 +30,14 @@ public class IntCodeComputerTest {
 	}
 
 	@Test
-	void BasicInput1Test() {
+	void BasicInput1LTest() {
 		try {
-			Integer expected = 2;
-			List<Integer> inputList = Arrays.asList(1, 0, 0, 0, 99);
+			Long expected = 2L;
+			List<Long> inputList = Arrays.asList(1L, 0L, 0L, 0L, 99L);
 			IntCodeComputer computer = Day02Main.getDefaultComputer(inputList);
 
 			computer.run();
-			Integer actual = computer.readFromMemory(0);
+			Long actual = computer.readFromMemory(0L);
 
 			assertEquals(expected, actual);
 		} catch (Exception e) {
@@ -48,13 +48,13 @@ public class IntCodeComputerTest {
 	}
 
 	@Test
-	void BasicInput2Test() {
+	void BasicInput2LTest() {
 		try {
-			Integer expected = 6;
-			List<Integer> inputList = Arrays.asList(2, 3, 0, 3, 99);
+			Long expected = 6L;
+			List<Long> inputList = Arrays.asList(2L, 3L, 0L, 3L, 99L);
 			IntCodeComputer computer = Day02Main.getDefaultComputer(inputList);
 			computer.run();
-			Integer actual = computer.readFromMemory(3);
+			Long actual = computer.readFromMemory(3L);
 
 			assertEquals(expected, actual);
 		} catch (Exception e) {
@@ -67,12 +67,12 @@ public class IntCodeComputerTest {
 	@Test
 	void AdvancedInputTest() {
 		try {
-			Integer expected = 9801;
-			List<Integer> inputList = Arrays.asList(2, 4, 4, 5, 99, 0);
+			Long expected = 9801L;
+			List<Long> inputList = Arrays.asList(2L, 4L, 4L, 5L, 99L, 0L);
 			IntCodeComputer computer = Day02Main.getDefaultComputer(inputList);
 			computer.run();
 			
-			Integer actual = computer.readFromMemory(5);
+			Long actual = computer.readFromMemory(5L);
 			
 			assertEquals(expected, actual);
 		} catch (Exception e) {
@@ -85,12 +85,12 @@ public class IntCodeComputerTest {
 	@Test
 	void ComplicatedInputTest() {
 		try {
-			Integer expected = 30;
-			List<Integer> inputList = Arrays.asList(1, 1, 1, 4, 99, 5, 6, 0, 99);
+			Long expected = 30L;
+			List<Long> inputList = Arrays.asList(1L, 1L, 1L, 4L, 99L, 5L, 6L, 0L, 99L);
 			
 			IntCodeComputer computer = Day02Main.getDefaultComputer(inputList);
 			computer.run();
-			Integer actual = computer.readFromMemory(0);
+			Long actual = computer.readFromMemory(0L);
 
 			assertEquals(expected, actual);
 		} catch (Exception e) {

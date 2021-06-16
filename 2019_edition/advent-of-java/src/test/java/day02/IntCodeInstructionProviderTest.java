@@ -15,8 +15,8 @@ public class IntCodeInstructionProviderTest {
 
     @Test
     void addInstructionToEmptyProviderTest() {
-        IntCodeInstruction instructionToAdd = new IntCodeInstructionAddition(1);
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
+        IntCodeInstruction instructionToAdd = new IntCodeInstructionAddition(1L);
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99L));
 
         try {
             provider.addNewInstruction(instructionToAdd);
@@ -27,8 +27,8 @@ public class IntCodeInstructionProviderTest {
 
     @Test
     void addInstructionWithExistingCodeTest() {
-        IntCodeInstruction existingInstruction = new IntCodeInstructionAddition(1);
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
+        IntCodeInstruction existingInstruction = new IntCodeInstructionAddition(1L);
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99L));
 
         try {
             provider.addNewInstruction(existingInstruction);
@@ -47,8 +47,8 @@ public class IntCodeInstructionProviderTest {
 
     @Test
     void getInstructionFromEmptyProviderTest() {
-        int codeOfInstructionToGet = 1;
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
+        Long codeOfInstructionToGet = 1L;
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99L));
 
         try {
             provider.getInstructionByOpCode(codeOfInstructionToGet);
@@ -62,12 +62,12 @@ public class IntCodeInstructionProviderTest {
 
     @Test
     void getInstructionByInvalidTest() {
-        int codeOfInstructionToGet = 11;
-        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99));
+    	Long codeOfInstructionToGet = 11L;
+        IntCodeInstructionProvider provider = new IntCodeInstructionProvider(new IntCodeInstructionHalt(99L));
 
         try {
-            provider.addNewInstruction(new IntCodeInstructionAddition(1));
-            provider.addNewInstruction(new IntCodeInstructionMultiplication(2));
+            provider.addNewInstruction(new IntCodeInstructionAddition(1L));
+            provider.addNewInstruction(new IntCodeInstructionMultiplication(2L));
         } catch (Exception e) {
         }
 
