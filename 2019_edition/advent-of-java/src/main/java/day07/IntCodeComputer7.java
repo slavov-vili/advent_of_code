@@ -14,7 +14,7 @@ import exceptions.InvalidIntCodeException;
 public class IntCodeComputer7 extends IntCodeComputer5B {
 	private boolean isWaitingForInput;
 	
-	public IntCodeComputer7(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
+	public IntCodeComputer7(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider, modeHandler);
 		this.isWaitingForInput = false;

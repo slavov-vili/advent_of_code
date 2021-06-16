@@ -22,18 +22,18 @@ public class Day09Main {
 	
 	public static IntCodeInstructionParameterModeHandler getModeHandler() {
 		IntCodeInstructionParameterModeHandler modeHandler = Day05Main.getModeHandler();
-		modeHandler.addModeHandler(2, (computer, parameter) ->
+		modeHandler.addModeHandler(2L, (computer, parameter) ->
 			computer.readFromMemory(parameter + ((IntCodeComputer9)computer).getRelativeBase()));
 		return modeHandler;
 	}
     
     public static IntCodeInstructionProvider getInstructionProvider() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day07Main.getInstructionProvider();
-    	instructionProvider.addNewInstruction(new IntCodeInstructionSetRelativeBase(9));
+    	instructionProvider.addNewInstruction(new IntCodeInstructionSetRelativeBase(9L));
     	return instructionProvider;
     }
 
-    protected static List<Integer> getInput() {
+    protected static List<Long> getInput() {
         return Day02Main.getInput(Day09Main.class);
     }
 }

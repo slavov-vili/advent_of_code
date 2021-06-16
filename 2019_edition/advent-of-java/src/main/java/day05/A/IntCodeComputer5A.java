@@ -42,7 +42,7 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	
 	@Override
     public IntCodeInstruction getCurInstruction() throws InvalidIntCodeException {
-    	int instructionCode = this.getCurInstructionCode();
+    	Long instructionCode = this.getCurInstructionCode();
     	IntCodeInstruction curInstruction = this.getInstructionProvider()
 			.getInstructionByOpCode(instructionCode % 100);
     	// The provider only knows the opcode, but we need to preserve the Mode info
@@ -51,9 +51,9 @@ public class IntCodeComputer5A extends IntCodeComputer {
     }
 
 	@Override
-	public void handleCurrentInstruction(IntCodeInstruction curInstruction, List<Integer> curInstructionParameters) {
-		List<Integer> parameterModes = calcParameterModes(curInstruction);
-		List<Integer> parameterValues = calcParameterValues(curInstruction,
+	public void handleCurrentInstruction(IntCodeInstruction curInstruction, List<Long> curInstructionParameters) {
+		List<Long> parameterModes = calcParameterModes(curInstruction);
+		List<Long> parameterValues = calcParameterValues(curInstruction,
 				curInstructionParameters, parameterModes);
 		curInstruction.apply(this, parameterValues);
 	}
@@ -72,10 +72,10 @@ public class IntCodeComputer5A extends IntCodeComputer {
         this.outputWriter.flush();
 	}
 
-	private List<Integer> calcParameterModes(IntCodeInstruction instruction) {
+	private List<Long> calcParameterModes(IntCodeInstruction instruction) {
 		int paramCount = instruction.getParamCount();
-		List<Integer> parameterModes = new ArrayList<>();
-		int modes = instruction.getCode() / 100;
+		List<Long> parameterModes = new ArrayList<>();
+		Long modes = instruction.getCode() / 100;
 
 		for (int i = 0; i < paramCount; i++) {
 			parameterModes.add(modes % 10);
@@ -85,11 +85,11 @@ public class IntCodeComputer5A extends IntCodeComputer {
 		return parameterModes;
 	}
 
-	private List<Integer> calcParameterValues(IntCodeInstruction instruction, List<Integer> parameters,
-			List<Integer> parameterModes) {
-		List<Integer> parameterValues = new ArrayList<>();
+	private List<Long> calcParameterValues(IntCodeInstruction instruction, List<Long> parameters,
+			List<Long> parameterModes) {
+		List<Long> parameterValues = new ArrayList<>();
 		for (int i=0; i<parameters.size(); i++) {
-			Integer paramValue = modeHandler.handleParameter(this,
+			Long paramValue = modeHandler.handleParameter(this,
 					parameters.get(i), parameterModes.get(i));
 			parameterValues.add(paramValue);
 		}
@@ -97,8 +97,8 @@ public class IntCodeComputer5A extends IntCodeComputer {
 		return parameterValues;
 	}
 
-	private void fixWriteParam(IntCodeInstruction instruction, List<Integer> parameters,
-			List<Integer> parameterValues) {
+	private void fixWriteParam(IntCodeInstruction instruction, List<Long> parameters,
+			List<Long> parameterValues) {
 		if (instruction instanceof IntCodeInstructionWriting) {
 			IntCodeInstructionWriting writeInstruction = (IntCodeInstructionWriting) instruction;
 			int writeParamIndex = writeInstruction.getWriteParamIndex();

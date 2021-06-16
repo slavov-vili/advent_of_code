@@ -44,10 +44,10 @@ public class Day05Main {
     
     public static IntCodeInstructionProvider getInstructionProviderA() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day02Main.getDefaultInstructionProvider();
-    	instructionProvider.replaceInstruction(new IntCodeInstructionAdditionWriting(1));
-    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplicationWriting(2));
-    	instructionProvider.addNewInstruction(new IntCodeInstructionStoreInput(3));
-        instructionProvider.addNewInstruction(new IntCodeInstructionOutputValue(4));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionAdditionWriting(1L));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionMultiplicationWriting(2L));
+    	instructionProvider.addNewInstruction(new IntCodeInstructionStoreInput(3L));
+        instructionProvider.addNewInstruction(new IntCodeInstructionOutputValue(4L));
         return instructionProvider;
     }
     
@@ -57,17 +57,17 @@ public class Day05Main {
     
     public static IntCodeInstructionProvider getInstructionProviderB() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = getInstructionProviderA();
-        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfTrue(5));
-        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfFalse(6));
-        instructionProvider.addNewInstruction(new IntCodeInstructionLessThan(7));
-        instructionProvider.addNewInstruction(new IntCodeInstructionEquals(8));
+        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfTrue(5L));
+        instructionProvider.addNewInstruction(new IntCodeInstructionJumpIfFalse(6L));
+        instructionProvider.addNewInstruction(new IntCodeInstructionLessThan(7L));
+        instructionProvider.addNewInstruction(new IntCodeInstructionEquals(8L));
         return instructionProvider;
     }
     
     public static IntCodeInstructionParameterModeHandler getModeHandler() {
     	IntCodeInstructionParameterModeHandler modeHandler = new IntCodeInstructionParameterModeHandler();
-    	modeHandler.addModeHandler(0, (computer, parameter) -> computer.readFromMemory(parameter));
-    	modeHandler.addModeHandler(1, (computer, parameter) -> parameter);
+    	modeHandler.addModeHandler(0L, (computer, parameter) -> computer.readFromMemory(parameter));
+    	modeHandler.addModeHandler(1L, (computer, parameter) -> parameter);
     	return modeHandler;
     }
 

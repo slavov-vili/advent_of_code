@@ -10,14 +10,14 @@ public class IntCodeInstructionStoreInput7 extends IntCodeInstructionWithMissing
 
 	private int writeParamIndex;
 
-	public IntCodeInstructionStoreInput7(int opCode) {
+	public IntCodeInstructionStoreInput7(Long opCode) {
 		super(opCode, 1);
 		this.writeParamIndex = 0;
 	}
 
 	@Override
-	protected void applyWithInput(IntCodeComputer7 computer, List<Integer> parameters, String userInput) {
-		computer.setMemoryAddress(parameters.get(this.writeParamIndex), Integer.parseInt(userInput));
+	protected void applyWithInput(IntCodeComputer7 computer, List<Long> parameters, String userInput) {
+		computer.setMemoryAddress(parameters.get(this.writeParamIndex), Long.parseLong(userInput));
 	}
 
 	@Override

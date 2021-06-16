@@ -98,11 +98,11 @@ public class Day07Main {
     
     public static IntCodeInstructionProvider getInstructionProvider() throws InvalidArgumentException {
     	IntCodeInstructionProvider instructionProvider = Day05Main.getInstructionProviderB();
-    	instructionProvider.replaceInstruction(new IntCodeInstructionStoreInput7(3));
+    	instructionProvider.replaceInstruction(new IntCodeInstructionStoreInput7(3L));
     	return instructionProvider;
     }
 
-    protected static List<Integer> getInput() {
+    protected static List<Long> getInput() {
         return Day02Main.getInput(Day07Main.class);
     }
 }

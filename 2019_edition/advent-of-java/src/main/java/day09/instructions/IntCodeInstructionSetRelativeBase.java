@@ -8,7 +8,7 @@ import day09.IntCodeComputer9;
 
 public class IntCodeInstructionSetRelativeBase extends IntCodeInstructionAbstract {
 
-	public IntCodeInstructionSetRelativeBase(int opCode) {
+	public IntCodeInstructionSetRelativeBase(Long opCode) {
 		super(opCode, 1);
 	}
 

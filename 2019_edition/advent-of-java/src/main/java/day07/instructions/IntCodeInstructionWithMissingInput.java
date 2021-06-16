@@ -9,7 +9,7 @@ import day07.IntCodeComputer7;
 
 public abstract class IntCodeInstructionWithMissingInput extends IntCodeInstructionAbstract {
 
-	public IntCodeInstructionWithMissingInput(int instructionCode, int paramCount) {
+	public IntCodeInstructionWithMissingInput(Long instructionCode, int paramCount) {
 		super(instructionCode, paramCount);
 	}
 
@@ -30,7 +30,7 @@ public abstract class IntCodeInstructionWithMissingInput extends IntCodeInstruct
     	}
     }
 
-    protected abstract void applyWithInput(IntCodeComputer7 computer, List<Integer> parameters, String userInput);
+    protected abstract void applyWithInput(IntCodeComputer7 computer, List<Long> parameters, String userInput);
 
 
 }

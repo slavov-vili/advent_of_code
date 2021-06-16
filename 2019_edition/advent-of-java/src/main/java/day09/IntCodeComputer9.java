@@ -9,19 +9,19 @@ import day07.IntCodeComputer7;
 //An IntCodeComputer7 with support for:
 //- managing a relativeBase
 public class IntCodeComputer9 extends IntCodeComputer7 {
-	private Integer relativeBase;
+	private Long relativeBase;
 	
-	public IntCodeComputer9(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
+	public IntCodeComputer9(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider, modeHandler);
-		this.relativeBase = 0;
+		this.relativeBase = 0L;
 	}
 
-	public Integer getRelativeBase() {
+	public Long getRelativeBase() {
 		return this.relativeBase;
 	}
 	
-	public void setRelativeBase(Integer newRelativeBase) {
+	public void setRelativeBase(Long newRelativeBase) {
 		this.relativeBase = newRelativeBase;
 	}
 }
