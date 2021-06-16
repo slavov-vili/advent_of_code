@@ -13,7 +13,7 @@ public class IntCodeInstructionSetRelativeBase extends IntCodeInstructionAbstrac
 	}
 
 	@Override
-    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+    public void apply(IntCodeComputer computer, List<Long> parameters) {
         ((IntCodeComputer9) computer).setRelativeBase(parameters.get(0));
     }
 }

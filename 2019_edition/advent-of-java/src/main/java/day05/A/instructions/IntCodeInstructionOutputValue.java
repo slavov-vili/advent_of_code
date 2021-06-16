@@ -7,13 +7,13 @@ import day05.instructions.IntCodeInstructionWithOutput;
 
 public class IntCodeInstructionOutputValue extends IntCodeInstructionWithOutput {
 
-    public IntCodeInstructionOutputValue(int instructionCode) {
+    public IntCodeInstructionOutputValue(Long instructionCode) {
         super(instructionCode, 1);
     }
 
     @Override
-    protected String applyBeforeOutput(IntCodeComputer5A computer, List<Integer> parameters) {
-        return Integer.toString(parameters.get(0));
+    protected String applyBeforeOutput(IntCodeComputer5A computer, List<Long> parameters) {
+        return Long.toString(parameters.get(0));
     }
 
 }

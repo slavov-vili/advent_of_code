@@ -10,8 +10,8 @@ import exceptions.InvalidIntCodeException;
 
 public class IntCodeInstructionProvider {
 
-    private Map<Integer, IntCodeInstruction> instructionCodeMap;
-	private Integer haltInstructionOpcode;
+    private Map<Long, IntCodeInstruction> instructionCodeMap;
+	private Long haltInstructionOpcode;
 
     public IntCodeInstructionProvider(IntCodeInstructionHalt haltInstruction) {
         this.instructionCodeMap = new HashMap<>();
@@ -19,7 +19,7 @@ public class IntCodeInstructionProvider {
         this.instructionCodeMap.put(this.haltInstructionOpcode, haltInstruction);
     }
 
-    public IntCodeInstruction getInstructionByOpCode(Integer instructionCode) throws InvalidIntCodeException {
+    public IntCodeInstruction getInstructionByOpCode(Long instructionCode) throws InvalidIntCodeException {
         if (!this.instructionCodeMap.containsKey(instructionCode))
             throw new InvalidIntCodeException("Instruction code " + instructionCode + " is unknown!");
 
@@ -27,7 +27,7 @@ public class IntCodeInstructionProvider {
     }
 
     public IntCodeInstruction addNewInstruction(IntCodeInstruction newInstruction) throws InvalidArgumentException {
-        int instructionCode = newInstruction.getCode();
+        Long instructionCode = newInstruction.getCode();
         if (this.instructionCodeMap.containsKey(instructionCode))
             throw new InvalidArgumentException("Instruction code " + instructionCode + " already exists!");
 
@@ -35,14 +35,14 @@ public class IntCodeInstructionProvider {
     }
     
     public IntCodeInstruction replaceInstruction(IntCodeInstruction newInstruction) {
-        int instructionCode = newInstruction.getCode();
+        Long instructionCode = newInstruction.getCode();
         IntCodeInstruction oldInstruction = this.instructionCodeMap.get(instructionCode);
         
         this.instructionCodeMap.put(instructionCode, newInstruction);
         return oldInstruction;
     }
     
-    public Integer getHaltInstructionOpCode() {
+    public Long getHaltInstructionOpCode() {
     	return this.haltInstructionOpcode;
     }
 }

@@ -6,13 +6,13 @@ import day02.IntCodeComputer;
 
 public interface IntCodeInstruction {
 	
-    public void apply(IntCodeComputer computer, List<Integer> parameters);
+    public void apply(IntCodeComputer computer, List<Long> parameters);
 
-    public int getCode();
+    public Long getCode();
 
     public int getParamCount();
     
-    public int setCode(int newCode);
+    public Long setCode(Long newCode);
 
     public int setParamCount(int newParamCount);
 }

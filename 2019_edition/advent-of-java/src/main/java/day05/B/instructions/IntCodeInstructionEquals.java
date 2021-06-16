@@ -11,13 +11,13 @@ public class IntCodeInstructionEquals extends IntCodeInstructionAbstract
 	
     private int writeParamIndex;
 
-	public IntCodeInstructionEquals(int instructionCode) {
+	public IntCodeInstructionEquals(Long instructionCode) {
         super(instructionCode, 3);
         this.writeParamIndex = 2;
     }
 
     @Override
-    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+    public void apply(IntCodeComputer computer, List<Long> parameters) {
         int result = (parameters.get(0).equals(parameters.get(1))) ? 1 : 0;
         computer.setMemoryAddress(parameters.get(this.writeParamIndex), result);
     }

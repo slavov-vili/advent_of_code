@@ -8,12 +8,12 @@ import day05.A.IntCodeComputer5A;
 
 public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbstract {
 
-    public IntCodeInstructionWithInput(int instructionCode, int paramCount) {
+    public IntCodeInstructionWithInput(Long instructionCode, int paramCount) {
         super(instructionCode, paramCount);
     }
 
     @Override
-    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+    public void apply(IntCodeComputer computer, List<Long> parameters) {
     	IntCodeComputer5A computer5A = (IntCodeComputer5A) computer;
     	String instructionName = this.getClass().getSimpleName();
 		System.out.printf("Instruction %s requires input: \n", instructionName);
@@ -24,6 +24,6 @@ public abstract class IntCodeInstructionWithInput extends IntCodeInstructionAbst
         this.applyWithInput(computer5A, parameters, input);	
     }
 
-    protected abstract void applyWithInput(IntCodeComputer5A computer, List<Integer> parameters, String userInput);
+    protected abstract void applyWithInput(IntCodeComputer5A computer, List<Long> parameters, String userInput);
 
 }

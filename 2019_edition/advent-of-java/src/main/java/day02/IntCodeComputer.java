@@ -3,20 +3,22 @@ package day02;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import day02.instructions.IntCodeInstruction;
 import exceptions.InvalidIntCodeException;
 
 public class IntCodeComputer {
     private IntCodeInstructionProvider instructionProvider;
-    private List<Integer> memory;
+    private List<Long> memory;
     private int curInstructionIdx;
 	private Optional<String> haltMessage;
 
     // TODO: Make this a type class which takes a number type and uses it for the computations
 	// TODO: Abstract reading and writing to memory/
-    public IntCodeComputer(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider) {
-        this.memory = new ArrayList<>(initialMemory);
+    public IntCodeComputer(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider) {
+        this.memory = initialMemory.stream().map(Number::longValue)
+        		.collect(Collectors.toList());
         this.curInstructionIdx = 0;
         this.instructionProvider = instructionProvider;
         this.haltMessage = Optional.empty();
@@ -26,7 +28,7 @@ public class IntCodeComputer {
     	while (!this.shouldStop()) {
             IntCodeInstruction curInstruction = getCurInstruction();
 
-            List<Integer> curInstructionParameters = IntCodeComputerUtils
+            List<Long> curInstructionParameters = IntCodeComputerUtils
                     .findInstructionParameters(this, curInstruction);
             handleCurrentInstruction(curInstruction, curInstructionParameters);
             
@@ -50,8 +52,8 @@ public class IntCodeComputer {
 	}
     
     public void handleCurrentInstruction(IntCodeInstruction curInstruction,
-    		List<Integer> curInstructionParameters) {
-    	List<Integer> parameterValues = IntCodeComputerUtils
+    		List<Long> curInstructionParameters) {
+    	List<Long> parameterValues = IntCodeComputerUtils
     			.findInstructionParameterValues(this, curInstructionParameters);
         curInstruction.apply(this, parameterValues);
     }
@@ -61,12 +63,12 @@ public class IntCodeComputer {
         		.calcEndIdxOfInstruction(this.curInstructionIdx, curInstruction) + 1;
     }
 
-    public Integer readFromMemory(int addressToRead) {
-        return this.memory.get(addressToRead);
+    public <T extends Number> Long readFromMemory(T addressToRead) {
+        return this.memory.get(addressToRead.intValue());
     }
     
-    public Integer setMemoryAddress(int address, Integer value) {
-        return this.memory.set(address, value);
+    public <T extends Number> Long setMemoryAddress(T address, T value) {
+        return this.memory.set(address.intValue(), value.longValue());
     }
     
     public IntCodeInstructionProvider getInstructionProvider() {
@@ -79,11 +81,11 @@ public class IntCodeComputer {
     	return curInstruction;
     }
     
-    public int getCurInstructionCode() {
+    public Long getCurInstructionCode() {
     	return getInstructionCode(this.getCurInstructionIdx());
     }
 
-    public int getInstructionCode(int instructionIdx) {
+    public Long getInstructionCode(int instructionIdx) {
         return this.readFromMemory(instructionIdx);
     }
 

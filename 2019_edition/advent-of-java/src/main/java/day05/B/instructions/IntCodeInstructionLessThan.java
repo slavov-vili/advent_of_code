@@ -11,13 +11,13 @@ public class IntCodeInstructionLessThan extends IntCodeInstructionAbstract
 	
     private int writeParamIndex;
 
-	public IntCodeInstructionLessThan(int instructionCode) {
+	public IntCodeInstructionLessThan(Long instructionCode) {
         super(instructionCode, 3);
         this.writeParamIndex = 2;
     }
 
     @Override
-    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+    public void apply(IntCodeComputer computer, List<Long> parameters) {
         int result = (parameters.get(0).compareTo(parameters.get(1)) < 0) ? 1 : 0;
         computer.setMemoryAddress(parameters.get(this.writeParamIndex), result);
     }

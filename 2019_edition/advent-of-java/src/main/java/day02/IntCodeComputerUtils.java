@@ -9,15 +9,15 @@ import utils.ListUtils;
 
 public class IntCodeComputerUtils {
 
-	public static List<Integer> findInstructionParameterValues(IntCodeComputer computer,
-			List<Integer> instructionParameters) {
-		List<Integer> parameterValues = new ArrayList<>(instructionParameters);
+	public static List<Long> findInstructionParameterValues(IntCodeComputer computer,
+			List<Long> instructionParameters) {
+		List<Long> parameterValues = new ArrayList<>(instructionParameters);
 		for (int i=0; i<parameterValues.size()-1; i++)
 			parameterValues.set(i, computer.readFromMemory(parameterValues.get(i)));
 		return parameterValues;
 	}
 	
-	public static List<Integer> findInstructionParameters(IntCodeComputer computer,
+	public static List<Long> findInstructionParameters(IntCodeComputer computer,
 			IntCodeInstruction curInstruction) {
 		return findInstructionParamIndices(computer.getCurInstructionIdx(), curInstruction).stream()
 				.map(computer::readFromMemory)

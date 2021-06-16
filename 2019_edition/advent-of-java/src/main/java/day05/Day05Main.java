@@ -38,7 +38,7 @@ public class Day05Main {
         }
     }
 
-	public static IntCodeComputer5A getComputerA(List<Integer> initialMemory) throws InvalidArgumentException {
+	public static IntCodeComputer5A getComputerA(List<Long> initialMemory) throws InvalidArgumentException {
         return new IntCodeComputer5A(initialMemory, getInstructionProviderA(), getModeHandler());
     }
     
@@ -51,7 +51,7 @@ public class Day05Main {
         return instructionProvider;
     }
     
-    public static IntCodeComputer5B getComputerB(List<Integer> initialMemory) throws InvalidArgumentException {
+    public static IntCodeComputer5B getComputerB(List<Long> initialMemory) throws InvalidArgumentException {
         return new IntCodeComputer5B(initialMemory, getInstructionProviderB(), getModeHandler());
     }
     
@@ -71,7 +71,7 @@ public class Day05Main {
     	return modeHandler;
     }
 
-    protected static List<Integer> getInput() {
+    protected static List<Long> getInput() {
         return Day02Main.getInput(Day05Main.class);
     }
 }

@@ -2,16 +2,16 @@ package day02.instructions;
 
 public abstract class IntCodeInstructionAbstract implements IntCodeInstruction {
 
-    private int opCode;
+    private Long opCode;
     private int paramCount;
 
-    public IntCodeInstructionAbstract(int opCode, int paramCount) {
+    public IntCodeInstructionAbstract(Long opCode, int paramCount) {
         this.opCode = opCode;
         this.paramCount = paramCount;
     }
 
     @Override
-    public int getCode() {
+    public Long getCode() {
         return this.opCode;
     }
 
@@ -21,8 +21,8 @@ public abstract class IntCodeInstructionAbstract implements IntCodeInstruction {
     }
 
     @Override
-    public int setCode(int newCode) {
-    	int oldCode = this.opCode;
+    public Long setCode(Long newCode) {
+    	Long oldCode = this.opCode;
     	this.opCode = newCode;
         return oldCode;
     }

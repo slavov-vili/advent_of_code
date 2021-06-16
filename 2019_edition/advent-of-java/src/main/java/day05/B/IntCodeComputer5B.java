@@ -14,7 +14,7 @@ public class IntCodeComputer5B extends IntCodeComputer5A {
 
 	private Optional<Integer> jumpIndex;
 
-	public IntCodeComputer5B(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
+	public IntCodeComputer5B(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider, modeHandler);
 		this.jumpIndex = Optional.empty();
@@ -27,6 +27,14 @@ public class IntCodeComputer5B extends IntCodeComputer5A {
 		this.setJumpIndex(Optional.empty());
         return nextIndex;
     }
+	
+	public void setJumpIndex(Long newJumpIndex) {
+		setJumpIndex(Optional.of(newJumpIndex.intValue()));
+	}
+	
+	public void setJumpIndex(int newJumpIndex) {
+		setJumpIndex(Optional.of(newJumpIndex));
+	}
 	
 	public void setJumpIndex(Optional<Integer> newJumpIndex) {
 		this.jumpIndex = newJumpIndex;

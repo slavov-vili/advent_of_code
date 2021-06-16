@@ -10,15 +10,15 @@ public class IntCodeInstructionAdditionWriting extends IntCodeInstructionAbstrac
 
     private int writeParamIndex;
 
-	public IntCodeInstructionAdditionWriting(int instructionCode) {
+	public IntCodeInstructionAdditionWriting(Long instructionCode) {
         super(instructionCode, 3);
         this.writeParamIndex = 2;
     }
 
     @Override
-    public void apply(IntCodeComputer computer, List<Integer> parameters) {
-        Integer writeIndex = parameters.get(this.writeParamIndex);
-        Integer result = parameters.get(0) + parameters.get(1);
+    public void apply(IntCodeComputer computer, List<Long> parameters) {
+        int writeIndex = parameters.get(this.writeParamIndex).intValue();
+        Long result = parameters.get(0) + parameters.get(1);
         computer.setMemoryAddress(writeIndex, result);
     }
 

@@ -25,7 +25,7 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	protected Scanner inputScanner;
 	protected Writer outputWriter;
 
-	public IntCodeComputer5A(List<Integer> initialMemory, IntCodeInstructionProvider instructionProvider,
+	public IntCodeComputer5A(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterModeHandler modeHandler) {
 		super(initialMemory, instructionProvider);
 		this.modeHandler = modeHandler;
@@ -62,6 +62,10 @@ public class IntCodeComputer5A extends IntCodeComputer {
         String input = this.inputScanner.next();
         return input;
     }
+	
+	public Long parseNumber(String stringToParse) {
+		return Long.parseLong(stringToParse);
+	}
 	
 	public void writeOutput(String outputValue) throws IOException {
 		this.outputWriter.append(outputValue + "\n");

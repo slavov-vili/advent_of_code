@@ -9,12 +9,12 @@ import day05.A.IntCodeComputer5A;
 
 public abstract class IntCodeInstructionWithOutput extends IntCodeInstructionAbstract {
 
-    public IntCodeInstructionWithOutput(int instructionCode, int paramCount) {
+    public IntCodeInstructionWithOutput(Long instructionCode, int paramCount) {
         super(instructionCode, paramCount);
     }
 
     @Override
-    public void apply(IntCodeComputer computer, List<Integer> parameters) {
+    public void apply(IntCodeComputer computer, List<Long> parameters) {
     	IntCodeComputer5A computer5A = (IntCodeComputer5A) computer;
         String outputValue = this.applyBeforeOutput(computer5A, parameters);
         try {
@@ -25,6 +25,6 @@ public abstract class IntCodeInstructionWithOutput extends IntCodeInstructionAbs
 		}
     }
 
-    protected abstract String applyBeforeOutput(IntCodeComputer5A computer, List<Integer> parameters);
+    protected abstract String applyBeforeOutput(IntCodeComputer5A computer, List<Long> parameters);
 
 }

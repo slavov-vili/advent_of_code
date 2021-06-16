@@ -8,17 +8,17 @@ import day02.IntCodeComputer;
 
 public class IntCodeInstructionParameterModeHandler {
 
-	private Map<Integer, BiFunction<IntCodeComputer, Integer, Integer>> modeHandlerMap;
+	private Map<Integer, BiFunction<IntCodeComputer, Long, Long>> modeHandlerMap;
 
 	public IntCodeInstructionParameterModeHandler() {
 		this.modeHandlerMap = new HashMap<>();
 	}
 	
-	public Integer handleParameter(IntCodeComputer computer, Integer parameter, Integer mode) {
+	public Long handleParameter(IntCodeComputer computer, Long parameter, Integer mode) {
 		return modeHandlerMap.get(mode).apply(computer, parameter);
 	}
 	
-	public void addModeHandler(Integer modeId, BiFunction<IntCodeComputer, Integer, Integer> modeHandler) {
+	public void addModeHandler(Integer modeId, BiFunction<IntCodeComputer, Long, Long> modeHandler) {
 		this.modeHandlerMap.put(modeId, modeHandler);
 	}
 }
