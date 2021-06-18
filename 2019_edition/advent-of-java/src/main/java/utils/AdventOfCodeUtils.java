@@ -15,7 +15,7 @@ public class AdventOfCodeUtils {
      * Returns an immutable list of the lines of a given file. If the file does not
      * exist, it returns an empty list and prints an exception.
      */
-    public static List<String> readInputLines(Class sourceClass) {
+    public static List<String> readInputLines(Class<?> sourceClass) {
         List<String> fileLines = Collections.emptyList();
 
         try {
@@ -27,7 +27,7 @@ public class AdventOfCodeUtils {
         return fileLines;
     }
 
-    private static List<String> getLinesFromClasspathFile(Class sourceClass, String fileName)
+    private static List<String> getLinesFromClasspathFile(Class<?> sourceClass, String fileName)
             throws URISyntaxException, IOException {
         URL fileUrl = sourceClass.getResource(fileName);
 
