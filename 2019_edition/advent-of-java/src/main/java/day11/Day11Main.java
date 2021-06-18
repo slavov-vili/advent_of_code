@@ -2,6 +2,8 @@ package day11;
 
 import java.util.List;
 
+import datastructures.Grid2DInfinite;
+import datastructures.IGrid2D;
 import day02.Day02Main;
 import day02.IntCodeInstructionProvider;
 import day05.IntCodeInstructionParameterEvaluator;
@@ -14,16 +16,25 @@ import exceptions.InvalidIntCodeException;
 public class Day11Main {
 
 	public static void main(String[] args) throws InvalidArgumentException, InvalidIntCodeException {
-		EmergencyHullPaintingRobot robot = new EmergencyHullPaintingRobot(getComputer());
+		EmergencyHullPaintingRobot robot = getRobot();
 		robot.run();
 		int paintedPanelCount = robot.getPaintedPanels().size();
-		System.out.printf("The robot painted %d panels\n", paintedPanelCount);
 		
-		robot = new EmergencyHullPaintingRobot(getComputer());
-		robot.paintCurPanel(EmergencyHullPaintingRobot.WHITE);
+		robot = getRobot();
+		robot.paintCurPanel(EmergencyHullPaintingRobot.WHITE_DIGIT);
 		robot.run();
 		String endGrid = robot.getPrintableGrid();
+		
+		System.out.printf("The robot painted %d panels\n", paintedPanelCount);
 		System.out.println(endGrid);
+	}
+	
+	public static EmergencyHullPaintingRobot getRobot() throws InvalidArgumentException {
+		return new EmergencyHullPaintingRobot(getComputer(), getInfiniteGrid());
+	}
+	
+	public static IGrid2D<Integer> getInfiniteGrid() {
+		return new Grid2DInfinite<>(EmergencyHullPaintingRobot.BLACK_DIGIT);
 	}
 
 	public static IntCodeComputer9 getComputer() throws InvalidArgumentException {

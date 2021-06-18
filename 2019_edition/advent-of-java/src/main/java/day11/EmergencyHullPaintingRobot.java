@@ -5,22 +5,20 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
 
+import datastructures.Direction2D;
+import datastructures.IGrid2D;
 import day05.A.IntCodeComputer5A;
 import exceptions.InvalidIntCodeException;
 import utils.PointUtils;
-import utils.TwoDDirection;
 
 public class EmergencyHullPaintingRobot {
 
-	public static final Integer BLACK = 0;
-	public static final Integer WHITE = 1;
+	public static final Integer BLACK_DIGIT = 0;
+	public static final Integer WHITE_DIGIT = 1;
 
 	public static final Integer LEFT = 0;
 	public static final Integer RIGHT = 1;
@@ -29,16 +27,16 @@ public class EmergencyHullPaintingRobot {
 	public static final Character WHITE_CHAR = '#';
 	
 	private IntCodeComputer5A computer;
-	private Map<Point, Integer> grid;
+	private IGrid2D<Integer> grid;
 	private Point curPosition;
 	private Point curDirection;
 	private List<Point> paintPath;
 
-	public EmergencyHullPaintingRobot(IntCodeComputer5A computer) {
+	public EmergencyHullPaintingRobot(IntCodeComputer5A computer, IGrid2D<Integer> grid) {
 		this.computer = computer;
-		this.grid = new HashMap<>();
+		this.grid = grid;
 		this.curPosition = new Point();
-		this.curDirection = TwoDDirection.NORTH;
+		this.curDirection = Direction2D.NORTH;
 		this.paintPath = new ArrayList<>();
 	}
 	
@@ -58,15 +56,15 @@ public class EmergencyHullPaintingRobot {
 	}
 	
 	public void paintCurPanel(int colorToPaint) {
-		this.grid.put(this.getCurPosition(), colorToPaint);
+		this.grid.set(this.getCurPosition(), colorToPaint);
 		this.paintPath.add(this.getCurPosition());
 	}
 	
 	public void updateDirection(int rotation) {
 		Point oldDirection = this.getCurDirection();
 		this.curDirection = (rotation == LEFT) ?
-			TwoDDirection.getNextLeft(oldDirection) :
-			TwoDDirection.getNextRight(oldDirection);
+			Direction2D.getNextLeft(oldDirection) :
+			Direction2D.getNextRight(oldDirection);
 	}
 	
 	public void move() {
@@ -82,38 +80,9 @@ public class EmergencyHullPaintingRobot {
 	}
 	
 	public String getPrintableGrid() {
-		int maxX = this.getMax(Point::getX);
-		int maxY = this.getMax(Point::getY);
-		
-		int minX = this.getMin(Point::getX);
-		int minY = this.getMin(Point::getY);
-		
-		StringBuilder gridBuilder = new StringBuilder();
-		for (int x=minX; x<=maxX; x++) {
-			for (int y=minY; y<=maxY; y++) {
-				gridBuilder.append(getCharAt(new Point(x, y)));
-			}
-			gridBuilder.append("\n");
-		}
-		return gridBuilder.toString();
-	}
-	
-	// TODO: add a getter for position in grid
-	private Character getCharAt(Point position) {
-		return (this.getPanelAt(position) == BLACK) ?
-				BLACK_CHAR : WHITE_CHAR; 
-	}
-	
-	private int getMax(Function<Point, Double> coordGetter) {
-		return this.grid.keySet().stream()
-				.mapToInt(curPoint -> coordGetter.apply(curPoint).intValue())
-				.max().getAsInt();
-	}
-	
-	private int getMin(Function<Point, Double> coordGetter) {
-		return this.grid.keySet().stream()
-				.mapToInt(curPoint -> coordGetter.apply(curPoint).intValue())
-				.min().getAsInt();
+		return this.grid.toString()
+				.replace(Character.forDigit(BLACK_DIGIT, 10), BLACK_CHAR)
+				.replace(Character.forDigit(WHITE_DIGIT, 10), WHITE_CHAR);
 	}
 	
 	public Set<Point> getPaintedPanels() {
@@ -125,7 +94,7 @@ public class EmergencyHullPaintingRobot {
 	}
 	
 	public Integer getPanelAt(Point position) {
-		return this.grid.getOrDefault(position, BLACK);
+		return this.grid.get(position);
 	}
 	
 	public Point getCurPosition() {

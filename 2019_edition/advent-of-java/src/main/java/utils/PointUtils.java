@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import datastructures.ThreeDPoint;
+
 public class PointUtils {
     public static final Point ORIGIN_POINT = new Point(0, 0);
 

@@ -11,9 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import datastructures.ThreeDPoint;
 import utils.AdventOfCodeUtils;
 import utils.IntegerUtils;
-import utils.ThreeDPoint;
 
 public class Day12Main {
 

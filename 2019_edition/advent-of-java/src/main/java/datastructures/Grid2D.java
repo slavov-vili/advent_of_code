@@ -1,35 +1,38 @@
-package utils;
+package datastructures;
 
 import java.awt.Point;
 
-public class Grid2D<T> {
+public class Grid2D<T> implements IGrid2D<T> {
 	private Object[][] grid;
 
 	public Grid2D(Point dimensions) {
 		this.grid = new Object[dimensions.y][dimensions.x];
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
 	public T get(Point position) {
 		checkPosition(position);
 		return (T) this.grid[position.y][position.x];
 	}
-	
-	public T set(Point position, T newValue) {
+
+	@Override
+	public void set(Point position, T newValue) {
 		checkPosition(position);
-		T oldValue = this.get(position);
 		this.grid[position.y][position.x] = newValue;
-		return oldValue;
 	}
 	
+	@Override
 	public int getWidth() {
 		return this.grid.length;
 	}
 	
+	@Override
 	public int getHeight() {
 		return this.grid[0].length;
 	}
 	
+	@Override
 	public int getSize() {
 		return this.getWidth() * this.getHeight();
 	}

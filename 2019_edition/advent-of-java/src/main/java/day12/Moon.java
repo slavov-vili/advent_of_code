@@ -4,9 +4,9 @@ import java.awt.Point;
 import java.util.List;
 import java.util.Objects;
 
+import datastructures.ThreeDPoint;
 import utils.ListUtils;
 import utils.PointUtils;
-import utils.ThreeDPoint;
 
 public class Moon {
 
