@@ -7,6 +7,11 @@ import java.util.List;
 public class PointUtils {
     public static final Point ORIGIN_POINT = new Point(0, 0);
 
+    public static Point translate(Point origin, Point increment) {
+    	return new Point(origin.x + increment.x,
+    			origin.y + increment.y);
+    }
+    
     public static int calcAbsoluteSum(ThreeDPoint point) {
         return Math.abs(point.x) + Math.abs(point.y) + Math.abs(point.z);
     }
