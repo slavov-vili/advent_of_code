@@ -11,10 +11,16 @@ public class Day13Main {
 	public static void main(String[] args) throws InvalidArgumentException, InvalidIntCodeException {
 		ArcadeCabinet cabinet = getCabinet();
 		String screen = cabinet.run("");
-		
 		int blockCount = cabinet.getBlockCount();
-		System.out.println(screen);
-		System.out.printf("There are %d block tiles on the screen.\n", blockCount);
+		
+		while (!cabinet.computerIsHalted()) {
+			System.out.println("Score: " + cabinet.getScore());
+			System.out.println(screen);
+			
+			
+		}
+		
+		System.out.printf("There were %d block tiles on the screen initially.\n", blockCount);
 	}
 	
 	public static ArcadeCabinet getCabinet() throws InvalidArgumentException {

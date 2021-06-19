@@ -1,7 +1,6 @@
 package day13;
 
 import java.awt.Point;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -33,12 +32,16 @@ public class ArcadeCabinet {
 	public static final Character PADDLE_CHAR = '_';
 	public static final Character BALL_CHAR = 'o';
 	
+	public static final Point SEGMENT_DISPLAY = new Point(-1, 0);
+	
 	private IntCodeComputer5A computer;
 	private IGrid2D<Integer> grid;
+	private int score;
 
 	public ArcadeCabinet(IntCodeComputer5A computer) {
 		this.computer = computer;
 		this.grid = new Grid2DInfinite<>(0);
+		this.score = 0;
 	}
 	
 	public String run(String input) throws InvalidIntCodeException {
@@ -47,8 +50,14 @@ public class ArcadeCabinet {
         
         computer.run(inputReader, outputWriter);
         
-        Map<Point, Integer> updatedTiles = this.parseOutput(outputWriter.toString());
-        this.updateGrid(updatedTiles);
+        Map<Point, Integer> parsedOutput = this.parseOutput(outputWriter.toString());
+        
+        if (parsedOutput.containsKey(SEGMENT_DISPLAY)) {
+        	this.setScore(parsedOutput.get(SEGMENT_DISPLAY));
+        	parsedOutput.remove(SEGMENT_DISPLAY);
+        }
+        
+        this.updateGrid(parsedOutput);
         return this.getPrintableGrid();
 	}
 	
@@ -65,7 +74,7 @@ public class ArcadeCabinet {
 				.replace(Character.forDigit(BALL_DIGIT, 10), BALL_CHAR);
 	}
 	
-	Map<Point, Integer> parseOutput(String computerOutput) {
+	public Map<Point, Integer> parseOutput(String computerOutput) {
 		Map<Point, Integer> updatedTiles = new HashMap<>();
 		Matcher matcher = TILE_OUTPUT_PATTERN.matcher(computerOutput);
 		while (matcher.find()) {
@@ -79,5 +88,17 @@ public class ArcadeCabinet {
 	
 	public void updateGrid(Map<Point, Integer> updatedTiles) {
 		updatedTiles.forEach((position, id) -> this.grid.set(position, id));
+	}
+	
+	public boolean computerIsHalted() {
+		return this.computer.isHalted();
+	}
+	
+	public int getScore() {
+		return this.score;
+	}
+	
+	public void setScore(int newScore) {
+		this.score = newScore;
 	}
 }
