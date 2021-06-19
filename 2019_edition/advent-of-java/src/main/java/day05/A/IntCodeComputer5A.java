@@ -20,6 +20,8 @@ import exceptions.InvalidIntCodeException;
 //  - Input Instructions
 //  - Output Instructions
 public class IntCodeComputer5A extends IntCodeComputer {
+	
+	public static final String OUTPUT_SEPARATOR = "\n";
 
 	private IntCodeInstructionParameterEvaluator modeHandler;
 	protected Scanner inputScanner;
@@ -68,7 +70,7 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	}
 	
 	public void writeOutput(String outputValue) throws IOException {
-		this.outputWriter.append(outputValue + "\n");
+		this.outputWriter.append(outputValue + OUTPUT_SEPARATOR);
         this.outputWriter.flush();
 	}
 	

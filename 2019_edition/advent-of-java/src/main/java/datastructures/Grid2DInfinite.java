@@ -4,8 +4,11 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class Grid2DInfinite<T> implements IGrid2D<T>{
+	
+	public static final String LINE_SEPARATOR = "\n";
 
 	private Map<Point, T> grid;
 	private T defaultValue;
@@ -43,15 +46,23 @@ public class Grid2DInfinite<T> implements IGrid2D<T>{
 	@Override
 	public String toString() {
 		StringBuilder gridBuilder = new StringBuilder();
-		
-		for (int x=this.getMinX(); x<=this.getMaxX(); x++) {
-			for (int y=this.getMinY(); y<=this.getMaxY(); y++) {
+
+		// TOP LEFT = 0,0
+		for (int y=this.getMinY(); y<=this.getMaxY(); y++) {
+			for (int x=this.getMinX(); x<=this.getMaxX(); x++) {
 				gridBuilder.append(this.get(new Point(x, y)).toString());
 			}
-			gridBuilder.append("\n");
+			gridBuilder.append(LINE_SEPARATOR);
 		}
 		
 		return gridBuilder.toString();
+	}
+	
+	@Override
+	public long count(Predicate<T> condition) {
+		return this.grid.values().stream()
+				.filter(condition)
+				.count();
 	}
 	
 	public int getMaxX() {

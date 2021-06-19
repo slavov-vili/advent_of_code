@@ -34,7 +34,11 @@ public class Day09Main {
 	}
 
 	public static IntCodeComputer9 getComputer() throws InvalidArgumentException {
-		return new IntCodeComputer9(getInput(), getInstructionProvider(), getModeHandler());
+		return getComputer(getInput());
+	}
+	
+	public static IntCodeComputer9 getComputer(List<Long> initialMemory) throws InvalidArgumentException {
+		return new IntCodeComputer9(initialMemory, getInstructionProvider(), getModeHandler());
 	}
 
 	public static IntCodeInstructionParameterEvaluator getModeHandler() {

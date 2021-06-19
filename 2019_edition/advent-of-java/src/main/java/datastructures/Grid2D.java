@@ -1,6 +1,7 @@
 package datastructures;
 
 import java.awt.Point;
+import java.util.function.Predicate;
 
 public class Grid2D<T> implements IGrid2D<T> {
 	private Object[][] grid;
@@ -35,6 +36,18 @@ public class Grid2D<T> implements IGrid2D<T> {
 	@Override
 	public int getSize() {
 		return this.getWidth() * this.getHeight();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public long count(Predicate<T> condition) {
+		long result = 0;
+		for (int x=0; x<this.getWidth(); x++)
+			for (int y=0; y<this.getHeight(); y++)
+				if (condition.test((T) this.grid[x][y]))
+					result++;
+		
+		return result;
 	}
 	
 	private void checkPosition(Point positionToCheck) {
