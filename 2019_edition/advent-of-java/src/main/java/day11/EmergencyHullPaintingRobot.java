@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import datastructures.Direction2D;
+import datastructures.Grid2DInfinite;
 import datastructures.IGrid2D;
 import day05.A.IntCodeComputer5A;
 import exceptions.InvalidIntCodeException;
@@ -40,7 +41,7 @@ public class EmergencyHullPaintingRobot {
 		this.paintPath = new ArrayList<>();
 	}
 	
-	public void run() throws InvalidIntCodeException {
+	public String run() throws InvalidIntCodeException {
 		while (!this.computer.isHalted()) {
 			Reader input = new StringReader(getCurPanel().toString());
 	        StringWriter outputWriter = new StringWriter();
@@ -53,6 +54,7 @@ public class EmergencyHullPaintingRobot {
 	        this.updateDirection(colorDirection.y);
 	        this.move();
 		}
+		return this.getPrintableGrid();
 	}
 	
 	public void paintCurPanel(int colorToPaint) {
@@ -74,15 +76,21 @@ public class EmergencyHullPaintingRobot {
 	// Point.x = color
 	// Point.y = direction
 	public Point parseOutput(String computerOutput) {
-		String[] outputLines = computerOutput.split("\\n");
+		String[] outputLines = computerOutput.split(IntCodeComputer5A.OUTPUT_SEPARATOR);
 		return new Point(Integer.parseInt(outputLines[0]),
 						 Integer.parseInt(outputLines[1]));
 	}
 	
 	public String getPrintableGrid() {
-		return this.grid.toString()
+		String flippedGrid = this.grid.toString()
 				.replace(Character.forDigit(BLACK_DIGIT, 10), BLACK_CHAR)
 				.replace(Character.forDigit(WHITE_DIGIT, 10), WHITE_CHAR);
+		String[] flippedLines = flippedGrid.split(Grid2DInfinite.LINE_SEPARATOR);
+		
+		StringBuilder gridBuilder = new StringBuilder();
+		for (String line : flippedLines)
+			gridBuilder.insert(0, line + Grid2DInfinite.LINE_SEPARATOR);
+		return gridBuilder.toString();
 	}
 	
 	public Set<Point> getPaintedPanels() {

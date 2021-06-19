@@ -27,7 +27,7 @@ public class IntCodeComputer7 extends IntCodeComputer5B {
 	
 	@Override
 	public boolean shouldStop() {
-		return super.shouldStop() || this.isWaitingForInput;
+		return super.shouldStop() || this.isWaitingForInput();
 	}
 
 	public boolean hasNextInput() {
