@@ -40,9 +40,10 @@ public class IntCodeComputer7 extends IntCodeComputer5B {
 	
 	public void setWaitingForInput(boolean waiting) {
 		this.isWaitingForInput = waiting;
-		if (waiting)
-			System.out.println("Computer paused and is waiting for input");
-		else
-			System.out.println("Computer is no longer waiting for input");
+		if (this.isDebug())
+			if (waiting)
+				System.out.println("Computer paused and is waiting for input");
+			else
+				System.out.println("Computer is no longer waiting for input");
 	}
 }

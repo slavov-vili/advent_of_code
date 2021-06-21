@@ -27,12 +27,15 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	protected Scanner inputScanner;
 	protected Writer outputWriter;
 
+	private boolean isDebug;
+
 	public IntCodeComputer5A(List<? extends Number> initialMemory, IntCodeInstructionProvider instructionProvider,
 			IntCodeInstructionParameterEvaluator modeHandler) {
 		super(initialMemory, instructionProvider);
 		this.modeHandler = modeHandler;
 		this.inputScanner = new Scanner(System.in);
 		this.outputWriter = new OutputStreamWriter(System.out);
+		this.isDebug = false;
 	}
 	
 	public void run(Reader inputReader, Writer outputWriter) throws InvalidIntCodeException {
@@ -72,6 +75,14 @@ public class IntCodeComputer5A extends IntCodeComputer {
 	public void writeOutput(String outputValue) throws IOException {
 		this.outputWriter.append(outputValue + OUTPUT_SEPARATOR);
         this.outputWriter.flush();
+	}
+	
+	public boolean isDebug() {
+		return this.isDebug;
+	}
+	
+	public void toggleDebug() {
+		this.isDebug = !this.isDebug;
 	}
 	
 	private List<Long> calcParameterModes(IntCodeInstruction instruction) {
