@@ -38,11 +38,15 @@ public class ArcadeCabinet {
 	private IntCodeComputer9 computer;
 	private IGrid2D<Integer> grid;
 	private int score;
+	private Point ballPosition;
+	private Point paddlePosition;
 
 	public ArcadeCabinet(IntCodeComputer9 computer) {
 		this.computer = computer;
 		this.grid = new Grid2DInfinite<>(0);
 		this.score = 0;
+		this.ballPosition = new Point(0, 0);
+		this.paddlePosition = new Point(0, 0);
 	}
 	
 	public String run(String input) throws InvalidIntCodeException {
@@ -53,10 +57,8 @@ public class ArcadeCabinet {
         
         Map<Point, Integer> parsedOutput = this.parseOutput(outputWriter.toString());
         
-        if (parsedOutput.containsKey(SEGMENT_DISPLAY)) {
-        	this.setScore(parsedOutput.get(SEGMENT_DISPLAY));
-        	parsedOutput.remove(SEGMENT_DISPLAY);
-        }
+        this.extractInformation(parsedOutput);
+        parsedOutput.remove(SEGMENT_DISPLAY);
         
         this.updateGrid(parsedOutput);
         return this.getPrintableGrid();
@@ -64,6 +66,15 @@ public class ArcadeCabinet {
 	
 	public int getBlockCount() {
 		return (int) this.grid.count(tile -> tile.equals(BLOCK_DIGIT));
+	}
+	
+	public void extractInformation(Map<Point, Integer> computerOutput) { 
+		this.setScore(computerOutput.getOrDefault(SEGMENT_DISPLAY, 0));
+		for (Map.Entry<Point, Integer> tile : computerOutput.entrySet())
+			if (BALL_DIGIT.equals(tile.getValue()))
+				this.setBallPosition(tile.getKey());
+			else if (PADDLE_DIGIT.equals(tile.getValue()))
+				this.setPaddlePosition(tile.getKey());
 	}
 	
 	public String getPrintableGrid() {
@@ -101,6 +112,22 @@ public class ArcadeCabinet {
 	
 	public boolean computerIsWaitingForInput() {
 		return this.computer.isWaitingForInput();
+	}
+	
+	public Point getBallPosition() {
+		return this.ballPosition;
+	}
+	
+	public void setBallPosition(Point newPosition) {
+		this.ballPosition = newPosition;
+	}
+	
+	public Point getPaddlePosition() {
+		return this.paddlePosition;
+	}
+	
+	public void setPaddlePosition(Point newPosition) {
+		this.paddlePosition = newPosition;
 	}
 	
 	public int getScore() {
