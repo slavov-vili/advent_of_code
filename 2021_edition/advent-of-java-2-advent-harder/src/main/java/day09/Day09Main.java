@@ -1,0 +1,13 @@
+package day09;
+
+import java.util.List;
+
+import utils.AdventOfCodeUtils;
+
+public class Day09Main {
+
+	public static void main(String[] args) {
+		List<String> input = AdventOfCodeUtils.readInput(Day09Main.class);
+		System.out.println(input);
+	}
+}
