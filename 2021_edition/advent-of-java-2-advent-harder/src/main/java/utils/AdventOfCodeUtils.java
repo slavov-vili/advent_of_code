@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class AdventOfCodeUtils {
+	
+	public static final boolean WANT_ONELINER = true;
+	public static final boolean DONT_WANT_ONELINER = false;
 
     /*
      * Returns an immutable list of the lines of a given file. If the file does not

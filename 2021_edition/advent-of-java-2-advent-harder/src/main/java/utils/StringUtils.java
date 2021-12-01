@@ -7,12 +7,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class StringUtils {
-    public static Stream<String> getAllMatches(String inputString, String regex) {
+    public static List<String> getAllMatches(String inputString, String regex) {
         List<String> results = new ArrayList<>();
         Matcher matcher = Pattern.compile(regex).matcher(inputString);
         while (matcher.find())
             results.add(matcher.group());
-        return results.stream();
+        return results;
     }
 
     public static boolean hasSequenceOfSameChars(String stringToCheck, String sequenceOfSameCharsPattern) {
@@ -22,7 +22,7 @@ public class StringUtils {
     public static boolean hasSequenceOfSameChars(String stringToCheck, String sequenceOfSameCharsPattern,
             int sequenceLength) {
         return StringUtils.getAllMatches(stringToCheck, sequenceOfSameCharsPattern)
-                .anyMatch(seq -> seq.length() == sequenceLength);
+                .stream().anyMatch(seq -> seq.length() == sequenceLength);
     }
 
     public static boolean isAlwaysIncreasing(String stringToCheck) {
