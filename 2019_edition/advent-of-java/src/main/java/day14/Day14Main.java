@@ -17,16 +17,16 @@ public class Day14Main {
 	public static final long FUEL_AMOUNT = 1;
 	public static final long ORE_SUPPLY = 1000000000000L;
 	public static final Pattern chemicalPattern = Pattern.compile("\\d+ [a-zA-Z]+");
-	
+
 	public static Map<String, List<SimpleEntry<String, Long>>> reactionMap;
 	public static Map<String, Long> leftoversMap;
 
 	public static void main(String[] args) {
 		reactionMap = getInput();
-		
+
 		System.out.printf("Cost of producing %d FUEL: %d\n", FUEL_AMOUNT, solveA(FUEL_AMOUNT));
-		
-		System.out.printf("You can produce %d FUEL with %d ORE\n", solveB(), ORE_SUPPLY);
+
+		System.out.printf("You can produce %d FUEL with %d ORE\n", solveB(0, Integer.MAX_VALUE), ORE_SUPPLY);
 	}
 
 	public static long solveA(long fuelAmount) {
@@ -34,29 +34,29 @@ public class Day14Main {
 		return calcCostOf("FUEL", fuelAmount);
 	}
 
-	public static long solveB() {
-		int lowerBound = 0;
-		int upperBound = Integer.MAX_VALUE;
-		int increment = 1;
-		int curCount = 0;
-		long curCost = 0L;
-		
-		do {
-			increment = (upperBound - lowerBound) / 2;
-			curCount = lowerBound + increment;
-			curCost = solveA(curCount);
-			
+	// Basically binary search in a range of integers
+	// Always finds the last smallest one, because integer division rounds down
+	public static long solveB(int lowerBound, int upperBound) {
+		int increment = (upperBound - lowerBound) / 2;
+
+		if (increment == 0) {
+			return (lowerBound + upperBound) / 2;
+		} else {
+			int curFuelCount = lowerBound + increment;
+			long curCost = solveA(curFuelCount);
+
+			long result = 0L;
+
 			if (curCost < ORE_SUPPLY) {
-				lowerBound = curCount;
+				result = solveB(curFuelCount, upperBound);
 			} else if (curCost > ORE_SUPPLY) {
-				upperBound = curCount;
+				result = solveB(lowerBound, curFuelCount);
 			} else {
-				increment = 0;
+				result = curFuelCount;
 			}
-			
-		} while (increment != 0);
-		
-		return curCount;
+
+			return result;
+		}
 	}
 
 	public static long calcCostOf(SimpleEntry<String, Long> chemicalEntry) {
