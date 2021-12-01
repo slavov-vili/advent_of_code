@@ -41,10 +41,9 @@ public class Day01Main {
 			}
 			return countSumIncreases;
 		} else {
-			return solveA(
-					IntStream.range(0, measurements.size() - 2).mapToObj(i -> measurements.subList(i, i + 3))
-							.map(subList -> subList.stream().reduce(0L, Long::sum)).collect(Collectors.toList()),
-					wantOneliner);
+			return solveA(IntStream.range(0, measurements.size() - 2)
+					.mapToObj(i -> measurements.subList(i, i + 3).stream().reduce(0L, Long::sum))
+					.collect(Collectors.toList()), wantOneliner);
 		}
 	}
 }
