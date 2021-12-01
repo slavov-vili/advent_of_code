@@ -83,7 +83,7 @@ public class Day02Main {
         return getInput(Day02Main.class);
     }
     
-    public static List<Long> getInput(Class sourceClass) {
+    public static List<Long> getInput(Class<?> sourceClass) {
     	String intCodesString = AdventOfCodeUtils.readInputLines(sourceClass).get(0);
         return Arrays.asList(intCodesString.split(",")).stream()
         		.map(Long::parseLong)
