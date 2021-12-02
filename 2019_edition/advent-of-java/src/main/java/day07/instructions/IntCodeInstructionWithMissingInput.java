@@ -16,15 +16,15 @@ public abstract class IntCodeInstructionWithMissingInput extends IntCodeInstruct
     @Override
     public void apply(IntCodeComputer computer, List<Long> parameters) {
     	IntCodeComputer7 computer7 = (IntCodeComputer7) computer;
-    	String instructionName = this.getClass().getSimpleName();
-		System.out.printf("Instruction %s requires input: \n", instructionName);
+//    	String instructionName = this.getClass().getSimpleName();
+//		System.out.printf("Instruction %s requires input: \n", instructionName);
 		
     	if (!computer7.hasNextInput() ) {
     		computer7.setWaitingForInput(true);
     		computer7.setJumpIndex(Optional.of(computer7.getCurInstructionIdx()));
     	} else {
     		String input = computer7.getInput();
-            System.out.printf("Instruction %s received input: %s\n", instructionName, input);
+//            System.out.printf("Instruction %s received input: %s\n", instructionName, input);
             
             this.applyWithInput(computer7, parameters, input);	
     	}
