@@ -6,8 +6,10 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import datastructures.Grid2DInfinite;
 import datastructures.IGrid2D;
@@ -25,16 +27,16 @@ public class RepairDroid {
 	public static final char DROID_CHAR = 'D';
 	public static final char OXYGEN_SYSTEM_CHAR = 'X';
 	public static final char ORIGIN_CHAR = 'S';
-	
+
 	public static final Point ORIGIN = new Point();
 
 	public static final String DIRECTION_NORTH = "1";
 	public static final String DIRECTION_SOUTH = "2";
 	public static final String DIRECTION_WEST = "3";
 	public static final String DIRECTION_EAST = "4";
-	
+
 	public static final Map<String, String> NEXT_MOVEMENT_DIRECTION = generateDirectionMovementOrder();
-	public static final Map<String, String> NEXT_LOOKING_DIRECTION  = generateDirectionLookingOrder();
+	public static final Map<String, String> NEXT_LOOKING_DIRECTION = generateDirectionLookingOrder();
 
 	private IntCodeComputer9 computer;
 	private IGrid2D<Character> grid;
@@ -65,8 +67,12 @@ public class RepairDroid {
 	}
 
 	public Point calcNewPosition(String direction) {
-		int newX = this.position.x;
-		int newY = this.position.y;
+		return calcNewPosition(this.position, direction);
+	}
+	
+	public static Point calcNewPosition(Point curPosition, String direction) {
+		int newX = curPosition.x;
+		int newY = curPosition.y;
 
 		if (DIRECTION_NORTH.equals(direction)) {
 			newY -= 1;
@@ -95,10 +101,23 @@ public class RepairDroid {
 		}
 	}
 
+	public void updateGrid(Point positionToUpdate, char newChar) {
+		if (ORIGIN.equals(positionToUpdate))
+			newChar = ORIGIN_CHAR;
+		else if (this.oxygenSystemPosition.isPresent() && this.oxygenSystemPosition.get().equals(positionToUpdate))
+			newChar = OXYGEN_SYSTEM_CHAR;
+
+		this.grid.set(positionToUpdate, newChar);
+	}
+
+	public Set<Point> getOpenPositions() {
+		return new HashSet<>(this.grid.getPositionsWhere(character -> WALL_CHAR != character));
+	}
+
 	private static Map<String, String> generateDirectionMovementOrder() {
 		Map<String, String> directionOrder = new HashMap<>();
 		directionOrder.put(DIRECTION_NORTH, DIRECTION_WEST);
-		directionOrder.put(DIRECTION_WEST,  DIRECTION_SOUTH);
+		directionOrder.put(DIRECTION_WEST, DIRECTION_SOUTH);
 		directionOrder.put(DIRECTION_SOUTH, DIRECTION_EAST);
 		directionOrder.put(DIRECTION_EAST, DIRECTION_NORTH);
 		return directionOrder;
@@ -109,19 +128,10 @@ public class RepairDroid {
 		directionOrder.put(DIRECTION_NORTH, DIRECTION_EAST);
 		directionOrder.put(DIRECTION_EAST, DIRECTION_SOUTH);
 		directionOrder.put(DIRECTION_SOUTH, DIRECTION_WEST);
-		directionOrder.put(DIRECTION_WEST,  DIRECTION_NORTH);
+		directionOrder.put(DIRECTION_WEST, DIRECTION_NORTH);
 		return directionOrder;
 	}
 
-	public void updateGrid(Point positionToUpdate, char newChar) {
-		if (ORIGIN.equals(positionToUpdate))
-			newChar = ORIGIN_CHAR;
-		else if (this.oxygenSystemPosition.isPresent() && this.oxygenSystemPosition.get().equals(positionToUpdate))
-			newChar = OXYGEN_SYSTEM_CHAR;
-			
-		this.grid.set(positionToUpdate, newChar);
-	}
-	
 	public Optional<Point> getOxygenSystemPosition() {
 		return this.oxygenSystemPosition;
 	}
@@ -129,11 +139,11 @@ public class RepairDroid {
 	public String getRoomLayout() {
 		return this.grid.toString();
 	}
-	
+
 	public Point getPosition() {
 		return this.position;
 	}
-	
+
 	public boolean justHitWall() {
 		return WALL_DIGIT == this.lastResponse;
 	}
