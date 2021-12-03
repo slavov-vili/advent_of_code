@@ -62,6 +62,10 @@ public class Day15Main {
 		do {
 			droid.giveDirection(direction);
 
+			System.out.println("Maze:");
+			System.out.println(droid.getRoomLayout());
+			System.out.println();
+
 			if (!droid.justHitWall())
 				if (steps.contains(droid.getPosition()))
 					steps.remove(prevPosition);
@@ -78,9 +82,9 @@ public class Day15Main {
 			droid.updateGrid(step, RepairDroid.DROID_CHAR);
 		}
 
-		System.out.println("Maze:");
-		System.out.println(droid.getRoomLayout());
-		System.out.println();
+//		System.out.println("Maze:");
+//		System.out.println(droid.getRoomLayout());
+//		System.out.println();
 
 		return steps;
 	}

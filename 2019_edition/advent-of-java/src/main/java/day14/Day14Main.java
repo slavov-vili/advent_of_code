@@ -40,7 +40,7 @@ public class Day14Main {
 		int increment = (upperBound - lowerBound) / 2;
 
 		if (increment == 0) {
-			return (lowerBound + upperBound) / 2;
+			return lowerBound;
 		} else {
 			int curFuelCount = lowerBound + increment;
 			long curCost = solveA(curFuelCount);
