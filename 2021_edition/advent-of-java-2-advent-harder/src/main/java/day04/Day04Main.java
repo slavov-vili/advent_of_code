@@ -1,11 +1,8 @@
 package day04;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,68 +18,39 @@ public class Day04Main {
 		List<Integer> numbers = Arrays.stream(input.get(0).split(",")).map(Integer::parseInt)
 				.collect(Collectors.toList());
 
-		System.out.println("First board score: "
-				+ findFirstBingoBoardScore(numbers, extractBingoBoards(input.subList(2, input.size()))));
+		List<BingoBoard<Integer>> boardsInBingoOrder = findBoardsInBingoOrder(numbers,
+				extractBingoBoards(input.subList(2, input.size())));
 
-		System.out.println("Last board score: "
-				+ findLastBingoBoardScore(numbers, extractBingoBoards(input.subList(2, input.size()))));
+		System.out.println("First board score: " + calcBoardScore(boardsInBingoOrder.get(0)));
+
+		System.out
+				.println("Last board score: " + calcBoardScore(boardsInBingoOrder.get(boardsInBingoOrder.size() - 1)));
 	}
 
-	public static int findFirstBingoBoardScore(List<Integer> numbers, List<BingoBoard<Integer>> bingoBoards) {
-		int lastNumber = numbers.get(0);
-		Optional<BingoBoard<Integer>> boardWithFirstBingo = Optional.empty();
-		for (int number : numbers) {
-			for (BingoBoard<Integer> board : bingoBoards) {
-				Optional<Point> lastCheckedNumberPosition = board.checkValue(number);
+	public static List<BingoBoard<Integer>> findBoardsInBingoOrder(List<Integer> numbers,
+			List<BingoBoard<Integer>> boards) {
+		if (boards.size() == 0)
+			return boards;
+		else {
+			List<BingoBoard<Integer>> boardsInOrder = boards.stream().filter(board -> board.markValue(numbers.get(0)))
+					.collect(Collectors.toList());
 
-				if (lastCheckedNumberPosition.isPresent() && board.hasBingo(lastCheckedNumberPosition.get())) {
-					boardWithFirstBingo = Optional.of(board);
-					break;
-				}
-			}
+			List<BingoBoard<Integer>> nextBoards = boards;
+			nextBoards.removeAll(boardsInOrder);
 
-			lastNumber = number;
-			if (boardWithFirstBingo.isPresent())
-				break;
+			boardsInOrder.addAll(findBoardsInBingoOrder(numbers.subList(1, numbers.size()), nextBoards));
+			return boardsInOrder;
 		}
-
-		int unmarkedSum = 0;
-		if (boardWithFirstBingo.isPresent())
-			unmarkedSum = boardWithFirstBingo.get().getUnmarkedValues().stream().mapToInt(value -> value).sum();
-		return unmarkedSum * lastNumber;
 	}
 
-	public static int findLastBingoBoardScore(List<Integer> numbers, List<BingoBoard<Integer>> bingoBoards) {
-		int lastNumber = numbers.get(0);
-		Optional<BingoBoard<Integer>> boardWithLastBingo = Optional.empty();
-		Set<Integer> boardsWithBingo = new HashSet<>();
-
-		for (int number : numbers) {
-			for (int i = 0; i < bingoBoards.size(); i++) {
-				if (!boardsWithBingo.contains(i)) {
-					BingoBoard<Integer> curBoard = bingoBoards.get(i);
-					Optional<Point> lastCheckedNumberPosition = curBoard.checkValue(number);
-
-					if (lastCheckedNumberPosition.isPresent() && curBoard.hasBingo(lastCheckedNumberPosition.get())) {
-						boardWithLastBingo = Optional.of(curBoard);
-						boardsWithBingo.add(i);
-					}
-				}
-			}
-
-			lastNumber = number;
-			if (boardsWithBingo.size() == bingoBoards.size())
-				break;
-		}
-
-		int unmarkedSum = 0;
-		if (boardWithLastBingo.isPresent())
-			unmarkedSum = boardWithLastBingo.get().getUnmarkedValues().stream().mapToInt(value -> value).sum();
-		return unmarkedSum * lastNumber;
+	public static int calcBoardScore(BingoBoard<Integer> board) {
+		int unmarkedSum = board.getUnmarkedValues().stream().mapToInt(value -> value).sum();
+		Set<Integer> valueMarkOrder = board.getValueMarkOrder();
+		return unmarkedSum * board.getValueByMarkIndex(valueMarkOrder.size() - 1);
 	}
 
 	public static List<BingoBoard<Integer>> extractBingoBoards(List<String> input) {
-		List<BingoBoard<Integer>> bingoBoards = new ArrayList<>();
+		List<BingoBoard<Integer>> bingoBoards = new LinkedList<>();
 		String curBingoBoard = "";
 		for (String curLine : input) {
 			if (curLine.isEmpty()) {

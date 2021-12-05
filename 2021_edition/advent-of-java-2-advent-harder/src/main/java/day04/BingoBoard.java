@@ -2,8 +2,9 @@ package day04;
 
 import java.awt.Point;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,11 +15,11 @@ import java.util.stream.Collectors;
 public class BingoBoard<T> {
 	public static final int BOARD_SIZE = 5;
 	private Map<T, SimpleEntry<Point, Boolean>> valueMap;
-	private List<T> values;
+	private Set<T> valueMarkOrder;
 
 	public BingoBoard(List<T> values) {
-		this.values = new ArrayList<>(values);
-		this.valueMap = new HashMap<>();
+		this.valueMarkOrder = new LinkedHashSet<>();
+		this.valueMap = new LinkedHashMap<>();
 
 		for (int i = 0; i < values.size(); i++) {
 			int row = i / BOARD_SIZE;
@@ -29,18 +30,18 @@ public class BingoBoard<T> {
 		}
 	}
 
-	public Optional<Point> checkValue(T valueToCheck) {
+	public boolean markValue(T valueToCheck) {
 		if (this.valueMap.containsKey(valueToCheck)) {
 			SimpleEntry<Point, Boolean> valueProperties = this.valueMap.get(valueToCheck);
 			valueProperties.setValue(true);
-			return Optional.of(valueProperties.getKey());
+			valueMarkOrder.add(valueToCheck);
+			return this.hasBingo(valueProperties.getKey());
 		}
-		return Optional.empty();
+		return false;
 	}
 
 	public boolean hasBingo(Point position) {
-		return hasCoordBingo(position, Point::getX)
-				|| hasCoordBingo(position, Point::getY);
+		return hasCoordBingo(position, Point::getX) || hasCoordBingo(position, Point::getY);
 	}
 
 	public boolean hasCoordBingo(Point positionToCheck, Function<Point, Double> coordChooser) {
@@ -51,10 +52,31 @@ public class BingoBoard<T> {
 		return markedValuesOnSameCoord.size() == BOARD_SIZE;
 	}
 	
+	public T getValueByMarkIndex(int valueMarkIndex) {
+		Iterator<T> valueIter = this.valueMarkOrder.iterator();
+		T value = valueIter.next();
+		for (int i=0; i<valueMarkIndex; i++)
+			value = valueIter.next();
+		return value;
+	}
+	
+	public Set<T> getValueMarkOrder() {
+		return this.valueMarkOrder;
+	}
+	
+	public List<T> getValuesInOrder() {
+		return this.valueMap.keySet().stream()
+				.collect(Collectors.toList());
+	}
+	
+	public Set<T> getValues() {
+		return this.valueMap.keySet();
+	}
+
 	public Set<T> getMarkedValues() {
 		return this.valueMap.keySet().stream().filter(this::isMarked).collect(Collectors.toSet());
 	}
-	
+
 	public Set<T> getUnmarkedValues() {
 		return this.valueMap.keySet().stream().filter(value -> !this.isMarked(value)).collect(Collectors.toSet());
 	}
@@ -79,11 +101,16 @@ public class BingoBoard<T> {
 
 		return Optional.empty();
 	}
+	
+	public boolean equals(BingoBoard<T> otherBoard) {
+		return this.getValuesInOrder().equals(otherBoard.getValuesInOrder());
+	}
 
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < this.values.size(); i++) {
-			T curValue = values.get(i);
+		List<T> valuesInOrder = this.getValuesInOrder();
+		for (int i = 0; i < valuesInOrder.size(); i++) {
+			T curValue = valuesInOrder.get(i);
 			if (valueMap.get(curValue).getValue())
 				builder.append(" *" + curValue.toString() + "*");
 			else

@@ -5,10 +5,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,13 +28,11 @@ public class Day05Main {
 
 	public static int solveA(List<SimpleEntry<Point, Point>> lines) {
 		return findAtLeastTwoLineCrossings(
-				lines.stream().filter(line -> !isDiagonal(line)).collect(Collectors.toList()),
-				Day05Main::generateNonDiagonalPath);
+				lines.stream().filter(line -> !isDiagonal(line)).collect(Collectors.toList()), Day05Main::generatePath);
 	}
 
 	public static int solveB(List<SimpleEntry<Point, Point>> lines) {
-		return findAtLeastTwoLineCrossings(lines,
-				line -> (isDiagonal(line)) ? generateDiagonalPath(line) : generateNonDiagonalPath(line));
+		return findAtLeastTwoLineCrossings(lines, Day05Main::generatePath);
 	}
 
 	public static int findAtLeastTwoLineCrossings(List<SimpleEntry<Point, Point>> lines,
@@ -55,28 +51,35 @@ public class Day05Main {
 		return atLeastTwoCrossings.size();
 	}
 
-	public static Set<Point> generateNonDiagonalPath(SimpleEntry<Point, Point> line) {
+	public static List<Point> generatePath(SimpleEntry<Point, Point> line) {
+		return (isDiagonal(line)) ? generateDiagonalPath(line) : generateNonDiagonalPath(line);
+	}
+
+	public static List<Point> generateNonDiagonalPath(SimpleEntry<Point, Point> line) {
 		Point source = line.getKey();
 		Point target = line.getValue();
-		int minX = Math.min(source.x, target.x);
-		int minY = Math.min(source.y, target.y);
-		int maxX = Math.max(source.x, target.x);
-		int maxY = Math.max(source.y, target.y);
-
-		Set<Point> path = new HashSet<>();
-		for (int x = minX; x <= maxX; x++)
-			for (int y = minY; y <= maxY; y++)
-				path.add(new Point(x, y));
+		int incrementX = -IntegerUtils.compareInts(source.x, target.x);
+		int incrementY = -IntegerUtils.compareInts(source.y, target.y);
+		
+		List<Point> path = new ArrayList<>();
+		if (source.x == target.x)
+			for (int y = source.y; y != target.y + incrementY; y += incrementY)
+				path.add(new Point(source.x, y));
+		else if (source.y == target.y)
+			for (int x = source.x; x != target.x + incrementX; x += incrementX)
+				path.add(new Point(x, source.y));
+			
+				
 		return path;
 	}
 
-	public static Set<Point> generateDiagonalPath(SimpleEntry<Point, Point> line) {
+	public static List<Point> generateDiagonalPath(SimpleEntry<Point, Point> line) {
 		Point source = line.getKey();
 		Point target = line.getValue();
 		int incrementX = -IntegerUtils.compareInts(source.x, target.x);
 		int incrementY = -IntegerUtils.compareInts(source.y, target.y);
 
-		Set<Point> path = new HashSet<>();
+		List<Point> path = new ArrayList<>();
 		int curX = source.x;
 		int curY = source.y;
 		while (curX != (target.x + incrementX) && curY != (target.y + incrementY)) {
