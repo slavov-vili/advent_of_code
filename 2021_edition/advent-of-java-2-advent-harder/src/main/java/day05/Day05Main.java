@@ -3,11 +3,9 @@ package day05;
 import java.awt.Point;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -28,18 +26,17 @@ public class Day05Main {
 
 	public static int solveA(List<SimpleEntry<Point, Point>> lines) {
 		return findAtLeastTwoLineCrossings(
-				lines.stream().filter(line -> !isDiagonal(line)).collect(Collectors.toList()), Day05Main::generatePath);
+				lines.stream().filter(line -> !isDiagonal(line)).collect(Collectors.toList()));
 	}
 
 	public static int solveB(List<SimpleEntry<Point, Point>> lines) {
-		return findAtLeastTwoLineCrossings(lines, Day05Main::generatePath);
+		return findAtLeastTwoLineCrossings(lines);
 	}
 
-	public static int findAtLeastTwoLineCrossings(List<SimpleEntry<Point, Point>> lines,
-			Function<SimpleEntry<Point, Point>, ? extends Collection<Point>> pathFinder) {
+	public static int findAtLeastTwoLineCrossings(List<SimpleEntry<Point, Point>> lines) {
 		Map<Point, Integer> lineCrossingsMap = new HashMap<>();
 		for (SimpleEntry<Point, Point> line : lines) {
-			for (Point point : pathFinder.apply(line)) {
+			for (Point point : generatePath(line)) {
 				int curCount = lineCrossingsMap.getOrDefault(point, 0);
 				lineCrossingsMap.put(point, curCount + 1);
 			}
