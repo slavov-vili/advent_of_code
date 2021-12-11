@@ -27,7 +27,7 @@ public class Day10Main {
 	}
 
 	public static int solveA(Set<List<Character>> lines) {
-		List<Character> corruptedCharacters = lines.stream().map(Day10Main::getFirstCorruptedCharacter)
+		List<Character> corruptedCharacters = lines.stream().map(Day10Main::findFirstCorruptedCharacter)
 				.filter(Optional::isPresent).map(Optional<Character>::get).collect(Collectors.toList());
 		return calcSyntaxErrorScore(corruptedCharacters);
 	}
@@ -37,7 +37,7 @@ public class Day10Main {
 				.skip(lines.size() / 2).findFirst().get();
 	}
 
-	public static Optional<Character> getFirstCorruptedCharacter(List<Character> chunks) {
+	public static Optional<Character> findFirstCorruptedCharacter(List<Character> chunks) {
 		Optional<Integer> characterIndex = findFirstCorruptedCharacterIndex(chunks);
 		return (characterIndex.isPresent()) ? Optional.of(chunks.get(characterIndex.get())) : Optional.empty();
 	}
@@ -75,9 +75,8 @@ public class Day10Main {
 		for (Character curBracket : chunks) {
 			if (isOpening(curBracket))
 				lastOpenBrackets.push(curBracket);
-			else {
+			else
 				lastOpenBrackets.pop();
-			}
 		}
 
 		return lastOpenBrackets;
