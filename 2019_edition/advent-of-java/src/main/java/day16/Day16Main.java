@@ -1,5 +1,6 @@
 package day16;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,27 +11,37 @@ import exceptions.InvalidIntCodeException;
 import utils.AdventOfCodeUtils;
 
 public class Day16Main {
-	public static final List<Integer> BASE_PATTERN = List.of(0, 1, 0, -1);
+	public static final List<Integer> PATTERN = List.of(0, 1, 0, -1);
 
 	public static void main(String[] args) throws InvalidArgumentException, InvalidIntCodeException {
 		String solutionA = solveA(getInput());
-		System.out.println("After 100 FFT Rounds: " + solutionA);
-		
-		String solutionB = solveB(getInput()).stream().map(Object::toString).reduce("", String::concat);
-		System.out.println("Input*10K After 100 FFT Rounds: " + solutionB);
+		System.out.println("100 rounds of FFT on initial input: " + solutionA);
+
+		String solutionB = solveB(getInput());
+		System.out.println("100 rounds of FFT on extended input: " + solutionB);
 	}
 
 	public static String solveA(List<Integer> input) {
-		List<Integer> nextInput = input;
+		List<Integer> nextDigits = input;
 		for (int i = 0; i < 100; i++) {
-			nextInput = doRoundOfFFT(nextInput, BASE_PATTERN);
+			nextDigits = doRoundOfFFT(nextDigits, PATTERN);
 		}
-		return nextInput.stream().map(Object::toString).reduce("", String::concat).substring(0, 8);
+		return nextDigits.subList(0, 8).stream().map(Object::toString).reduce("", String::concat);
 	}
-	
-	public static List<Integer> solveB(List<Integer> input) {
-		int messageOffset = Integer.parseInt(input.subList(0, 7).stream().map(Object::toString).reduce("", String::concat));
-		
+
+	public static String solveB(List<Integer> input) {
+		int messageOffset = Integer
+				.parseInt(input.subList(0, 7).stream().map(Object::toString).reduce("", String::concat));
+		int inputSize = input.size();
+		List<Integer> relevantDigits = IntStream.range(messageOffset, inputSize * 10000)
+				.mapToObj(i -> input.get(i % inputSize)).collect(Collectors.toList());
+
+		List<Integer> nextDigits = relevantDigits;
+		for (int i = 0; i < 100; i++) {
+			System.out.println("Round " + (i+1));
+			nextDigits = doRoundOfFFTSmart(nextDigits);
+		}
+		return nextDigits.subList(0, 8).stream().map(Object::toString).reduce("", String::concat);
 	}
 
 	public static List<Integer> doRoundOfFFT(List<Integer> digits, List<Integer> pattern) {
@@ -43,9 +54,24 @@ public class Day16Main {
 				.map(i -> digits.get(i) * pattern.get(calcMatchingIndexInPattern(i, depth, pattern))).sum();
 		return Math.abs(sum) % 10;
 	}
+	
+	public static List<Integer> doRoundOfFFTSmart(List<Integer> digits) {
+		List<Integer> nextDigits = new ArrayList<>();
+		int suffixSum = sumList(digits);
+		
+		for (int digit : digits) {
+			nextDigits.add(suffixSum % 10);
+			suffixSum -= digit;
+		}
+		return nextDigits;
+	}
 
 	public static int calcMatchingIndexInPattern(int digitIndex, int depth, List<Integer> pattern) {
 		return ((digitIndex + 1) / depth) % pattern.size();
+	}
+	
+	public static int sumList(List<Integer> digits) {
+		return digits.stream().mapToInt(i -> i).sum();
 	}
 
 	public static List<Integer> getInput() {
