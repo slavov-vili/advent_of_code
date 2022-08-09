@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ListUtils {
     public static List<Integer> generateRange(int startInclusive, int endInclusive) {
@@ -58,6 +60,10 @@ public class ListUtils {
         }
 
         return newPermutationsList;
+    }
+    
+    public static <T extends Number> List<T> generateAndInitialize(int size, T initValue) {
+    	return IntStream.range(0, size).mapToObj(i -> initValue).collect(Collectors.toList());
     }
 
     public static <T> List<T> swap(List<T> inputList, int firstIndex, int secondIndex) {
