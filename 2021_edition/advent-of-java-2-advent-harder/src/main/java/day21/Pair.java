@@ -16,4 +16,14 @@ public class Pair<T1, T2> {
 	public T2 getValue2() {
 		return this.value2;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder("Pair(");
+		builder.append("value1=" + this.getValue1().toString());
+		builder.append(", ");
+		builder.append("value2=" + this.getValue2().toString());
+		builder.append(")");
+		return builder.toString();
+	}
 }
