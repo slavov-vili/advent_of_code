@@ -21,21 +21,31 @@ public class Day05Main {
 
 		System.out.println("Message after instructions done: "
 				+ solveA(parseStacks(input.subList(0, separatorLine)), instructions));
+
+		System.out.println("Real message after instructions done: "
+				+ solveB(parseStacks(input.subList(0, separatorLine)), instructions));
 	}
 
 	public static String solveA(List<Deque<Character>> stacks, List<Instruction> instructions) {
 		for (var instr : instructions) {
-			for (int i = 0; i < instr.count; i++) {
-				var fromStack = stacks.get(instr.from - 1);
-				var toStack = stacks.get(instr.to - 1);
-				toStack.push(fromStack.pop());
-			}
+			var fromStack = stacks.get(instr.from - 1);
+			var toStack = stacks.get(instr.to - 1);
+			IntStream.range(0, instr.count).forEach(i -> toStack.push(fromStack.pop()));
 		}
 
 		return stacks.stream().map(Deque::pop).reduce("", (str, ch) -> str + ch, String::concat);
 	}
 
-	public static void solveB() {
+	public static String solveB(List<Deque<Character>> stacks, List<Instruction> instructions) {
+		for (var instr : instructions) {
+			var fromStack = stacks.get(instr.from - 1);
+			var toStack = stacks.get(instr.to - 1);
+			var tempStack = new ArrayDeque<Character>();
+			IntStream.range(0, instr.count).forEach(i -> tempStack.push(fromStack.pop()));
+			IntStream.range(0, tempStack.size()).forEach(i -> toStack.push(tempStack.pop()));
+		}
+
+		return stacks.stream().map(Deque::pop).reduce("", (str, ch) -> str + ch, String::concat);
 	}
 
 	public static int findSeparatorLine(List<String> lines) {
