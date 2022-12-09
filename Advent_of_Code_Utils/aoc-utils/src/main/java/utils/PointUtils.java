@@ -7,8 +7,28 @@ import java.util.List;
 public class PointUtils {
 	public static final Point ORIGIN_POINT = new Point(0, 0);
 
-	public static int calcAbsoluteSum(ThreeDPoint point) {
-		return Math.abs(point.x) + Math.abs(point.y) + Math.abs(point.z);
+	public static Double calcDeltaX(Point from, Point to) {
+		return Double.valueOf(to.x - from.x);
+	}
+
+	public static Double calcDeltaY(Point from, Point to) {
+		return Double.valueOf(to.y - from.y);
+	}
+
+	public static int calcManhattanDistance(Point from, Point to) {
+		return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
+	}
+
+	public static Point findDirection(Point from, Point to) {
+		int dirX = to.x - from.x;
+		int dirY = to.y - from.y;
+
+		return new Point(dirX / Math.abs(dirX), dirY / Math.abs(dirY));
+	}
+
+	// = Manhattan + diagonals
+	public static int calcChebyshevDistance(Point from, Point to) {
+		return Math.max(Math.abs(from.x - to.x), Math.abs(from.y - to.y));
 	}
 
 	/*
@@ -46,15 +66,7 @@ public class PointUtils {
 		return deltaY / deltaX;
 	}
 
-	public static Double calcDeltaX(Point startPoint, Point endPoint) {
-		return Double.valueOf(endPoint.x - startPoint.x);
-	}
-
-	public static Double calcDeltaY(Point startPoint, Point endPoint) {
-		return Double.valueOf(endPoint.y - startPoint.y);
-	}
-
-	public static int calcManhattanDistance(Point a, Point b) {
-		return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+	public static int calcAbsoluteSum(ThreeDPoint point) {
+		return Math.abs(point.x) + Math.abs(point.y) + Math.abs(point.z);
 	}
 }
