@@ -3,6 +3,7 @@ package utils;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 public class PointUtils {
 	public static final Point ORIGIN_POINT = new Point(0, 0);
@@ -19,16 +20,20 @@ public class PointUtils {
 		return Math.abs(from.x - to.x) + Math.abs(from.y - to.y);
 	}
 
-	public static Point findDirection(Point from, Point to) {
-		int dirX = to.x - from.x;
-		int dirY = to.y - from.y;
-
-		return new Point(dirX / Math.abs(dirX), dirY / Math.abs(dirY));
-	}
-
-	// = Manhattan + diagonals
+	// Manhattan + diagonals
 	public static int calcChebyshevDistance(Point from, Point to) {
 		return Math.max(Math.abs(from.x - to.x), Math.abs(from.y - to.y));
+	}
+
+	// Manhattan + diagonals
+	public static UnaryOperator<Point> getDirection(Point from, Point to) {
+		int diffX = to.x - from.x;
+		int dirX = (diffX == 0) ? 0 : diffX / Math.abs(diffX);
+
+		int diffY = to.y - from.y;
+		int dirY = (diffY == 0) ? 0 : diffY / Math.abs(diffY);
+
+		return pos -> new Point(pos.x + dirX, pos.y + dirY);
 	}
 
 	/*
