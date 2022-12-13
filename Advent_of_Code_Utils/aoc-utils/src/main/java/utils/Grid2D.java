@@ -1,6 +1,8 @@
 package utils;
 
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
@@ -35,11 +37,11 @@ public class Grid2D<T> {
 	}
 
 	public int getColumnCount() {
-		return this.grid.length;
+		return this.grid[0].length;
 	}
 
 	public int getRowCount() {
-		return this.grid[0].length;
+		return this.grid.length;
 	}
 
 	public int getSize() {
@@ -55,10 +57,21 @@ public class Grid2D<T> {
 				&& (positionToCheck.y < this.getColumnCount());
 	}
 
-	private void checkPosition(Point positionToCheck) {
+	protected void checkPosition(Point positionToCheck) {
 		if (!hasPosition(positionToCheck)) {
 			throw new IndexOutOfBoundsException("Position not in grid: " + positionToCheck);
 		}
+	}
+
+	public Collection<Point> getPositionsWhere(Predicate<T> predicate) {
+		var positions = new ArrayList<Point>();
+		var positionIter = this.positionIterator();
+		while (positionIter.hasNext()) {
+			var nextPosition = positionIter.next();
+			if (predicate.test(this.get(nextPosition)))
+				positions.add(nextPosition);
+		}
+		return positions;
 	}
 
 	public Iterator<Point> positionIterator() {
