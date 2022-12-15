@@ -87,8 +87,8 @@ public class Day14Main {
 		return lowestBlocked;
 	}
 
-	public static boolean isGoingToAbyss(Point curPosition, Map<Integer, Integer> lowestBlocked) {
-		return curPosition.y >= lowestBlocked.getOrDefault(curPosition.x, -1);
+	public static boolean isGoingToAbyss(Point curPosition, Map<Integer, Integer> xToLowestBlocked) {
+		return curPosition.y >= xToLowestBlocked.getOrDefault(curPosition.x, -1);
 	}
 
 	public static Set<Point> parseInput() {
