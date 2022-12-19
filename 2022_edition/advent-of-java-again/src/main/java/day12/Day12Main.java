@@ -20,13 +20,13 @@ public class Day12Main {
 
 		System.out.println("Shortest path from start: " + solveA(grid));
 
-		System.out.println("Shortest path fomr any lowest point: " + solveB(grid));
+		System.out.println("Shortest path from any lowest point: " + solveB(grid));
 	}
 
 	public static int solveA(HeightGrid grid) {
 		var positions = new ArrayList<Point>();
 		grid.positionIterator().forEachRemaining(positions::add);
-		var pathFinder = new DijkstraShortestPathFinder<Point>(positions, (x, y) -> 1, grid::findPossibleSteps);
+		var pathFinder = new DijkstraShortestPathFinder<Point>(positions, grid::findPossibleSteps);
 		return pathFinder.find(grid.getStart(), grid.getEnd());
 	}
 
@@ -36,7 +36,7 @@ public class Day12Main {
 		int minPath = Integer.MAX_VALUE;
 
 		for (var startPosition : grid.getPositionsWhere(x -> x.equals(MIN_HEIGHT))) {
-			var pathFinder = new DijkstraShortestPathFinder<Point>(nodes, (x, y) -> 1, grid::findPossibleSteps);
+			var pathFinder = new DijkstraShortestPathFinder<Point>(nodes, grid::findPossibleSteps);
 			var curPath = pathFinder.find(startPosition, grid.getEnd());
 			if (curPath < minPath)
 				minPath = curPath;
