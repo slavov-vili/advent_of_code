@@ -40,7 +40,7 @@ public class Grid2D<T> {
 		return oldValue;
 	}
 
-	public List<Point> getAllNeighbors(Point position) {
+	public List<Point> getAllNeighborPositions(Point position) {
 		return Grid2D.getAllDirections().stream().map(dir -> dir.apply(position)).filter(this::hasPosition).toList();
 	}
 
