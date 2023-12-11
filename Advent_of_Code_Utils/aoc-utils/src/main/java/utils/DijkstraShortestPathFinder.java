@@ -9,43 +9,43 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class DijkstraShortestPathFinder<T> {
-	private Map<T, Integer> distFromStart;
+	private Map<T, Long> distFromStart;
 	private Map<T, T> prevInPath;
-	private BiFunction<T, T, Integer> weightProvider;
+	private BiFunction<T, T, Long> weightProvider;
 	private Function<T, ? extends Collection<T>> neighborProvider;
 
-	public DijkstraShortestPathFinder(Collection<T> nodes, Function<T, ? extends Collection<T>> neighborProvider) {
-		this.weightProvider = (x, y) -> 1;
+	public DijkstraShortestPathFinder(Function<T, ? extends Collection<T>> neighborProvider) {
+		this.weightProvider = (x, y) -> 1L;
 		this.neighborProvider = neighborProvider;
-		initializeMaps(nodes);
+		initializeMaps();
 	}
 
-	public DijkstraShortestPathFinder(Collection<T> nodes, BiFunction<T, T, Integer> weightProvider,
+	public DijkstraShortestPathFinder(BiFunction<T, T, Long> weightProvider,
 			Function<T, ? extends Collection<T>> neighborProvider) {
 		this.weightProvider = weightProvider;
 		this.neighborProvider = neighborProvider;
-		initializeMaps(nodes);
+		initializeMaps();
 	}
 
-	private void initializeMaps(Collection<T> nodes) {
+	private void initializeMaps() {
 		this.distFromStart = new HashMap<>();
 		this.prevInPath = new HashMap<>();
 	}
 
-	public int find(T startNode, T endNode) {
+	public long find(T startNode, T endNode) {
 		this.find(startNode, Optional.of(endNode));
 		return this.getDistFromStart(endNode);
 	}
 
-	public Map<T, Integer> findAll(T startNode) {
+	public Map<T, Long> findAll(T startNode) {
 		this.find(startNode, Optional.empty());
 		return new HashMap<>(this.distFromStart);
 	}
 
 	protected void find(T startNode, Optional<T> endNode) {
-		this.distFromStart.put(startNode, 0);
+		this.distFromStart.put(startNode, 0L);
 		var queue = new PriorityQueue<T>(
-				(n1, n2) -> Integer.compare(this.getDistFromStart(n1), this.getDistFromStart(n2)));
+				(n1, n2) -> Long.compare(this.getDistFromStart(n1), this.getDistFromStart(n2)));
 		this.distFromStart.forEach((k, v) -> queue.add(k));
 
 		while (!queue.isEmpty()) {
@@ -70,7 +70,7 @@ public class DijkstraShortestPathFinder<T> {
 		}
 	}
 
-	public int getDistFromStart(T node) {
-		return this.distFromStart.getOrDefault(node, Integer.MAX_VALUE);
+	public long getDistFromStart(T node) {
+		return this.distFromStart.getOrDefault(node, Long.MAX_VALUE);
 	}
 }
