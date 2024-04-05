@@ -6,21 +6,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 // Point.x = row
 // Point.y = column
 public class Grid2D<T> {
-
-	public static final UnaryOperator<Point> UP = point -> new Point(point.x - 1, point.y);
-	public static final UnaryOperator<Point> RIGHT = point -> new Point(point.x, point.y + 1);
-	public static final UnaryOperator<Point> DOWN = point -> new Point(point.x + 1, point.y);
-	public static final UnaryOperator<Point> LEFT = point -> new Point(point.x, point.y - 1);
-
-	public static final UnaryOperator<Point> UP_LEFT = point -> UP.andThen(LEFT).apply(point);
-	public static final UnaryOperator<Point> UP_RIGHT = point -> UP.andThen(RIGHT).apply(point);
-	public static final UnaryOperator<Point> DOWN_LEFT = point -> DOWN.andThen(LEFT).apply(point);
-	public static final UnaryOperator<Point> DOWN_RIGHT = point -> DOWN.andThen(RIGHT).apply(point);
 
 	private Object[][] grid;
 
@@ -41,21 +30,7 @@ public class Grid2D<T> {
 	}
 
 	public List<Point> getAllNeighborPositions(Point position) {
-		return Grid2D.getAllDirections().stream().map(dir -> dir.apply(position)).filter(this::hasPosition).toList();
-	}
-
-	public static List<UnaryOperator<Point>> getDirections() {
-		return List.of(UP, RIGHT, DOWN, LEFT);
-	}
-
-	public static List<UnaryOperator<Point>> getDiagonals() {
-		return List.of(UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT);
-	}
-
-	public static List<UnaryOperator<Point>> getAllDirections() {
-		var allDirections = new ArrayList<>(getDirections());
-		allDirections.addAll(getDiagonals());
-		return allDirections;
+		return PointUtils.getAllNeighborPositions(position, this::hasPosition);
 	}
 
 	public int getColumnCount() {
@@ -85,7 +60,7 @@ public class Grid2D<T> {
 		}
 	}
 
-	public Collection<Point> getPositionsWhere(Predicate<T> predicate) {
+	public List<Point> getPositionsWhere(Predicate<T> predicate) {
 		var positions = new ArrayList<Point>();
 		var positionIter = this.positionIterator();
 		while (positionIter.hasNext()) {

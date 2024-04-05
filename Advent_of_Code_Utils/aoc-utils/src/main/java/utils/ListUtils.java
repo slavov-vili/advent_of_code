@@ -24,6 +24,12 @@ public class ListUtils {
 		return range;
 	}
 
+	public static <T> List<Integer> getNeighborsOf(List<T> myList, int i) {
+		int prev = (i == 0) ? myList.size() - 1 : i - 1;
+		int next = (i + 1) % myList.size();
+		return List.of(prev, next);
+	}
+
 	public static <T> int countWhere(Collection<T> collection, Predicate<T> predicate) {
 		int count = 0;
 		Iterator<T> iterator = collection.iterator();
