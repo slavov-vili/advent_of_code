@@ -59,7 +59,7 @@ public class PointUtils {
 			Predicate<Point> positionValidator) {
 		var nextPositions = directions.stream().map(dir -> dir.apply(curPos))
 				.filter(nextPos -> !nextPos.equals(prevPos) && positionValidator.test(nextPos))
-				.collect(Collectors.toList());
+				.toList();
 		var positionsInPaths = new ArrayList<>(nextPositions);
 		nextPositions.stream()
 				.flatMap(nextPos -> getPositionsInPaths(nextPos, curPos, directions, positionValidator).stream())
