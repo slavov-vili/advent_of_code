@@ -2,14 +2,21 @@ package day03
 
 import java.io.File
 
-fun String.findMaxJolts(): Int {
-    val max_i = IntRange(0, this.count()-2).maxBy { this[it] }
-    val max_j = IntRange(max_i + 1, this.count()-1).maxBy { this[it] }
-    return "${this[max_i]}${this[max_j]}".toInt()
+fun String.findMaxJolts(size: Int): Long {
+    val indices = IntRange(0, size - 1).fold(mutableListOf<Int>()) { indices, i ->
+        val firstIndex = (indices.lastOrNull() ?: -1) + 1
+        val lastIndex = this.count() - size + i
+        val max_i = IntRange(firstIndex, lastIndex).maxBy { this[it] }
+        indices.add(max_i)
+        indices
+    }
+    return indices.map { this[it] } .joinToString("").toLong()
 }
 
 val input = File("input.txt").readLines().filterNot(String::isEmpty)
 
-val maximums = input.map(String::findMaxJolts)
+val maximumsA = input.map { it.findMaxJolts(2) }
+println("Maximum sum A: ${maximumsA.sum()}")
 
-println("Maximum sum A: ${maximums.sum()}")
+val maximumsB = input.map { it.findMaxJolts(12) }
+println("Maximum sum B: ${maximumsB.sum()}")
