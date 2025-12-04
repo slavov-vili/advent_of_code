@@ -18,22 +18,33 @@ fun Position.isValid(limits: Limits): Boolean {
     return this.first in limits.first && this.second in limits.second
 }
 
-fun Position.getValidNeighbors(paperRollMap: PaperRollMap, all: Boolean): List<Position> {
-    val limits = paperRollMap.getLimits()
+fun Position.getValidNeighbors(rollMap: PaperRollMap, all: Boolean): List<Position> {
+    val limits = rollMap.getLimits()
     val step = if (all) 1 else 2
     return IntRange(0, directions.count() - 1).step(step)
         .map { this.move(directions[it]) }
         .filter { it.isValid(limits) }
 }
 
-fun Position.isAccessible(paperRollMap: PaperRollMap): Boolean {
-    return this.getValidNeighbors(paperRollMap, true)
-        .filter { paperRollMap.isRoll(it) }
+fun Position.isAccessible(rollMap: PaperRollMap): Boolean {
+    return this.getValidNeighbors(rollMap, true)
+        .filter { rollMap.isRoll(it) }
         .count() < 4
 }
 
 fun PaperRollMap.isRoll(pos: Position): Boolean {
     return this[pos.first][pos.second] == '@'
+}
+
+fun PaperRollMap.unsetAll(positions: List<Position>): PaperRollMap {
+    if (positions.isEmpty())
+        return this
+
+    val tempRollMap = this.toMutableList()
+    for (pos in positions) {
+        tempRollMap[pos.first] = tempRollMap[pos.first].replaceRange(pos.second, pos.second + 1, ".")
+    }
+    return tempRollMap.toList()
 }
 
 fun PaperRollMap.getLimits(): Limits {
@@ -49,10 +60,22 @@ fun PaperRollMap.getPositions(): List<Position> {
 }
 
 fun PaperRollMap.findAccessibleRollPositions(): List<Position> {
-    return this.getPositions().filter { input.isRoll(it) && it.isAccessible(input) }
+    return this.getPositions().filter { this.isRoll(it) && it.isAccessible(this) }
+}
+
+fun PaperRollMap.countAllRemovable(): Int {
+    val accessible = this.findAccessibleRollPositions()
+    if (accessible.isEmpty())
+        return 0;
+
+    val newRollMap = this.unsetAll(accessible)
+    return accessible.count() + newRollMap.countAllRemovable()
 }
 
 val input: PaperRollMap = File("input.txt").readLines().filterNot(String::isEmpty)
 
 val accessible = input.findAccessibleRollPositions()
 println("Accessible rolls: ${accessible.count()}")
+
+val allRemovable = input.countAllRemovable()
+println("All removable rolls: $allRemovable")
