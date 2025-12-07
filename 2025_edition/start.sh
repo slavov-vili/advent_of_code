@@ -15,7 +15,7 @@ package $DAY
 
 import java.io.File
 
-val input = File("input.txt").readLines()
+val input = File("input.txt").readLines().filterNot(String::isEmpty)
 EOF
 
 
