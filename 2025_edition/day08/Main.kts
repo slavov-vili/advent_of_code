@@ -25,12 +25,14 @@ fun emptyCircuitMap(): CircuitMap {
     return mapOf<Position3D, Long>()
 }
 
-// FIXME: something somewhere is broken
-// TODO: maybe sort closest map before passing to improve performance?
-fun findCircuits(curClosestTuples: List<ClosestTuple>, curCircuitMap: CircuitMap, i: Long, n: Long = Long.MAX_VALUE): CircuitMap {
-    // val circuits = curCircuitMap.values.toSet().count()
-    // println("\nFound $circuits circuits")
-    if ( i == n - 1 || curClosestTuples.isEmpty()) {
+fun CircuitMap.merge(circuits: Set<Long>): CircuitMap {
+    val mergedCircuit = circuits.minOf { it }
+    return this.mapValues { if (circuits.contains(it.value)) mergedCircuit else it.value }
+}
+
+// FIXME: runs out of heap space... too many pairs?
+fun findCircuits(curClosestTuples: List<ClosestTuple>, curCircuitMap: CircuitMap, i: Long): CircuitMap {
+    if ( curClosestTuples.isEmpty()) {
         // FIXME: add remaining boxes to their own circuits?
         return curCircuitMap
     }
@@ -39,19 +41,20 @@ fun findCircuits(curClosestTuples: List<ClosestTuple>, curCircuitMap: CircuitMap
 
     val circuit1 = curCircuitMap.getOrDefault(minBox1, null)
     val circuit2 = curCircuitMap.getOrDefault(minBox2, i)
-    val circuitId = circuit1 ?: circuit2
-    println("\nMin pair: $minBox1 -> $minBox2")
-    println("Circuits: $circuit1 -> $circuit2")
+    // println("\nMin pair: $minBox1 -> $minBox2")
+    // println("Circuits: $circuit1 -> $circuit2")
 
     val nextClosestTuples = curClosestTuples.slice(IntRange(1, curClosestTuples.count() - 1))
-    // FIXME: if they are both in - what happens?
-    if (curCircuitMap.containsKey(minBox1) && curCircuitMap.containsKey(minBox2)) {
-        return findCircuits(nextClosestTuples, curCircuitMap, i, n)
+    val nextCircuitMap =  if (curCircuitMap.containsKey(minBox1) && curCircuitMap.containsKey(minBox2)) {
+        curCircuitMap.merge(setOf(circuit1!!, circuit2!!))
+    } else {
+        val circuitId = circuit1 ?: circuit2
+        // println("Circuit ID is $circuitId")
+        curCircuitMap + mapOf(minBox1 to circuitId, minBox2 to circuitId)
     }
-    println("Circuit ID is $circuitId")
 
-    val nextCircuitMap = curCircuitMap + mapOf(minBox1 to circuitId, minBox2 to circuitId)
-    return findCircuits(nextClosestTuples, nextCircuitMap, i + 1, n)
+    val next_i = if (circuit1 == circuit2) i else i + 1
+    return findCircuits(nextClosestTuples, nextCircuitMap, next_i)
 }
 
 val input = File("input.txt").readLines().filterNot(String::isEmpty).map(::parseLine)
@@ -64,10 +67,12 @@ val closestTuples = IntRange(0, input.count() - 2).flatMap { i ->
     }
     .filterNot { it.distance == 0.0 }
     .sortedBy { it.distance }
-closestTuples.forEach(::println)
+    .take(1000)
+// closestTuples.forEach(::println)
 
-val circuitMap = findCircuits(closestTuples, mapOf(), 0, 10)
+val circuitCountMap = findCircuits(closestTuples, mapOf(), 0)
+    .values.groupBy { it }
+    .mapValues { (_, valueList) -> valueList.count().toLong() }
 
-val circuitCountMap: Map<Long, Long> = circuitMap.values.groupBy { it }.mapValues { (_, valueList) -> valueList.count().toLong() }
-println(circuitCountMap)
-
+val sizesMultiplied = circuitCountMap.values.sortedDescending().take(3).reduce { a, b -> a * b }
+println(sizesMultiplied)
